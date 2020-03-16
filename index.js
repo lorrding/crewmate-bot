@@ -1,12 +1,12 @@
 const Discord = require('discord.js');
 
 const client = new Discord.Client();
-
+const config = require("./config.json");
  
 
 client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
-	client.user	.setActivity(`C'est pas les vacances!`)	
+	//client.user	.setActivity(`C'est pas les vacances!`)	
 });
 
  
