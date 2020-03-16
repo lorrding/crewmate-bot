@@ -12,7 +12,7 @@ client.on('ready',async m => {
 
 
 
-cron.schedule('50,52 0 * * tues', () => {
+cron.schedule('55,58 0 * * tues', () => {
 	console.log('message chaque mardi à 00:50 et 00:52');
 }, {
 	scheduled: true,
