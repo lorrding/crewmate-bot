@@ -2,14 +2,23 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 const config = require("./config.json");
+const cron = require('cron');
  
 
 client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
-	//client.user	.setActivity(`C'est pas les vacances!`)	
+	client.user	.setActivity(`C'est pas les vacances!`)	
 });
 
- 
+
+
+cron.schedule('* * * * *', () => {
+	console.log('test every minute');
+}, {
+	scheduled: true,
+	timezone: "Europe/Paris"
+});
+
 
 client.on('message', async message => {
 	
@@ -34,7 +43,7 @@ client.on('message', async message => {
 
 // addme
 	if (command === "addme") {
-		message.reply('https://discordapp.com/oauth2/authorize?client_id=261494500449320960&permissions=3153920&scope=bot');
+		message.reply('https://discordapp.com/oauth2/authorize?client_id=689215093501591553&permissions=3072&scope=bot');
 	}
 	
 });
