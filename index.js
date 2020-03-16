@@ -19,19 +19,20 @@ client.on('message', async message => {
 		console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
 		if (args !== null && args !== '') console.log(`With argu ${args}`);
 	
+
 	try {
 
 		// ping
 		if (command === "ping") {
 			message.channel.send("pong");
-			// var embed = new Discord.RichEmbed();
-			// embed.setColor('#FFFFFF');
-			// const m = await message.channel.send("Ping?");
-			// embed.setAuthor(`${message.author.username} -> ping`, `${message.author.displayAvatarURL}`);
-			// embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ping)}ms.`);
+			var embed = new Discord.RichEmbed();
+			embed.setColor('#FFFFFF');
+			const m = await message.channel.send("Ping?");
+			embed.setAuthor(`${message.author.username} -> ping`, `${message.author.displayAvatarURL}`);
+			embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ping)}ms.`);
 			// message.delete();
 			// m.delete();
-			// message.channel.send(embed);
+			message.channel.send(embed);
 		}
 
 		// addme
