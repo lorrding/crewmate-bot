@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 const config = require("./config.json");
-const cron = require('cron');
+const cron = require('node-cron');
  
 
 client.on('ready',async m => {
