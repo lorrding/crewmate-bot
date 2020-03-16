@@ -17,36 +17,27 @@ client.on('message', async message => {
 		const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 		const command = args.shift().toLowerCase();
 		console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
-		if (args !== null && args !== '') console.log(`With argu ${args}`);
-	
+		if (args) console.log(`With argu ${args}`);	
 
-	try {
 
-		// ping
-		if (command === "ping") {
-			message.channel.send("pong");
-			var embed = new Discord.RichEmbed();
-			embed.setColor('#FFFFFF');
-			const m = await message.channel.send("Ping?");
-			embed.setAuthor(`${message.author.username} -> ping`, `${message.author.displayAvatarURL}`);
-			embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ping)}ms.`);
-			// message.delete();
-			// m.delete();
-			message.channel.send(embed);
-		}
+// ping
+	if (command === "ping") {
+		var embed = new Discord.RichEmbed();
+		embed.setColor('#FFFFFF');
+		const m = await message.channel.send("Ping?");
+		embed.setAuthor(`${message.author.username} -> ping`, `${message.author.displayAvatarURL}`);
+		embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ping)}ms.`);
+		message.delete();
+		m.delete();
+		message.channel.send(embed);
+	}
 
-		// addme
-		if (command === "addme") {
-			message.reply('https://discordapp.com/oauth2/authorize?client_id=689215093501591553&permissions=3072&scope=bot');
-		}
-	} catch (error) {
-		console.log(error);
+// addme
+	if (command === "addme") {
+		message.reply('https://discordapp.com/oauth2/authorize?client_id=261494500449320960&permissions=3153920&scope=bot');
 	}
 	
 });
 
  
-
-// THIS  MUST  BE  THIS  WAY
-
-client.login(process.env.BOT_TOKEN);//BOT_TOKEN is the Client Secret
+client.login(process.env.BOT_TOKEN);

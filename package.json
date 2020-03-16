@@ -1,25 +1,13 @@
 {
-
-    "name": "Corona-EDT",
-  
-    "description": "Discord bot pour l'edt spécial du confinement ",
-  
-    "version": "0.1.0",
-  
-    "main": "bot.js",
-  
-    "scripts": {
-  
-      "start": "node bot.js"
-  
-    },
-  
-    "dependencies": {
-  
-      "discord.js": "11.1.0",
-  
-      "request": "2.81.0"
-  
-    }
-  
-  }
+	"name": "corona-edt",
+	"description": "Discord bot pour l'edt spécial du confinement",
+	"version": "1.1.0",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js"
+	},
+	"dependencies": {
+		"discord.js": "11.4.2",
+		"request": "2.81.0"
+	}
+}
