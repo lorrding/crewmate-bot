@@ -15,8 +15,9 @@ client.on('ready',async m => {
 	//cron.schedule('20 10 * * tues', () => {
 	cron.schedule('*/2 * * * tues', () => {
 		console.log('ECI->MPE');
-		client.channels.get("689216081276960863").send(`Rappel,${client.user.server.roles.get('name', 'a')}<@689264273083596884> MPE dans 10 minutes!`);
-		
+		console.log(client.guilds.get("261492016251142146").role.find("name", "a"));
+		client.channels.get("689216081276960863").send(`Rappel, <@&${client.guilds.get("261492016251142146").role.find("name", "a")}> MPE dans 10 minutes!`);
+		getreck
 	}, {
 		scheduled: true,
 		timezone: "Europe/Paris"
