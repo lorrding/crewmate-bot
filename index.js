@@ -13,7 +13,7 @@ client.on('ready',async m => {
 // ECI
 	//ANG
 	//cron.schedule('20 10 * * tues', () => {
-	cron.schedule('27 1 * * tues', () => {
+	cron.schedule('*/2 * * * tues', () => {
 		console.log('ECI->MPE');
 		client.channels.get("689216081276960863").send(`Rappel,${client.user.server.roles.get('name', 'a')}<@689264273083596884> MPE dans 10 minutes!`);
 		
