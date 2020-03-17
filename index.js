@@ -261,7 +261,7 @@ if (command === "help") {
 		message.channel.send("l'avenir de ce bot dépend du maitre des vieux");
 		message.channel.send(">/ping");
 		message.channel.send("pour voir la latence du bot");
-		message.channel.send("<:lording:494938348943704074>");
+		message.channel.send('<:lording:689477945970130994>');
 	}
 	
 });
