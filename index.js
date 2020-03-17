@@ -21,7 +21,7 @@ client.on('ready',async m => {
 		console.log('ECI->MPE');
 
 		console.log(role.id);
-		client.channels.get("689216081276960863").send(`Rappel, <@&${role.id}> MPE dans 10 minutes!`);
+		client.channels.get("689216081276960863").send(`Rappel, <@&288784766822514700> MPE dans 10 minutes!`);
 	}, {
 		scheduled: true,
 		timezone: "Europe/Paris"
