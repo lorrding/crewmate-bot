@@ -10,14 +10,18 @@ client.on('ready',async m => {
 	client.user	.setActivity(`C'est pas les vacances!`)	
 });
 
-
-
-cron.schedule('55,58 0 * * tues', () => {
-	console.log('message chaque mardi à 00:50 et 00:52');
-}, {
-	scheduled: true,
-	timezone: "Europe/Paris"
-});
+// ECI
+	//ANG
+	//cron.schedule('20 10 * * tues', () => {
+	cron.schedule('15 1 * * tues', () => {
+		console.log('ECI->MPE');
+		console.log(server.roles.get("name", "a"));
+		client.channels.get("689216081276960863").send(`Rappel,<@&ROLE_ID> `);
+		
+	}, {
+		scheduled: true,
+		timezone: "Europe/Paris"
+	});
 
 
 client.on('message', async message => {
