@@ -3,7 +3,11 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const config = require("./config.json");
 const cron = require('node-cron');
- 
+
+
+const guild = client.guilds.get("261492016251142146");
+const role = guild.roles.find("name", "lvl59");
+console.log(`Found the role ${role.name}`);
 
 client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
@@ -15,9 +19,9 @@ client.on('ready',async m => {
 	//cron.schedule('20 10 * * tues', () => {
 	cron.schedule('*/2 * * * tues', () => {
 		console.log('ECI->MPE');
-		console.log(client.guilds.get("261492016251142146").role.find("name", "a"));
-		client.channels.get("689216081276960863").send(`Rappel, <@&${client.guilds.get("261492016251142146").role.find("name", "a")}> MPE dans 10 minutes!`);
-		getreck
+
+		console.log(role.id);
+		client.channels.get("689216081276960863").send(`Rappel, <@&${role.id}> MPE dans 10 minutes!`);
 	}, {
 		scheduled: true,
 		timezone: "Europe/Paris"
