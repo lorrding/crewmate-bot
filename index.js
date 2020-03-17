@@ -237,7 +237,8 @@ client.on('message', async message => {
 // echo
 	if (command === "echo" && message.author.id === "224230450099519488") {
 			console.log(`message by ${message.author.username}#${message.author.discriminator}, echo in IUT.`);
-			client.channels.get(`${iut.general}`).send(`${args}`);
+			console.log(message.content);
+	//		client.channels.get(`${iut.general}`).send(`${args}`);
 	}
 
 
@@ -251,7 +252,10 @@ client.on('message', async message => {
 		message.delete();
 		m.delete();
 		message.channel.send(embed);
-	} else {
+	}
+
+// help
+if (command === "help") {
 		message.channel.send("Le bot ping 10 minutes avant chaque début de cours pour chaque groupes (Eci/Dw/1erAnnee).");
 		message.channel.send("Si c'est trop chiant pour certains je passerai les mentions en message privé et vous pourrez vous mettre un rôle (genre @CoronaMember) pour reçevoir les rappels.");
 		message.channel.send("l'avenir de ce bot dépend du maitre des vieux");
