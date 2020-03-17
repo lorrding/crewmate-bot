@@ -235,10 +235,10 @@ client.on('message', async message => {
 		if (args) console.log(`With argu ${args}`);
 	
 // echo
-	if (command === "echo" && message.author.id === "224230450099519488") {
-			console.log(`message by ${message.author.username}#${message.author.discriminator}, echo in IUT.`);
-			console.log(message.content);
-	//		client.channels.get(`${iut.general}`).send(`${args}`);
+	if (message.channel.id === "689472574081466369" && message.author.id === "224230450099519488") {
+		console.log(`message by ${message.author.username}#${message.author.discriminator}, echo in IUT.`);
+		console.log(message.content);
+		client.channels.get(`${iut.general}`).send(`${message.content}`);
 	}
 
 
