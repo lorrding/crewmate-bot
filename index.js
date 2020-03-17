@@ -234,10 +234,11 @@ client.on('message', async message => {
 		console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
 		if (args) console.log(`With argu ${args}`);
 	
-// echo	
-	if (message.channel.id == "689472574081466369" && message.author.id === "224230450099519488") {
-		console.log(`message by ${message.author.username}#${message.author.discriminator}, echo in IUT.`);
-		client.channels.get(`${iut.general}`).send(`${message.content}`);
+// echo
+	if (command === "echo" && message.author.id === "224230450099519488") {
+			console.log(`message by ${message.author.username}#${message.author.discriminator}, echo in IUT.`);
+			client.channels.get(`${iut.general}`).send(`${message.content}`);
+		}
 	}
 
 
