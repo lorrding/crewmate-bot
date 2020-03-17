@@ -238,7 +238,6 @@ client.on('message', async message => {
 	if (command === "echo" && message.author.id === "224230450099519488") {
 			console.log(`message by ${message.author.username}#${message.author.discriminator}, echo in IUT.`);
 			client.channels.get(`${iut.general}`).send(`${message.content}`);
-		}
 	}
 
 
