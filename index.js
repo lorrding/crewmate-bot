@@ -5,7 +5,9 @@ const config = require("./config.json");
 const cron = require('node-cron');
 
 
-const guild = client.guilds.get("261492016251142146");
+const guild = client.guilds.resolve("261492016251142146");
+console.log(client.guilds);
+console.log(guild);
 const role = guild.roles.find("name", "lvl59");
 console.log(`Found the role ${role.name}`);
 
