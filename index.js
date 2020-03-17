@@ -13,10 +13,9 @@ client.on('ready',async m => {
 // ECI
 	//ANG
 	//cron.schedule('20 10 * * tues', () => {
-	cron.schedule('15 1 * * tues', () => {
+	cron.schedule('19 1 * * tues', () => {
 		console.log('ECI->MPE');
-		console.log(server.roles.get("name", "a"));
-		client.channels.get("689216081276960863").send(`Rappel,<@&ROLE_ID> `);
+		client.channels.get("689216081276960863").send(`Rappel,<@689264273083596884> `);
 		
 	}, {
 		scheduled: true,
