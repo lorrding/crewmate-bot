@@ -234,7 +234,8 @@ client.on('message', async message => {
 		console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
 		if (args) console.log(`With argu ${args}`);
 	
-	if (message.channel == "689472574081466369" && message.author.id === "224230450099519488") {
+// echo	
+	if (message.channel.id == "689472574081466369" && message.author.id === "224230450099519488") {
 		console.log(`message by ${message.author.username}#${message.author.discriminator}, echo in IUT.`);
 		client.channels.get(`${iut.general}`).send(`${message.content}`);
 	}
@@ -254,7 +255,8 @@ client.on('message', async message => {
 		message.channel.send("Le bot ping 10 minutes avant chaque début de cours pour chaque groupes (Eci/Dw/1erAnnee).");
 		message.channel.send("Si c'est trop chiant pour certains je passerai les mentions en message privé et vous pourrez vous mettre un rôle (genre @CoronaMember) pour reçevoir les rappels.");
 		message.channel.send("l'avenir de ce bot dépend du maitre des vieux");
-		message.channel.send("```js /ping``` pour voir la latence du bot");
+		message.channel.send(">/ping");
+		message.channel.send("pour voir la latence du bot");
 		message.channel.send("<:lording:494938348943704074>");
 	}
 	
