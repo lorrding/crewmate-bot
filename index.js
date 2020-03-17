@@ -25,13 +25,6 @@ const eci = {role:"<@&604658459799191555>", channel:"689193168805036172"};
 const dw = {role:"<@&604658418980093993>", channel:"689193318743015429"};
 const PremAnnee = {role:"<@&604658039189929994>", channel:"689193168805036172"};
 
-//15h30
-cron.schedule('26 12 * * tues', () => {
-	client.channels.get(`${eci.channel}`).send(`<@&651493555629457418>, petit test!`);
-}, {
-	scheduled: true,
-	timezone: "Europe/Paris"
-});
 
 // LUNDI
 	//9h
