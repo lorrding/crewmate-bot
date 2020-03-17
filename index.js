@@ -9,10 +9,9 @@ const cron = require('node-cron');
 
 client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
-	client.user.setPresence({ activity: { name: 'C\'est pas les vacances!', type: 'STREAMING'  }, status: 'idle' })
-  .then(console.log)
-  .catch(console.error);
-	client.user	.setActivity(`C'est pas les vacances!`)
+	client.user.setPresence({ activity: { name: 'C\'est pas les vacances!', type: '1'  }, status: 'idle' })
+  		.then(console.log)
+  		.catch(console.error);
 });
 
 const eci = {role:"<@&604658459799191555>", channel:"<@#689193168805036172>"};
