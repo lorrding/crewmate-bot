@@ -9,7 +9,7 @@ const cron = require('node-cron');
 
 client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
-	client.user.setPresence({ activity: { name: 'C\'est pas les vacances!', type: '1'  }, status: 'idle' })
+	client.user.setPresence({ activity: { name: 'C\'est pas les vacances!', type: "STREAMING", url: "https://youtu.be/dQw4w9WgXcQ"}, status: 'idle' })
   		.then(console.log)
   		.catch(console.error);
 });
