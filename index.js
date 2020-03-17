@@ -5,10 +5,7 @@ const config = require("./config.json");
 const cron = require('node-cron');
 
 
-console.log(client.guilds);
-console.log(guild);
-const role = guild.roles.find("name", "lvl59");
-console.log(`Found the role ${role.name}`);
+client.channels.get("689216081276960863").send(`Rappel, <@&${'411251676683698196'}> MPE dans 10 minutes!`);
 
 client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
