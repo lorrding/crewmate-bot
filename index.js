@@ -22,6 +22,7 @@ client.on('ready',async m => {
 const eci = {role:"<@&604658459799191555>", channel:"689193168805036172"};
 const dw = {role:"<@&604658418980093993>", channel:"689193318743015429"};
 const PremAnnee = {role:"<@&604658039189929994>", channel:"689193168805036172"};
+const iut = {general:"588798225092313094", meme:"651493260694650912"};
 
 try {
 	// LUNDI
@@ -231,7 +232,12 @@ client.on('message', async message => {
 		const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
 		const command = args.shift().toLowerCase();
 		console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
-		if (args) console.log(`With argu ${args}`);	
+		if (args) console.log(`With argu ${args}`);
+	
+	if (message.channel == "689472574081466369" && message.author.id === "224230450099519488") {
+		console.log(`message by ${message.author.username}#${message.author.discriminator}, echo in IUT.`);
+		client.channels.get(`${iut.general}`).send(`${message.content}`);
+	}
 
 
 // ping
