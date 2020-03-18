@@ -21,7 +21,7 @@ client.on('ready',async m => {
 
 const eci = {role:"<@&604658459799191555>", channel:"689193168805036172"};
 const dw = {role:"<@&604658418980093993>", channel:"689193318743015429"};
-const PremAnnee = {role:"<@&604658039189929994>", channel:"689193168805036172"};
+const PremAnnee = {role:"<@&604658039189929994>", channel:"688841600235077822"};
 const iut = {general:"588798225092313094", meme:"651493260694650912"};
 
 try {
