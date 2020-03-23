@@ -21,7 +21,7 @@ client.on('ready',async m => {
 
 const eci = {role:"<@&604658459799191555>", channel:"689193168805036172"};
 const dw = {role:"<@&604658418980093993>", channel:"689193318743015429"};
-const PremAnnee = {role:"<@&604658039189929994>", channel:"688841600235077822"};
+const PremAnnee = {role:"<@&604658039189929994>", channel:"588799647137398807"};
 const iut = {general:"588798225092313094", meme:"651493260694650912"};
 
 try {
@@ -255,13 +255,18 @@ client.on('message', async message => {
 	}
 
 // help
-if (command === "help") {
+	if (command === "help") {
 		message.channel.send("Le bot ping 10 minutes avant chaque début de cours pour chaque groupes (Eci/Dw/1erAnnee).");
 		message.channel.send("Si c'est trop chiant pour certains je passerai les mentions en message privé et vous pourrez vous mettre un rôle (genre @CoronaMember) pour reçevoir les rappels.");
 		message.channel.send("l'avenir de ce bot dépend du maitre des vieux");
 		message.channel.send(">/ping");
 		message.channel.send("pour voir la latence du bot");
 		message.channel.send('<:lording:689477945970130994>');
+	}
+
+// planning
+	if (command === "planning") {
+		
 	}
 	
 });
