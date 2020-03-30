@@ -264,8 +264,7 @@ client.on('message', async message => {
 
 // planning
 	if (command === "edt") {
-		const attachment = new Discord.MessageAttachment('https://i.imgur.com/VXPOSto.png');
-		message.channel.send(attachment);
+		message.channel.send({file: "https://i.imgur.com/VXPOSto.png"});
 	}
 	
 });
