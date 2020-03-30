@@ -134,6 +134,7 @@ try {
 		//15h30
 		cron.schedule('20 15 * * wed', () => {
 			client.channels.get(`${eci.channel}`).send(`${eci.role}, ASE dans 10 minutes!`);
+			client.channels.get(`${dw.channel}`).send(`${dw.role}, DEVMOB dans 10 minutes!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Paris"
@@ -144,6 +145,7 @@ try {
 		//9h
 		cron.schedule('50 8 * * thu', () => {
 			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, BD dans 10 minutes!`);
+			client.channels.get(`${eci.channel}`).send(`${eci.role}, MPE_ dans 10 minutes (oui le tiret est important)!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Paris"
@@ -169,12 +171,11 @@ try {
 		});
 		
 		//15h30
-		cron.schedule('20 15 * * thu', () => {
-			client.channels.get(`${dw.channel}`).send(`${dw.role}, DEVMOB dans 10 minutes!`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Paris"
-		});
+		// cron.schedule('20 15 * * thu', () => {
+		// }, {
+		// 	scheduled: true,
+		// 	timezone: "Europe/Paris"
+		// });
 	
 	
 	// VENDREDI
@@ -182,7 +183,6 @@ try {
 		cron.schedule('50 8 * * fri', () => {
 			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, BCOO dans 10 minutes!`);
 			client.channels.get(`${eci.channel}`).send(`${eci.role}, ROC dans 10 minutes!`);
-			client.channels.get(`${dw.channel}`).send(`${dw.role}, RO dans 10 minutes!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Paris"
@@ -266,7 +266,7 @@ client.on('message', async message => {
 
 // planning
 	if (command === "planning") {
-		
+		message.channel.send("", {files: ["http://prntscr.com/rpeo8x"]});
 	}
 	
 });
