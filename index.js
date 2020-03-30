@@ -10,7 +10,7 @@ client.on('ready',async m => {
 	client.user.setPresence({
 		game: {
 			name: 'C\'est pas les vacances!',
-			type: "STREAMING",
+			type: "PLAYING",
 			url: "https://youtu.be/dQw4w9WgXcQ"
 		},
 		status: 'idle' 
@@ -25,16 +25,17 @@ const PremAnnee = {role:"<@&604658039189929994>", channel:"588799647137398807"};
 const iut = {general:"588798225092313094", meme:"651493260694650912"};
 
 try {
-	// LUNDI
+	//LUNDI
 		//9h
-		// cron.schedule('50 8 * * mon', () => {
-		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
-		// 	client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
-		// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
-		// }, {
-		// 	scheduled: true,
-		// 	timezone: "Europe/Paris"
-		// });
+		cron.schedule('00 14 * * mon', () => {
+			console.log("test changement d'heure");
+			// client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
+			// client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
+			// client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
+		}, {
+			scheduled: true,
+			timezone: "Europe/Paris"
+		});
 	
 		// //10h30
 		// cron.schedule('20 10 * * mon', () => {
