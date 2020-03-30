@@ -26,34 +26,14 @@ const iut = {general:"588798225092313094", meme:"651493260694650912"};
 try {
 	//LUNDI
 		//9h
-		cron.schedule('24 14 * * mon', () => {
-			console.log("test changement d'heure 14h");
-			// client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
-			// client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
-			// client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Riga"
-		});
-
-		cron.schedule('18 13 * * mon', () => {
-			console.log("test changement d'heure 13h");
-		}, {
-			scheduled: true,
-		});
-
-		cron.schedule('24 12 * * mon', () => {
-			console.log("test changement d'heure 12h");
-		}, {
-			scheduled: true,
-		});
-
-		cron.schedule('18 15 * * mon', () => {
-			console.log("test changement d'heure 15h");
-		}, {
-			scheduled: true,
-		});
-	
+		// cron.schedule('40 8 * * mon', () => {
+		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
+		// 	client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
+		// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
+		// }, {
+		// 	scheduled: true,
+		// 	timezone: "Europe/Riga"
+		// });
 		// //10h30
 		// cron.schedule('20 10 * * mon', () => {
 		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
@@ -61,7 +41,7 @@ try {
 		// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
 		// }, {
 		// 	scheduled: true,
-		// 	timezone: "Europe/Paris"
+		// 	timezone: "Europe/Riga"
 		// });
 		
 		// //14h
@@ -71,7 +51,7 @@ try {
 		// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
 		// }, {
 		// 	scheduled: true,
-		// 	timezone: "Europe/Paris"
+		// 	timezone: "Europe/Riga"
 		// });
 		
 		// //15h30
@@ -81,7 +61,7 @@ try {
 		// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
 		// }, {
 		// 	scheduled: true,
-		// 	timezone: "Europe/Paris"
+		// 	timezone: "Europe/Riga"
 		// });
 	
 	
@@ -91,7 +71,7 @@ try {
 			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, AMN dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 	
 		//10h30
@@ -100,7 +80,7 @@ try {
 			client.channels.get(`${eci.channel}`).send(`${eci.role}, MPE dans 10 minutes!`);	
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 		
 		//14h
@@ -109,7 +89,7 @@ try {
 			client.channels.get(`${eci.channel}`).send(`${eci.role}, DEVOPS dans 10 minutes!`);	
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 		
 		//15h30
@@ -117,7 +97,7 @@ try {
 			client.channels.get(`${eci.channel}`).send(`${eci.role}, ADM dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 	
 	
@@ -128,7 +108,7 @@ try {
 			client.channels.get(`${dw.channel}`).send(`${dw.role}, DWS dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 	
 		//10h30
@@ -138,7 +118,7 @@ try {
 			client.channels.get(`${dw.channel}`).send(`${dw.role}, DWS/DEVOPS dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 		
 		//14h
@@ -146,7 +126,7 @@ try {
 			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, RES dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 		
 		//15h30
@@ -155,7 +135,7 @@ try {
 			client.channels.get(`${dw.channel}`).send(`${dw.role}, DEVMOB dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 	
 	
@@ -166,7 +146,7 @@ try {
 			client.channels.get(`${eci.channel}`).send(`${eci.role}, MPE_ dans 10 minutes (oui le tiret est important)!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 	
 		//10h30
@@ -176,7 +156,7 @@ try {
 			client.channels.get(`${dw.channel}`).send(`${dw.role}, ANG dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 		
 		//14h
@@ -185,14 +165,14 @@ try {
 			client.channels.get(`${dw.channel}`).send(`${dw.role}, ASR dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 		
 		//15h30
 		// cron.schedule('20 15 * * thu', () => {
 		// }, {
 		// 	scheduled: true,
-		// 	timezone: "Europe/Paris"
+		// 	timezone: "Europe/Riga"
 		// });
 	
 	
@@ -203,7 +183,7 @@ try {
 			client.channels.get(`${eci.channel}`).send(`${eci.role}, ROC dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 	
 		//10h30
@@ -213,7 +193,7 @@ try {
 			client.channels.get(`${dw.channel}`).send(`${dw.role}, EC dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 		
 		//14h
@@ -221,7 +201,7 @@ try {
 			client.channels.get(`${dw.channel}`).send(`${dw.role}, PROGWEB dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
+			timezone: "Europe/Riga"
 		});
 		
 		//15h30
@@ -231,7 +211,7 @@ try {
 		// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
 		// }, {
 		// 	scheduled: true,
-		// 	timezone: "Europe/Paris"
+		// 	timezone: "Europe/Riga"
 		// });	
 } catch (error) {
 	let date_ob = new Date();
