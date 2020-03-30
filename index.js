@@ -33,14 +33,12 @@ try {
 			// client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
 		});
 
 		cron.schedule('04 13 * * mon', () => {
 			console.log("test changement d'heure 13h");
 		}, {
 			scheduled: true,
-			timezone: "Europe/Paris"
 		});
 	
 		// //10h30
