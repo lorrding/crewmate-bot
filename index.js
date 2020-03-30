@@ -264,7 +264,8 @@ client.on('message', async message => {
 
 // planning
 	if (command === "planning") {
-		message.channel.send("", {files: ["http://prntscr.com/rpeo8x"]});
+		const attachment = new MessageAttachment('https://i.imgur.com/VXPOSto.png');
+		message.channel.send(attachment);
 	}
 	
 });
