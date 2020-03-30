@@ -263,7 +263,7 @@ client.on('message', async message => {
 	}
 
 // planning
-	if (command === "planning") {
+	if (command === "edt") {
 		const attachment = new MessageAttachment('https://i.imgur.com/VXPOSto.png');
 		message.channel.send(attachment);
 	}
