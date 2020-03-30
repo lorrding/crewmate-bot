@@ -26,8 +26,8 @@ const iut = {general:"588798225092313094", meme:"651493260694650912"};
 try {
 	//LUNDI
 		//9h
-		cron.schedule('02 14 * * mon', () => {
-			console.log("test changement d'heure");
+		cron.schedule('04 14 * * mon', () => {
+			console.log("test changement d'heure 14h");
 			// client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
 			// client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
 			// client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
@@ -36,8 +36,8 @@ try {
 			timezone: "Europe/Paris"
 		});
 
-		cron.schedule('02 13 * * mon', () => {
-			console.log("test changement d'heure");
+		cron.schedule('04 13 * * mon', () => {
+			console.log("test changement d'heure 13h");
 		}, {
 			scheduled: true,
 			timezone: "Europe/Paris"
