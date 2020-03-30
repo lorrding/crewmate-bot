@@ -40,6 +40,18 @@ try {
 		}, {
 			scheduled: true,
 		});
+
+		cron.schedule('14 12 * * mon', () => {
+			console.log("test changement d'heure 12h");
+		}, {
+			scheduled: true,
+		});
+
+		cron.schedule('14 15 * * mon', () => {
+			console.log("test changement d'heure 15h");
+		}, {
+			scheduled: true,
+		});
 	
 		// //10h30
 		// cron.schedule('20 10 * * mon', () => {
