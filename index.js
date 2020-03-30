@@ -9,13 +9,12 @@ client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
 	client.user.setPresence({
 		game: {
-			name: 'C\'est pas les vacances!',
+			name: 'C\'est pas les vacances! https://youtu.be/dQw4w9WgXcQ',
 			type: "PLAYING",
 			url: "https://youtu.be/dQw4w9WgXcQ"
 		},
 		status: 'idle' 
 		})
-  		.then(console.log)
   		.catch(console.error);
 });
 
@@ -27,11 +26,18 @@ const iut = {general:"588798225092313094", meme:"651493260694650912"};
 try {
 	//LUNDI
 		//9h
-		cron.schedule('00 14 * * mon', () => {
+		cron.schedule('02 14 * * mon', () => {
 			console.log("test changement d'heure");
 			// client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
 			// client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
 			// client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
+		}, {
+			scheduled: true,
+			timezone: "Europe/Paris"
+		});
+
+		cron.schedule('02 13 * * mon', () => {
+			console.log("test changement d'heure");
 		}, {
 			scheduled: true,
 			timezone: "Europe/Paris"
