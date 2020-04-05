@@ -45,24 +45,24 @@ try {
 		// });
 		
 		// //14h
-		// cron.schedule('50 13 * * mon', () => {
-		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
-		// 	client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
-		// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
-		// }, {
-		// 	scheduled: true,
-		// 	timezone: "Europe/Riga"
-		// });
+		cron.schedule('50 13 * * mon', () => {
+			// client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
+			// client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
+			client.channels.get(`${dw.channel}`).send(`DW, FAQ pour les stages dans 10 minutes!`);
+		}, {
+			scheduled: true,
+			timezone: "Europe/Riga"
+		});
 		
-		// //15h30
-		// cron.schedule('20 15 * * mon', () => {
-		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
-		// 	client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
-		// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
-		// }, {
-		// 	scheduled: true,
-		// 	timezone: "Europe/Riga"
-		// });
+		//15h00
+		cron.schedule('50 14 * * mon', () => {
+			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, CS de LAN dans 10 minutes! Bonne chance <:pray:696319258099187712>`);
+			// client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
+			// client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
+		}, {
+			scheduled: true,
+			timezone: "Europe/Riga"
+		});
 	
 	
 	// MARDI 
