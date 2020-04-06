@@ -91,13 +91,13 @@ try {
 		// 	timezone: "Europe/Riga"
 		// });
 		
-		// //15h30
-		// cron.schedule('20 15 * * tues', () => {
-		// 	client.channels.get(`${eci.channel}`).send(`${eci.role}, ADM dans 10 minutes!`);
-		// }, {
-		// 	scheduled: true,
-		// 	timezone: "Europe/Riga"
-		// });
+		//15h30
+		cron.schedule('50 15 * * tues', () => {
+			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, CS de LAN dans 10 minutes (pour de vrai cette fois)!\n Bonne chance <:pray:696319258099187712>`);
+		}, {
+			scheduled: true,
+			timezone: "Europe/Riga"
+		});
 	
 	
 	// MERCREDI 
