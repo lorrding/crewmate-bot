@@ -78,7 +78,7 @@ try {
 		//10h30
 		cron.schedule('20 10 * * tues', () => {
 			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, ANG dans 10 minutes!`);
-			client.channels.get(`${dw.channel}`).send(`${dw.role}, ASR dans 10 minutes!`);
+			// client.channels.get(`${dw.channel}`).send(`${dw.role}, ASR dans 10 minutes!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
