@@ -28,16 +28,19 @@ var timer = 0;
 //deja vu https://youtu.be/dv13gl0a-FA
 
 try {
-	cron.schedule('* */1 * * *', () => {
-		timer++;
-		if(timer >=17) {
-			timer=0;
-			client.channels.get(`${PremAnnee.channel}`).send(`${listVideo[getRandom(0,listVideo.length)]}`);
-		}
-	}, {
-		scheduled: true,
-		timezone: "Europe/Riga"
-	});
+	// cron.schedule('*/59 * * * *', () => {
+	// 	timer++;
+	// 	if(timer >=17) {
+	// 		timer=0;
+	//		console.log(`j'ai balancé une vidéo`);
+	// 		client.channels.get(`${PremAnnee.channel}`).send(`${listVideo[getRandom(0,listVideo.length)]}`);
+	// 	}
+	// }, {
+	// 	scheduled: true,
+	// 	timezone: "Europe/Riga"
+	// });
+
+
 	// //LUNDI
 	// 	//9h
 	// 	// cron.schedule('50 8 * * mon', () => {
