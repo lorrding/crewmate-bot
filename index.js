@@ -28,6 +28,7 @@ var timer = 0;
 //deja vu https://youtu.be/dv13gl0a-FA
 
 try {
+	console.log(cron.validate('* */1 * * *'));
 	cron.schedule('* */1 * * *', () => {
 		timer++;
 		if(timer >=17) {
