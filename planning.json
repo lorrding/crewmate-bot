@@ -1,0 +1,121 @@
+{
+    "lundi":  {
+        "9h00-10h30": {
+            "eci" : "",
+            "dw" : "",
+            "PremAnnee" : ""
+        },
+        "10h30-12h00": {
+            "eci" : "",
+            "dw" : "",
+            "PremAnnee" : ""
+        },
+
+        "14h00-15h30": {
+            "eci" : "",
+            "dw" : "",
+            "PremAnnee" : ""
+        },
+        "15h30-17h00": {
+            "eci" : "",
+            "dw" : "",
+            "PremAnnee" : ""
+        }
+    },
+
+    "mardi":  {
+        "9h00-10h30": {
+            "eci" : "",
+            "dw" : "",
+            "PremAnnee" : "AMN"
+        },
+        "10h30-12h00": {
+            "eci" : "MPE",
+            "dw" : "",
+            "PremAnnee" : "ANG"
+        },
+
+        "14h00-15h30": {
+            "eci" : "DEVOPS",
+            "dw" : "",
+            "PremAnnee" : "GPI"
+        },
+        "15h30-17h00": {
+            "eci" : "ADM",
+            "dw" : "",
+            "PremAnnee" : ""
+        }
+    },
+
+    "mercredi":  {
+        "9h00-10h30": {
+            "eci" : "",
+            "dw" : "DWS",
+            "PremAnnee" : "ECJS"
+        },
+        "10h30-12h00": {
+            "eci" : "MPM",
+            "dw" : "DWS/DEVOPS",
+            "PremAnnee" : "EC"
+        },
+
+        "14h00-15h30": {
+            "eci" : "",
+            "dw" : "",
+            "PremAnnee" : "RES"
+        },
+        "15h30-17h00": {
+            "eci" : "ASE",
+            "dw" : "",
+            "PremAnnee" : ""
+        }
+    },
+
+    "jeudi":  {
+        "9h00-10h30": {
+            "eci" : "",
+            "dw" : "",
+            "PremAnnee" : "BD"
+        },
+        "10h30-12h00": {
+            "eci" : "ANG",
+            "dw" : "ANG",
+            "PremAnnee" : "BD"
+        },
+
+        "14h00-15h30": {
+            "eci" : "",
+            "dw" : "ASR",
+            "PremAnnee" : "LAN"
+        },
+        "15h30-17h00": {
+            "eci" : "",
+            "dw" : "DEVMOB",
+            "PremAnnee" : ""
+        }
+    },
+
+    "vendredi":  {
+        "9h00-10h30": {
+            "eci" : "ROC",
+            "dw" : "RO",
+            "PremAnnee" : "BCOO"
+        },
+        "10h30-12h00": {
+            "eci" : "EC",
+            "dw" : "EC",
+            "PremAnnee" : "POO"
+        },
+
+        "14h00-15h30": {
+            "eci" : "",
+            "dw" : "PROGWEB",
+            "PremAnnee" : ""
+        },
+        "15h30-17h00": {
+            "eci" : "",
+            "dw" : "",
+            "PremAnnee" : ""
+        }
+    }
+}
