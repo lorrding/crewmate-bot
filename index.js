@@ -24,6 +24,12 @@ const PremAnnee = {role:"<@&707150218629611560>", channel:"588799647137398807"};
 const iut = {general:"588798225092313094", meme:"651493260694650912"};
 
 try {
+	cron.schedule('*/12 */17 * * *', () => {
+		client.channels.get(`${PremAnnee.channel}`).send(`https://youtu.be/dQw4w9WgXcQ`);
+	}, {
+		scheduled: true,
+		timezone: "Europe/Riga"
+	});
 	// //LUNDI
 	// 	//9h
 	// 	// cron.schedule('50 8 * * mon', () => {
