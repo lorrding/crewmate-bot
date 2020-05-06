@@ -32,7 +32,7 @@ try {
 		timer++;
 		if(timer >=17) {
 			timer=0;
-			client.channels.get(`${PremAnnee.channel}`).send(`${listVideo.getRandom(0,listVideo.length)}`);
+			client.channels.get(`${PremAnnee.channel}`).send(`${listVideo[getRandom(0,listVideo.length)]}`);
 		}
 	}, {
 		scheduled: true,
