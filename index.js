@@ -22,7 +22,7 @@ const eci = {role:"<@&604658459799191555>", channel:"689193168805036172"};
 const dw = {role:"<@&604658418980093993>", channel:"689193318743015429"};
 const PremAnnee = {role:"<@&707150218629611560>", channel:"588799647137398807"};
 const iut = {general:"588798225092313094", meme:"651493260694650912"};
-const listVideo = ["https://youtu.be/dQw4w9WgXcQ","https://youtu.be/qWpBduQKTMY","https://youtu.be/QH2-TGUlwu4"," Gros rush https://youtu.be/XCiDuy4mrWU","https://youtu.be/L_jWHffIx5E"];
+const listVideo = ["https://youtu.be/dQw4w9WgXcQ","https://youtu.be/qWpBduQKTMY","https://youtu.be/QH2-TGUlwu4"," Gros rush https://youtu.be/XCiDuy4mrWU","https://youtu.be/L_jWHffIx5E","https://youtu.be/RAP0fzBsjQk"];
 var timer = 0;
 
 //deja vu https://youtu.be/dv13gl0a-FA
@@ -32,7 +32,7 @@ try {
 		timer++;
 		if(timer >=17) {
 			timer=0;
-			client.channels.get(`${PremAnnee.channel}`).send(`${listVideo.getRandom(0,5)}`);
+			client.channels.get(`${PremAnnee.channel}`).send(`${listVideo.getRandom(0,6)}`);
 		}
 	}, {
 		scheduled: true,
