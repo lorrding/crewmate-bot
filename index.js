@@ -177,7 +177,7 @@ try {
 		
 	// 	//14h
 		cron.schedule('50 13 * * thu', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, PTS dans 10 minutes! (vous voulez vraiment des ping pour du PTS ???)`);
+			client.channels.get(`${PremAnnee.channel}`).send(`PTS dans 10 minutes! (vous voulez vraiment des ping pour du PTS ???)`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
