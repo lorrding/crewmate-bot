@@ -254,6 +254,19 @@ client.on('message', async message => {
 	if (command === "edt") {
 		message.channel.send({file: "https://i.imgur.com/B9qs2GF.png"});
 	}
+
+// àrendre
+	if (command === "àrendre") {
+		const now = Date.now();
+		const lundi = new Date('May 17, 2020 23:15:30');
+		const mardi = new Date('August 19, 1975 23:15:30');
+		const mercredi = new Date('August 19, 1975 23:15:30');
+		// const jeudi = new Date('August 19, 1975 23:15:30');
+		// const vendredi = new Date('August 19, 1975 23:15:30');
+		console.log(now);
+		console.log(lundi);
+		console.log(lundi-now);
+	}
 	
 });
 
