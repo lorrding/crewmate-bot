@@ -267,7 +267,6 @@ client.on('message', async message => {
 		var embed = new Discord.RichEmbed();
 		embed.setTitle(`Échéances / Devoir à rendre`);
 		embed.setColor(getHexa());
-		console.log(getHexa());
 
 		if(lundi - now > 0 ) {
 			auMoinsUn=true;
