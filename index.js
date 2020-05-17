@@ -256,26 +256,43 @@ client.on('message', async message => {
 	}
 
 // àrendre
-	if (command === "àrendre") {
+	if (command === "àfaire") {
 		const now = Date.now();
-		const lundi = Date.parse('19 May 2020 00:00:00 UTC+2');
-		const mardi = Date.parse('17 May 2020 12:48:01 UTC+2');
-		console.log('now:' + now);
-		console.log('lundi:' + lundi);
-		console.log('lundi:' + mardi);
-		console.log('avant lundi:' + (lundi-now));
-		console.log('avant test:' + (mardi-now));
+		const lundi = Date.parse('19 May 2020 09:00:00 UTC+2');
+		const mercredi = Date.parse('20 May 2020 09:00:00 UTC+2');
+		
+		const semaineSuivante = Date.parse('26 May 2020 09:00:01 UTC+2');
+
+		var auMoinsUn = false;
+		var embed = new Discord.RichEmbed();
+		embed.setTitle(`Échéances / Devoir à rendre`);
+		embed.setColor(getHexa());
 
 		if(lundi - now > 0 ) {
-			console.log("yay1")
+			auMoinsUn=true;
+			embed.addField(`Pour Mardi avant 9h`,`Préparation de la séance d'AMN (environ 1h)`);
 		}
-		if(mardi - now > 0 ) {
-			console.log("yay2")
+		if(mercredi - now > 0 ) {
+			auMoinsUn=true;
+			embed.addField(`Pour Mercredi avant 9h`,`Préparation de la séance d'IHM (environ 15min avant et 30min à la fin)`);
 		}
+		if(semaineSuivante - now > 0 ) {
+			auMoinsUn=true;
+			embed.addField(`Pour la semaine suivante`,`Exo d'AMN pour la semaine 22 (environ 1h)`);
+		}
+		if (!auMoinsUn) {
+			embed.addField(`Il n'y à riend à faire`,`Wouhouu`);
+		} 	
+		message.channel.send(embed);
+		delete(embed);
 	}
 	
 });
 
+// random hexa
+function getHexa() {
+	return '#'+Math.floor(Math.random()*16777215).toString(16);
+}
 
 // random function
 function getRandom(min, max) {
