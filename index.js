@@ -259,14 +259,18 @@ client.on('message', async message => {
 	if (command === "àrendre") {
 		const now = Date.now();
 		const lundi = Date.parse('19 May 2020 00:00:00 UTC+2');
-		const mardi = Date.parse('17 May 2020 00:00:00 UTC+2');
+		const mardi = Date.parse('17 May 2020 12:48:01 UTC+2');
 		console.log('now:' + now);
 		console.log('lundi:' + lundi);
+		console.log('lundi:' + mardi);
 		console.log('avant lundi:' + (lundi-now));
-		console.log('ce matin:' + (1589712199-now));
+		console.log('avant test:' + (mardi-now));
 
-		if(1589846400 - now > 0 ) {
-			console.log(1589846400 - now)
+		if(lundi - now > 0 ) {
+			console.log("yay1")
+		}
+		if(mardi - now > 0 ) {
+			console.log("yay2")
 		}
 	}
 	
