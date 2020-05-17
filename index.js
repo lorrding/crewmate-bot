@@ -43,50 +43,41 @@ try {
 
 	// //LUNDI
 	// 	//9h
-	// 	// cron.schedule('50 8 * * mon', () => {
-	// 	// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
-	// 	// 	client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
-	// 	// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
-	// 	// }, {
-	// 	// 	scheduled: true,
-	// 	// 	timezone: "Europe/Riga"
-	// 	// });
-	// 	// //10h30
-	// 	// cron.schedule('20 10 * * mon', () => {
-	// 	// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
-	// 	// 	client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
-	// 	// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
-	// 	// }, {
-	// 	// 	scheduled: true,
-	// 	// 	timezone: "Europe/Riga"
-	// 	// });
+		cron.schedule('50 8 * * mon', () => {
+			client.channels.get(`${PremAnnee.channel}`).send(`PTS/Autonomie, dans 10 minutes!`);
+		}, {
+			scheduled: true,
+			timezone: "Europe/Riga"
+		});
+		//10h30
+		// cron.schedule('20 10 * * mon', () => {
+		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
+		// }, {
+		// 	scheduled: true,
+		// 	timezone: "Europe/Riga"
+		// });
 		
-	// 	// //14h
-	// 	// cron.schedule('50 13 * * mon', () => {
-	// 	// client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
-	// 	// client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
-	// 	// 	client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
-	// 	// }, {
-	// 	// 	scheduled: true,
-	// 	// 	timezone: "Europe/Riga"
-	// 	// });
+		//14h
+		cron.schedule('50 13 * * mon', () => {
+		client.channels.get(`${PremAnnee.channel}`).send(`IHM/Autonomie, dans 10 minutes!`);
+		}, {
+			scheduled: true,
+			timezone: "Europe/Riga"
+		});
 		
-	// 	//15h00
-	// 	// cron.schedule('20 15 * * mon', () => {
-	// 	// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
-	// 	// client.channels.get(`${eci.channel}`).send(`${eci.role}, dans 10 minutes!`);
-	// 	// client.channels.get(`${dw.channel}`).send(`${dw.role}, dans 10 minutes!`);
-	// 	// }, {
-	// 	// 	scheduled: true,
-	// 	// 	timezone: "Europe/Riga"
-	// 	// });
+		// 15h00
+		// cron.schedule('20 15 * * mon', () => {
+		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, dans 10 minutes!`);
+		// }, {
+		// 	scheduled: true,
+		// 	timezone: "Europe/Riga"
+		// });
 	
 	
 	// // MARDI 
 	// 	//9h
 		cron.schedule('50 8 * * tues', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role},oral d'ANG dans 10 minutes pour les premiers groupes!`);
-			client.channels.get(`${PremAnnee.channel}`).send(`(l'horaire est dans un mail quelque part)`);
+			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, AMN dans 10 minutes! (sur Moodle + RocketChat)`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
@@ -94,7 +85,7 @@ try {
 	
 	// 	//10h30
 		cron.schedule('20 10 * * tues', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role},oral d'ANG dans 10 minutes pour les seconds groupes!`);
+			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, ANG dans 10 minutes!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
@@ -102,7 +93,7 @@ try {
 		
 	// 	//14h
 		cron.schedule('50 13 * * tues', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role},oral d'ANG dans 10 minutes pour les troisièmes groupes de TD!`);
+			client.channels.get(`${PremAnnee.channel}`).send(`Autonomie dans 10 minutes!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
@@ -110,14 +101,7 @@ try {
 		
 	// 	//15h30
 		cron.schedule('20 15 * * tues', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role},oral d'ANG dans 10 minutes pour les derniers groupes!`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Riga"
-		});
-
-		cron.schedule('10 17 * * tues', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`Bien jouer les enfants c'était des beaux oraux`);
+			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, SI dans 10 minutes!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
@@ -127,7 +111,7 @@ try {
 	// // MERCREDI 
 	// 	//9h
 		cron.schedule('50 8 * * wed', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, ECJS dans 10 minutes!`);
+			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, IHM dans 10 minutes!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
@@ -135,7 +119,7 @@ try {
 	
 	// 	//10h30
 		cron.schedule('20 10 * * wed', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, EC dans 10 minutes!`);
+			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, IHM dans 10 minutes (encore)!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
@@ -151,7 +135,7 @@ try {
 		
 	// 	//15h30
 		cron.schedule('20 15 * * wed', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, GPI dans 10 minutes! (ou PTS si affinité)`);
+			client.channels.get(`${PremAnnee.channel}`).send(`GPI/PTS dans 10 minutes!`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
@@ -160,70 +144,71 @@ try {
 	
 	// // JEUDI
 	// 	//9h
-		cron.schedule('50 8 * * thu', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, LAN dans 10 minutes! (moodle + Discord)`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Riga"
-		});
+		// cron.schedule('50 8 * * thu', () => {
+		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, LAN dans 10 minutes! (moodle + Discord)`);
+		// }, {
+		// 	scheduled: true,
+		// 	timezone: "Europe/Riga"
+		// });
 	
 	// 	//10h30
-		cron.schedule('20 10 * * thu', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, LAN dans 10 minutes! (toujours sur moodle + Discord)`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Riga"
-		});
+		// cron.schedule('20 10 * * thu', () => {
+		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, LAN dans 10 minutes! (toujours sur moodle + Discord)`);
+		// }, {
+		// 	scheduled: true,
+		// 	timezone: "Europe/Riga"
+		// });
 		
 	// 	//14h
 		cron.schedule('50 13 * * thu', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`PTS dans 10 minutes! (vous voulez vraiment des ping pour du PTS ???)`);
+			client.channels.get(`${PremAnnee.channel}`).send(`Ascension dans 10 minutes!`);
+			client.channels.get(`${PremAnnee.channel}`).send(`(bon weekend)`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
 		});
 		
 	// 	// 15h30
-		cron.schedule('20 15 * * thu', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`Très bon joyeux PTS (vous avez vu j'ai corrigé la faute)`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Riga"
-		});
+		// cron.schedule('20 15 * * thu', () => {
+		// 	client.channels.get(`${PremAnnee.channel}`).send(`Très bon joyeux PTS (vous avez vu j'ai corrigé la faute)`);
+		// }, {
+		// 	scheduled: true,
+		// 	timezone: "Europe/Riga"
+		// });
 	
 	
 	// // VENDREDI
 	// 	//9h
-		cron.schedule('50 8 * * fri', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, SI dans 10 minutes!!`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Riga"
-		});
+		// cron.schedule('50 8 * * fri', () => {
+		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, SI dans 10 minutes!!`);
+		// }, {
+		// 	scheduled: true,
+		// 	timezone: "Europe/Riga"
+		// });
 	
 	// 	//10h30
-		cron.schedule('20 10 * * fri', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, IHM dans 10 minutes!`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Riga"
-		});
+		// cron.schedule('20 10 * * fri', () => {
+		// 	client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, IHM dans 10 minutes!`);
+		// }, {
+		// 	scheduled: true,
+		// 	timezone: "Europe/Riga"
+		// });
 		
 	// 	//14h
-		cron.schedule('50 13 * * fri', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, on retourne en IHM dans 10 minutes!`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Riga"
-		});
+	// 	cron.schedule('50 13 * * fri', () => {
+	// 		client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, on retourne en IHM dans 10 minutes!`);
+	// 	}, {
+	// 		scheduled: true,
+	// 		timezone: "Europe/Riga"
+	// 	});
 		
-	// 	//15h30
-		cron.schedule('20 15 * * fri', () => {
-			client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, AMN (sur Moodle et RocketChat) dans 10 minutes!`);
-		}, {
-			scheduled: true,
-			timezone: "Europe/Riga"
-		});
+	//	// 15h30
+	//	// cron.schedule('20 15 * * fri', () => {
+	// 		client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, AMN (sur Moodle et RocketChat) dans 10 minutes!`);
+	// 	}, {
+	// 		scheduled: true,
+	// 		timezone: "Europe/Riga"
+	// 	});
 		
 } catch (error) {
 	let date_ob = new Date();
@@ -267,7 +252,7 @@ client.on('message', async message => {
 
 // planning
 	if (command === "edt") {
-		message.channel.send({file: "https://i.imgur.com/hMxhcWT.png"});
+		message.channel.send({file: "https://i.imgur.com/B9qs2GF.png"});
 	}
 	
 });
