@@ -258,15 +258,17 @@ client.on('message', async message => {
 // àrendre
 	if (command === "àrendre") {
 		const now = Date.now();
+		const test = Date.parse('17 May 2020 12:40:00 UTC+2');
 		const lundi = Date.parse('19 May 2020 00:00:00 UTC+2');
 		const mardi = Date.parse('17 May 2020 00:00:00 UTC+2');
 		const mercredi = Date.parse('August 19, 1975 23:15:30');
 		// const jeudi = Date.parse('August 19, 1975 23:15:30');
 		// const vendredi = Date.parse('August 19, 1975 23:15:30');
 		console.log('now:' + now);
+		console.log('test:' + test);
 		console.log('lundi:' + lundi);
 		console.log('avant lundi:' + (lundi-now));
-		console.log('ce matin:' + lundi-now);
+		console.log('ce matin:' + (lundi-now));
 	}
 	
 });
