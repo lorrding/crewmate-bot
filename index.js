@@ -291,6 +291,19 @@ client.on('message', async message => {
 		message.channel.send(embed);
 		delete(embed);
 	}
+
+	// say 
+	if (command === "say") {
+		message.delete().catch(O_o=>{});
+		if (message.mentions.users.size) {
+			const userid = message.mentions.users.map(user => {
+				return `${user.id}`;
+			});
+			message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(nop=>{message.channel.send("Rien à raconter...")});
+		} else {
+		message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(nop=>{message.channel.send("Rien à raconter...")});
+		}
+	}
 	
 });
 
