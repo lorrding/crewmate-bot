@@ -58,8 +58,8 @@ try {
 	// 	// });
 		
 		//14h
-		cron.schedule('50 13 * * mon', () => {
-		client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, CS de BD, dans 10 minutes!`);
+		cron.schedule('40 13 * * mon', () => {
+		client.channels.get(`${PremAnnee.channel}`).send(`${PremAnnee.role}, CS de BD, dans 20 minutes! (Allez sur Discord dès maintenant)`);
 		}, {
 			scheduled: true,
 			timezone: "Europe/Riga"
