@@ -277,13 +277,13 @@ client.on('message', async message => {
 			auMoinsUn=true;
 			embed.addField(`Pour Mardi avant 10h30`,`Préparation de la séance d'ANG (+ environ 1h de travail à faire dans la semaine)`);
 		}
-		if(PTS - now > 0 ) {
-			auMoinsUn=true;
-			embed.addField(`Pour la semaine suivante`,`Remise de PTS (cahier des charges)`);
-		}
 		if(csAMN - now > 0 ) {
 			auMoinsUn=true;
 			embed.addField(`Cs d'AMN le vendredi 29 mai à 9h`,`remise du cs sur moodle (et RocketChat je suppose)`);
+		}
+		if(PTS - now > 0 ) {
+			auMoinsUn=true;
+			embed.addField(`Pour la semaine suivante`,`Remise de PTS (cahier des charges)`);
 		}
 		if (!auMoinsUn) {
 			embed.addField(`Il n'y à riens à faire`,`Wouhouu`);
