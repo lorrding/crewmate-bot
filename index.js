@@ -9,7 +9,7 @@ client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
 	client.user.setPresence({
 		game: {
-			name: 'C\'est pas les vacances! https://youtu.be/dQw4w9WgXcQ',
+			name: 'C\'est les vacances! https://youtu.be/dQw4w9WgXcQ',
 			type: "PLAYING",
 			url: "https://youtu.be/dQw4w9WgXcQ"
 		},
