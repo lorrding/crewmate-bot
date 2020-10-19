@@ -4,6 +4,9 @@ const client = new Discord.Client();
 const config = require("./config.json");
 const cron = require('node-cron');
 
+var gameMessage = 0;
+var listJoueurs = [];
+
 
 client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
@@ -100,6 +103,14 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			return;
 		}
 	}
+	if (user.bot || reaction.message.id != gameMessage.id) return;
+
+	if (listJoueurs.size() <10) {
+		listJoueurs.push(user.username);
+		message.channel.send(`liste des joueurs: ${listJoueurs}`);
+	}
+
+	
 
 	reaction.message.channel.send(`${user.username} à ajouter une réaction`);
 
@@ -107,7 +118,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	console.log(`${reaction.message.author}'s message "${reaction.message}" gained a reaction!`);
 	// The reaction is now also fully available and the properties will be reflected accurately:
 	console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
-})
+});
 
 
 //Création d'une sessions de jeu
@@ -133,6 +144,7 @@ function createGame(message, heure) {
 		message.channel.send(embed)
 			.then(embedMessage => {
 				embedMessage.react(emoji);
+				gameMessage = embedMessage.id;
 			})
 	} catch (error) {
 		console.log(error);
