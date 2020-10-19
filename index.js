@@ -24,12 +24,12 @@ try {
 	// 		scheduled: true,
 	// 		timezone: "Europe/Riga"
 	// 	});
-} catch (error) {
-	let date_ob = new Date();
-	let date = ("0" + date_ob.getDate()).slice(-2);
-	let hours = date_ob.getHours();
-	let minutes = date_ob.getMinutes();
-	console.log(`error at ${hours}:${minutes} \n${error}`);
+	} catch (error) {
+		let date_ob = new Date();
+		let date = ("0" + date_ob.getDate()).slice(-2);
+		let hours = date_ob.getHours();
+		let minutes = date_ob.getMinutes();
+		console.log(`error at ${hours}:${minutes} \n${error}`);
 }
 
 
@@ -103,11 +103,12 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			return;
 		}
 	}
-	if (user.bot || reaction.message.id != gameMessage) {
-		console.log(`id du message réagis: ${reaction.message.id} //// id du message de base ${gameMessage.id}`);
-	}
+	if (user.bot || reaction.message.id != gameMessage) return console.log('bot or wrong message. ignoring...');
 
-	if (listJoueurs.size <10) {
+	console.log(listJoueurs.size);
+	console.log(listJoueurs[0]);
+
+	if (listJoueurs.size <1) {
 		console.log('taille de joueurs: ok, on insert');
 		listJoueurs.push(user.username);
 		message.channel.send(`liste des joueurs: ${listJoueurs}`);
