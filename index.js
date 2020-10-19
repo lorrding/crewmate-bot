@@ -148,6 +148,7 @@ function createGame(message, heure) {
 			.then(embedMessage => {
 				embedMessage.react(emoji);
 				gameMessage = embedMessage.id;
+				console.log(`embedMessage.id ${embedMessage.id}, gameMessage ${gameMessage}`);
 			})
 	} catch (error) {
 		console.log(error);
