@@ -129,8 +129,8 @@ client.on('messageReactionAdd', async (reaction, user) => {
 				return console.log('user already un list, ignoring...');
 			}
 		});
-		let role = message.guild.roles.find(r => r.name === "joueurDuSoir");
-		message.guild.fetch(user.id).roles.add(role);
+		let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
+		reaction.message.guild.fetch(user.id).roles.add(role);
 		listJoueurs.push(`${user.username}`);
 	} catch (error) {
 		console.log(error);
