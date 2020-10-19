@@ -129,11 +129,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
 				return console.log('user already un list, ignoring...');
 			}
 		});
+		// id du server : 764910769132929045
 		let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
-		client.guilds.fetch('764910769132929045')
-			.then( guild => guild.members.fetch(user.id)
-				.then( guildMember => guildMember.roles.add(role))
-			);
+		let member = reaction.message.guild.members.find(r => r.id === user.id);
+		member.addRole(role);
 		// reaction.message.guild.members.resolve(user).roles.add(role);
 		listJoueurs.push(`${user.username}`);
 	} catch (error) {
