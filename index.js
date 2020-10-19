@@ -26,8 +26,7 @@ try {
 	let date = ("0" + date_ob.getDate()).slice(-2);
 	let hours = date_ob.getHours();
 	let minutes = date_ob.getMinutes();
-
-	client.channels.get(`689216081276960863`).send(`error at ${hours}:${minutes} \n${error}`);
+	console.log(`error at ${hours}:${minutes} \n${error}`);
 }
 
 
@@ -40,6 +39,20 @@ client.on('message', async message => {
 		console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
 		if (args) console.log(`With argu ${args}`);
 
+
+// test
+if (command === "test") {
+	if (!args.length) {
+		return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
+	}
+	var embed = new Discord.RichEmbed();
+	embed.setColor(getHexa());
+	embed.setAuthor(`${message.author.username} prpose de jouer`);
+	embed.addField(`bonsoir.`,`je test`);
+	message.delete();
+	message.channel.send(args);
+	return message.channel.send(embed);
+}
 
 // ping
 	if (command === "ping") {
