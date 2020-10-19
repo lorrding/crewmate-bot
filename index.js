@@ -62,7 +62,7 @@ client.on('message', async message => {
 //Création d'une sessions de jeu
 function createGame(message, heure) {
 	var joueurs = `work in progress`;
-	var emoji = client.emojis.cache.get("767825522003935262");
+	var emoji = client.emojis.cache.get(767825522003935262);
 
 	//création de l'embed
 	try {
