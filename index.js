@@ -62,7 +62,7 @@ client.on('message', async message => {
 			var embed = new Discord.RichEmbed();
 			embed.setColor(getHexa());
 			embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
-			embed.addField(`Ce soir à:`,${heure});
+			embed.addField(`Ce soir à:`,`${heure}`);
 			embed.setDescription(`Avec: ${joueurs}`);
 			embed.setFooter(`Réagissez avec <:AU_thumbsup:767825522003935262> pour participer`);
 			message.channel.send(embed);
