@@ -72,7 +72,7 @@ function createGame(message, heure) {
 		embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heure}`);
 		embed.setDescription(`Avec: ${joueurs}`);
-		embed.setFooter(`Réagissez avec ${emoji} pour participer`);
+		embed.setFooter(`Réagissez avec <:AU_thumbsup:${emoji}> pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`);
 	}
