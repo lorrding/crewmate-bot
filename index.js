@@ -59,42 +59,6 @@ client.on('message', async message => {
 		});
 }
 
-//Création d'une sessions de jeu
-function createGame(message, heure) {
-	var joueurs = `work in progress`;
-	var emoji = '764917952600342539';
-
-	//création de l'embed
-	try {
-		var embed = new Discord.RichEmbed();
-		
-		embed.setColor(getHexa());
-		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
-		embed.addField(`Ce soir à:`,`${heure}`);
-		embed.setDescription(`Avec: ${joueurs}`);
-		embed.setFooter(`Réagissez en dessous pour participer`);
-	} catch (error) {
-		message.channel.send(`Erreur lors de la création de l'embed.`);
-	}
-
-	//tout est good on post l'embed
-	try {
-		message.channel.send(embed)
-			.then(embedMessage => {
-				embedMessage.react(emoji);
-			})
-	} catch (error) {
-		console.log(error);
-		message.channel.send('missing permissions to react or send embed');	
-	}
-	try {
-		message.delete();
-	} catch (error) {
-		console.log(error);
-		message.channel.send('missing permissions to delete command');
-	}
-}
-
 // ping
 	if (command === "ping") {
 		var embed = new Discord.RichEmbed();
@@ -140,13 +104,47 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	reaction.message.channel.send(`${user.username} à ajouter une réaction`);
 
 	// Now the message has been cached and is fully available
-	console.log(`${reaction.message.author}'s message "${reaction.message.}" gained a reaction!`);
+	console.log(`${reaction.message.author}'s message "${reaction.message}" gained a reaction!`);
 	// The reaction is now also fully available and the properties will be reflected accurately:
 	console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
 })
 
 
+//Création d'une sessions de jeu
+function createGame(message, heure) {
+	var joueurs = `work in progress`;
+	var emoji = '764917952600342539';
 
+	//création de l'embed
+	try {
+		var embed = new Discord.RichEmbed();
+		
+		embed.setColor(getHexa());
+		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
+		embed.addField(`Ce soir à:`,`${heure}`);
+		embed.setDescription(`Avec: ${joueurs}`);
+		embed.setFooter(`Réagissez en dessous pour participer`);
+	} catch (error) {
+		message.channel.send(`Erreur lors de la création de l'embed.`);
+	}
+
+	//tout est good on post l'embed
+	try {
+		message.channel.send(embed)
+			.then(embedMessage => {
+				embedMessage.react(emoji);
+			})
+	} catch (error) {
+		console.log(error);
+		message.channel.send('missing permissions to react or send embed');	
+	}
+	try {
+		message.delete();
+	} catch (error) {
+		console.log(error);
+		message.channel.send('missing permissions to delete command');
+	}
+}
 
 
 // random hexa
