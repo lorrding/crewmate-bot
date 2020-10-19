@@ -45,13 +45,27 @@ if (command === "test") {
 	if (!args.length) {
 		return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
 	}
-	var embed = new Discord.RichEmbed();
-	embed.setColor(getHexa());
-	embed.setAuthor(`${message.author.username} prpose de jouer`);
-	embed.addField(`bonsoir.`,`je test`);
-	message.delete();
-	message.channel.send(args);
-	return message.channel.send(embed);
+	args.forEach(element, index => {
+		// paramétrage de l'heure
+		if (element == "-h" || element == "-heure") {
+			if (index >= args.length-1) {
+				return message.channel.send(`Il manque l'heure de le la session de jeu!`);
+			}
+			const argument = element;
+			const heure = args[index+1].name;
+			message.channel.send(`${argument}, ${heure}`);
+		} else {
+			message.channel.send(`meh`);
+			message.channel.send(`${args}`);
+		}
+	});
+	// var embed = new Discord.RichEmbed();
+	// embed.setColor(getHexa());
+	// embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
+	// embed.addField(`bonsoir.`,`je test`);
+	// message.delete();
+	// message.channel.send(args);
+	// return message.channel.send(embed);
 }
 
 // ping
