@@ -107,7 +107,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		console.log(`id du message réagis: ${reaction.message.id} //// id du message de base ${gameMessage.id}`);
 	}
 
-	if (listJoueurs.size() <10) {
+	if (listJoueurs.size <10) {
 		console.log('taille de joueurs: ok, on insert');
 		listJoueurs.push(user.username);
 		message.channel.send(`liste des joueurs: ${listJoueurs}`);
