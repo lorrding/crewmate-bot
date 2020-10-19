@@ -45,6 +45,7 @@ client.on('message', async message => {
 		if (!args.length) {
 			return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
 		}
+		var heureIsDefined = false;
 		args.forEach(function(element, index) {
 			// paramétrage de l'heure
 			if (element == "-h" || element == "-heure") {
@@ -53,18 +54,24 @@ client.on('message', async message => {
 				}
 				const argument = args.shift();
 				const heure = args.shift();
-				message.channel.send(`${argument}, ${heure}`);
-			} else {
-				message.channel.send(`meh`);
-				message.channel.send(`${args}`);
+				heureIsDefined = true;
 			}
-	});
-	// var embed = new Discord.RichEmbed();
-	// embed.setColor(getHexa());
-	// embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
-	// embed.addField(`bonsoir.`,`je test`);
-	// message.channel.send(args);
-	// return message.channel.send(embed);
+		});
+		if (heureIsDefined) {
+			var joueurs = `work in progress`;
+			var embed = new Discord.RichEmbed();
+			embed.setColor(getHexa());
+			embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
+			embed.addField(`Ce soir à:`,${heure});
+			embed.setDescription(`Avec: ${joueurs}`);
+			embed.setFooter(`Réagissez avec <:AU_thumbsup:767825522003935262> pour participer`);
+			message.channel.send(embed);
+			try {
+				embed.react(767825522003935262);
+			} catch (error) {
+				message.channel.send('missing permissions to react or send embed');	
+			}
+		}
 }
 
 // ping
