@@ -110,7 +110,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		reaction.message.channel.send(`liste des joueurs: ${listJoueurs}`);
 	}
 
-	if (listJoueurs.length >=1) {
+	if (listJoueurs.length >=10) {
 		reaction.message.channel.send("Nombre de joueurs max atteint!");
 		reaction.message.channel.send("<:AU_why:765273043962298410>");
 		const userReactions = reaction.message.reactions.cache.filter(reaction => reaction.users.cache.has(user.id));
@@ -127,14 +127,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	console.log('taille de joueurs: ok, on insert');
 	listJoueurs.push(`${user.username}`);
 	reaction.message.channel.send(`liste des joueurs: ${listJoueurs}`);
-	
-
-	reaction.message.channel.send(`${user.username} à ajouter une réaction`);
-
-	// Now the message has been cached and is fully available
-	console.log(`${reaction.message.author}'s message "${reaction.message}" gained a reaction!`);
-	// The reaction is now also fully available and the properties will be reflected accurately:
-	console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
 });
 
 
