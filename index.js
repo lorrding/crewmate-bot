@@ -62,15 +62,17 @@ client.on('message', async message => {
 //Création d'une sessions de jeu
 function createGame(message, heure) {
 	var joueurs = `work in progress`;
+	var emoji = client.emojis.cache.get("767825522003935262");
 
 	//création de l'embed
 	try {
 		var embed = new Discord.RichEmbed();
+		
 		embed.setColor(getHexa());
 		embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heure}`);
 		embed.setDescription(`Avec: ${joueurs}`);
-		embed.setFooter(`Réagissez avec <:AU_thumbsup:767825522003935262> pour participer`);
+		embed.setFooter(`Réagissez avec ${emoji} pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`);
 	}
@@ -78,7 +80,7 @@ function createGame(message, heure) {
 	//tout est good on post l'embed
 	try {
 		message.channel.send(embed);
-		embed.react(767825522003935262);
+		embed.react(emoji);
 	} catch (error) {
 		message.channel.send('missing permissions to react or send embed');	
 	}
