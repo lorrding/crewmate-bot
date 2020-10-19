@@ -45,7 +45,7 @@ if (command === "test") {
 	if (!args.length) {
 		return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
 	}
-	args.forEach(element, index => {
+	args.forEach(function(element, index) {
 		// paramétrage de l'heure
 		if (element == "-h" || element == "-heure") {
 			if (index >= args.length-1) {
@@ -63,7 +63,6 @@ if (command === "test") {
 	// embed.setColor(getHexa());
 	// embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
 	// embed.addField(`bonsoir.`,`je test`);
-	// message.delete();
 	// message.channel.send(args);
 	// return message.channel.send(embed);
 }
