@@ -179,15 +179,16 @@ function createGame(message, heure) {
 
 // edition des embeds pour mise à jour de la liste de joueurs
 function editEmbed(message) {
-	var listToString;
+	var listToString ="";
 	listJoueurs.forEach(element => {
 		listToString+=`${element}, `;
 	});
-	console.log(listToString);
-	listToString = listToString.slice(0, -1);
+	listToString = listToString.slice(0, -2);
 	console.log(listToString);
 	try {
-		message.embeds[0].setDescription(`liste des joueurs: ${listToString}`)		
+		let embed = new Discord.MessageEmbed()
+			.setDescription(`liste des joueurs: ${listJoueurs}`)
+		message.embeds[0].edit(embed)
 	} catch (error) {
 		console.log(error);
 	}
