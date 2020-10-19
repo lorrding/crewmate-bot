@@ -105,8 +105,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	}
 	if (user.bot || reaction.message.id != gameMessage) return console.log('bot or wrong message. ignoring...');
 
-	console.log(listJoueurs.size);
-	console.log(listJoueurs[0]);
+	console.log(listJoueurs.length);
+	if (listJoueurs.length) {
+		message.channel.send(`liste des joueurs: ${listJoueurs}`);
+	}
 
 	if (listJoueurs.length >=1) {
 		message.channel.send("Nombre de joueurs max atteint!");
@@ -123,7 +125,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	}
 	
 	console.log('taille de joueurs: ok, on insert');
-	listJoueurs.push(user.username);
+	listJoueurs.push(`${user.username}`);
 	message.channel.send(`liste des joueurs: ${listJoueurs}`);
 	
 
