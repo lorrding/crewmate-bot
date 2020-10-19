@@ -137,11 +137,18 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		}
 	}
 
+	reaction.message.channel.send(`${user.username} à ajouter une réaction`);
+
 	// Now the message has been cached and is fully available
-	console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`);
+	console.log(`${reaction.message.author}'s message "${reaction.message.}" gained a reaction!`);
 	// The reaction is now also fully available and the properties will be reflected accurately:
 	console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
 })
+
+
+
+
+
 // random hexa
 function getHexa() {
 	return '#'+Math.floor(Math.random()*16777215).toString(16);
