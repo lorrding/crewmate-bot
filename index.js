@@ -41,23 +41,23 @@ client.on('message', async message => {
 
 
 // test
-if (command === "test") {
-	if (!args.length) {
-		return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
-	}
-	args.forEach(function(element, index) {
-		// paramétrage de l'heure
-		if (element == "-h" || element == "-heure") {
-			if (index >= args.length-1) {
-				return message.channel.send(`Il manque l'heure de le la session de jeu!`);
-			}
-			const argument = element;
-			const heure = args[index+1].name;
-			message.channel.send(`${argument}, ${heure}`);
-		} else {
-			message.channel.send(`meh`);
-			message.channel.send(`${args}`);
+	if (command === "test") {
+		if (!args.length) {
+			return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
 		}
+		args.forEach(function(element, index) {
+			// paramétrage de l'heure
+			if (element == "-h" || element == "-heure") {
+				if (index >= args.length-1) {
+					return message.channel.send(`Il manque l'heure de le la session de jeu!`);
+				}
+				const argument = args.shift();
+				const heure = args.shift();
+				message.channel.send(`${argument}, ${heure}`);
+			} else {
+				message.channel.send(`meh`);
+				message.channel.send(`${args}`);
+			}
 	});
 	// var embed = new Discord.RichEmbed();
 	// embed.setColor(getHexa());
