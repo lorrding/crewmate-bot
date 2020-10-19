@@ -187,8 +187,10 @@ function editEmbed(message) {
 	console.log(listToString);
 	try {
 		let embed = new Discord.MessageEmbed()
-			.setDescription(`liste des joueurs: ${listJoueurs}`)
-		message.embeds[0].edit(embed)
+			.setDescription(`liste des joueurs: ${listJoueurs}`);
+		console.log(message.embeds);
+		console.log(message.embeds[0]);
+		// message.embeds[0].edit(embed)
 	} catch (error) {
 		console.log(error);
 	}
