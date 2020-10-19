@@ -72,7 +72,7 @@ function createGame(message, heure) {
 		embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heure}`);
 		embed.setDescription(`Avec: ${joueurs}`);
-		embed.setFooter(`Réagissez avec <:AU_thumbsup:${emoji}> pour participer`);
+		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`);
 	}
@@ -82,6 +82,7 @@ function createGame(message, heure) {
 		message.channel.send(embed);
 		embed.react(emoji);
 	} catch (error) {
+		console.log(error);
 		message.channel.send('missing permissions to react or send embed');	
 	}
 }
