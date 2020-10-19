@@ -69,7 +69,7 @@ function createGame(message, heure) {
 		var embed = new Discord.RichEmbed();
 		
 		embed.setColor(getHexa());
-		embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
+		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heure}`);
 		embed.setDescription(`Avec: ${joueurs}`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
@@ -79,8 +79,10 @@ function createGame(message, heure) {
 
 	//tout est good on post l'embed
 	try {
-		message.channel.send(embed);
-		embed.react(emoji);
+		message.channel.send(embed)
+			.then(embedMessage => {
+				embedMessage.react(emoji);
+			})
 	} catch (error) {
 		console.log(error);
 		message.channel.send('missing permissions to react or send embed');	
