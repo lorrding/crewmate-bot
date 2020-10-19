@@ -4,8 +4,8 @@ const client = new Discord.Client();
 const config = require("./config.json");
 const cron = require('node-cron');
 
-let gameMessage = 0;
-let listJoueurs = [];
+gameMessage = 0;
+listJoueurs = [];
 
 
 client.on('ready',async m => {
@@ -103,7 +103,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			return;
 		}
 	}
-	if (user.bot || reaction.message.id != gameMessage.id) {
+	if (user.bot || reaction.message.id != gameMessage) {
 		console.log(`id du message réagis: ${reaction.message.id} //// id du message de base ${gameMessage.id}`);
 	}
 
