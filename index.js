@@ -45,33 +45,43 @@ client.on('message', async message => {
 		if (!args.length) {
 			return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
 		}
-		var heureIsDefined = false;
 		args.forEach(function(element, index) {
 			// paramétrage de l'heure
 			if (element == "-h" || element == "-heure") {
 				if (index >= args.length-1) {
 					return message.channel.send(`Il manque l'heure de le la session de jeu!`);
 				}
-				const argument = args.shift();
-				const heure = args.shift();
-				heureIsDefined = true;
+				var argument = args.shift();
+				var heure = args.shift();
+				createGame(message, heure);
+				return 0;
 			}
 		});
-		if (heureIsDefined) {
-			var joueurs = `work in progress`;
-			var embed = new Discord.RichEmbed();
-			embed.setColor(getHexa());
-			embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
-			embed.addField(`Ce soir à:`,`${heure}`);
-			embed.setDescription(`Avec: ${joueurs}`);
-			embed.setFooter(`Réagissez avec <:AU_thumbsup:767825522003935262> pour participer`);
-			message.channel.send(embed);
-			try {
-				embed.react(767825522003935262);
-			} catch (error) {
-				message.channel.send('missing permissions to react or send embed');	
-			}
-		}
+}
+
+//Création d'une sessions de jeu
+function createGame(message, heure) {
+	var joueurs = `work in progress`;
+
+	//création de l'embed
+	try {
+		var embed = new Discord.RichEmbed();
+		embed.setColor(getHexa());
+		embed.setAuthor(`${message.author.username} prpose de jouer`, `${message.author.displayAvatarURL}`);
+		embed.addField(`Ce soir à:`,`${heure}`);
+		embed.setDescription(`Avec: ${joueurs}`);
+		embed.setFooter(`Réagissez avec <:AU_thumbsup:767825522003935262> pour participer`);
+	} catch (error) {
+		message.channel.send(`Erreur lors de la création de l'embed.`);
+	}
+
+	//tout est good on post l'embed
+	try {
+		message.channel.send(embed);
+		embed.react(767825522003935262);
+	} catch (error) {
+		message.channel.send('missing permissions to react or send embed');	
+	}
 }
 
 // ping
