@@ -130,12 +130,12 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			}
 		});
 		let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
-		console.log(`${reaction.message}`);
+		console.log(`reaction message: ${reaction.message}`);
 		console.log('\n\n');
-		console.log(`${reaction.message.guild}`);
+		console.log(`reaction message.guild:  ${reaction.message.guild}`);
 		console.log('\n\n');
-		console.log(`${reaction.message.guild.members}`);
-		reaction.message.guild.members.fetch(user.id).roles.add(role);
+		console.log(`reaction message.guild.members: ${reaction.message.guild.members.}`);
+		reaction.message.guild.members.resolve(user).roles.add(role);
 		listJoueurs.push(`${user.username}`);
 	} catch (error) {
 		console.log(error);
