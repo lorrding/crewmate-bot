@@ -110,17 +110,13 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		reaction.message.channel.send(`liste des joueurs: ${listJoueurs}`);
 	}
 
-	if (listJoueurs.length >=10) {
+	if (listJoueurs.length >= 0) {
 		reaction.message.channel.send("Nombre de joueurs max atteint!");
 		reaction.message.channel.send("<:AU_why:765273043962298410>");
-		const userReactions = reaction.message.reactions.cache.filter(reaction => reaction.users.cache.has(user.id));
 		try {
-			for (const reaction of userReactions.values()) {
-				await reaction.users.remove(user.id);
-			}
+			reaction.remove(user);
 		} catch (error) {
-			console.error('Failed to remove reactions.');
-			reaction.message.channel.send(`Error removing reaction`);
+			console.log(error);
 		}
 	}
 	
