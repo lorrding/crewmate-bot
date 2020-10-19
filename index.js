@@ -134,7 +134,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		console.log('\n\n');
 		console.log(`reaction message.guild:  ${reaction.message.guild}`);
 		console.log('\n\n');
-		console.log(`reaction message.guild.members: ${reaction.message.guild.members.}`);
+		console.log(`reaction message.guild.members: ${reaction.message.guild.members.resolve(user)}`);
 		reaction.message.guild.members.resolve(user).roles.add(role);
 		listJoueurs.push(`${user.username}`);
 	} catch (error) {
