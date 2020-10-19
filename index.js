@@ -105,7 +105,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	}
 	if (user.bot || reaction.message.id != gameMessage) return console.log('bot or wrong message. ignoring...');
 
-	console.log(listJoueurs.length);
 	if (listJoueurs.length) {
 		reaction.message.channel.send(`liste des joueurs: ${listJoueurs}`);
 	}
@@ -121,20 +120,17 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		return console.log('Max player reached, removing reaction.');
 	}
 
-	console.log('taille de joueurs: ok, on insert');
+	listJoueurs.forEach(element => {
+		if (element == user.username) return console.log('user already un list, ignoring...');
+	});
 	
+	// ajout dans la liste + ajout du role
 	try {
-		listJoueurs.forEach(element => {
-			if (element == user.username) {
-				return console.log('user already un list, ignoring...');
-			}
-		});
-		// id du server : 764910769132929045
 		let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
 		let member = reaction.message.guild.members.find(r => r.id === user.id);
 		member.addRole(role);
-		// reaction.message.guild.members.resolve(user).roles.add(role);
 		listJoueurs.push(`${user.username}`);
+		editEmbed(reaction.message);
 	} catch (error) {
 		console.log(error);
 	}
@@ -181,6 +177,22 @@ function createGame(message, heure) {
 	}
 }
 
+// edition des embeds pour mise à jour de la liste de joueurs
+function editEmbed(message) {
+	var listToString;
+	listJoueurs.forEach(element => {
+		listToString+=`${element}, `;
+	});
+	console.log(listToString);
+	listToString = listToString.slice(0, -1);
+	console.log(listToString);
+	try {
+		message.embeds[0].setDescription(`liste des joueurs: ${listToString}`)		
+	} catch (error) {
+		console.log(error);
+	}
+
+}
 
 // random hexa
 function getHexa() {
