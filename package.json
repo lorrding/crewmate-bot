@@ -1,7 +1,7 @@
 {
-	"name": "corona-edt",
-	"description": "Discord bot pour l'edt spécial du confinement",
-	"version": "1.1.0",
+	"name": "crewmate-bot",
+	"description": "Discord bot for managing 'Among us' games",
+	"version": "0.1.0",
 	"main": "index.js",
 	"scripts": {
 		"start": "node index.js"
