@@ -4,8 +4,8 @@ const client = new Discord.Client();
 const config = require("./config.json");
 const cron = require('node-cron');
 
-var gameMessage = 0;
-var listJoueurs = [];
+gameMessage = 0;
+listJoueurs = [];
 
 
 client.on('ready',async m => {
