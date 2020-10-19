@@ -110,7 +110,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		reaction.message.channel.send(`liste des joueurs: ${listJoueurs}`);
 	}
 
-	if (listJoueurs.length >= 0) {
+	if (listJoueurs.length >= 10) {
 		reaction.message.channel.send("Nombre de joueurs max atteint!");
 		reaction.message.channel.send("<:AU_why:765273043962298410>");
 		try {
@@ -118,10 +118,24 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		} catch (error) {
 			console.log(error);
 		}
+		return console.log('Max player reached, removing reaction.');
+	}
+
+	console.log('taille de joueurs: ok, on insert');
+	
+	try {
+		listJoueurs.forEach(element => {
+			if (element == user.username) {
+				return console.log('user already un list, ignoring...');
+			}
+		});
+		let role = message.guild.roles.find(r => r.name === "joueurDuSoir");
+		user.roles.add(role);
+		listJoueurs.push(`${user.username}`);
+	} catch (error) {
+		
 	}
 	
-	console.log('taille de joueurs: ok, on insert');
-	listJoueurs.push(`${user.username}`);
 	reaction.message.channel.send(`liste des joueurs: ${listJoueurs}`);
 });
 
