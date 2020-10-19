@@ -151,7 +151,7 @@ function createGame(message, heure) {
 		embed.setColor(getHexa());
 		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heure}`);
-		embed.setDescription(`Avec: ${joueurs}`);
+		//embed.setDescription(`Avec: ${joueurs}`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`);
