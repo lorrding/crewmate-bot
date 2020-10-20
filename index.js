@@ -163,7 +163,6 @@ function createGame(message, heure) {
 			.then(embedMessage => {
 				embedMessage.react(emoji);
 				gameMessage = embedMessage.id;
-				console.log(`embedMessage.id ${embedMessage.id}, gameMessage ${gameMessage}`);
 			})
 	} catch (error) {
 		console.log(error);
@@ -186,7 +185,8 @@ function editEmbed(message) {
 	listToString = listToString.slice(0, -2);
 	console.log(listToString);
 	try {
-		let embed = new Discord.MessageEmbed()
+		console.log('on est dans le try');
+		let embed = new Discord.RichEmbed()
 			.setDescription(`liste des joueurs: ${listJoueurs}`);
 		console.log(message.embeds);
 		console.log(message.embeds[0]);
