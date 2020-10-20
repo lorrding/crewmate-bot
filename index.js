@@ -343,9 +343,10 @@ function editEmbed(message) {
 		} else {
 			embed.setDescription(``);
 		}
-		console.log(`fields :${message.embeds[0].fields[0]}`);
-		message.embed[0].fields.forEach(element => {
-			console.log(`fields name: ${element.name}`);
+		console.log(`fields :${message.embeds[0]}`);
+		message.embed[0].forEach(element => {
+			console.log(`fields: ${element}`);
+			// console.log(`fields name: ${element.name}`);
 		});
 		// console.log(`fields name = places restantes${message.embeds[0].fields.name="Places restantes:"}`);
 		// embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
