@@ -6,6 +6,7 @@ const cron = require('node-cron');
 
 gameMessage = 0;
 listJoueurs = [];
+heure = 0;
 
 
 client.on('ready',async m => {
@@ -17,8 +18,9 @@ client.on('ready',async m => {
 });
 
 try {
+
 	// cron exemple
-	// 	cron.schedule('50 8 * * mon', () => {
+	// 	cron.schedule(`${minutes} ${heures} * * *`, () => {
 	// 		client.channels.get(`${PremAnnee.channel}`).send(`PTS/Autonomie, dans 10 minutes!`);
 	// 	}, {
 	// 		scheduled: true,
@@ -149,7 +151,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 	}
 
 	if (listJoueurs.find(user => user == user.username)) {
-		//user dans la liste
+		
 	} else return console.log('Erreur, user inconnu de la liste des joueurs');
 });
 
@@ -202,11 +204,17 @@ function editEmbed(message) {
 		console.log('on est dans le try');
 		let embed = new Discord.RichEmbed()
 			.setDescription(`liste des joueurs: ${listJoueurs}`);
-		message.embeds[0].edit(embed);
+		message.edit(embed);
 	} catch (error) {
 		console.log(error);
 	}
 
+}
+
+function deleteGame(message) {
+	listJoueurs.forEach(user => {
+		console.log('mehs');
+	});
 }
 
 // random hexa
