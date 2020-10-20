@@ -226,8 +226,8 @@ function createGame(message, heure) {
 			});
 		author = message.author.id;
 		// c'est ok, on ajoute le rôle à l'auteur..
-		let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
-		let member = reaction.message.guild.members.find(r => r.id === message.author.id);
+		let role = message.guild.roles.find(r => r.name === "joueurDuSoir");
+		let member = message.guild.members.find(r => r.id === message.author.id);
 		member.addRole(role);
 		// noice
 	} catch (error) {
