@@ -261,10 +261,10 @@ function editEmbed(message) {
 	}
 	try {
 		if (listJoueurs.length) {
-			let embed = new Discord.RichEmbed(message.embeds[0])
+			var embed = new Discord.RichEmbed(message.embeds[0])
 			.setDescription(`avec: ${listToString}`);			
 		} else {
-			let embed = new Discord.RichEmbed(message.embeds[0])
+			var embed = new Discord.RichEmbed(message.embeds[0])
 			.setDescription(``);
 		}
 		message.edit(embed);
