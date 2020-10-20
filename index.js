@@ -98,7 +98,11 @@ if (args) console.log(`With argu ${args}`);
 					return message.delete();
 				}
 				console.log(`format d'heure valide`);
-				time = time.split(":");
+				if (time.search("h")) {
+					time = time.split("h");	
+				} else {
+					time = time.split(":");
+				}
 				let tempHeures = time.shift();
 				let tempMinutes = time.shift();
 				createGame(message, tempHeures, tempMinutes);
