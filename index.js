@@ -341,33 +341,15 @@ function editEmbed(message) {
 		embed.fields = [];
 		console.log('outside of if:');
 		console.log(listJoueurs.length);
+		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
 		if (listJoueurs.length) {
 			embed.setDescription(`avec: ${listToString}`);
-			console.log("inside of id:");
-			console.log(listJoueurs.length);
-			// let NbofJoueurs = 9 - listJoueurs.length;		
-			// embed.addField(`Places restantes:`,`${NbofJoueurs}`, true);
+			let NbofJoueurs = 9 - listJoueurs.length;		
+			embed.addField(`Places restantes:`,`${NbofJoueurs}`, true);
 		} else {
 			embed.setDescription(``);
 			embed.addField(`Places restantes:`,`9`, true);
 		}
-		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
-		// console.log('embed:');
-		// console.log(message.embeds[0]);
-		// console.log('contenu des fields:');
-		// var embed = message.embeds[0];
-		// console.log(embed.fields);
-		// console.log('premier field:');
-		// console.log(embed.fields[0]);
-		// console.log('nom du premier field:');
-		// console.log(embed.fields[0].name);
-		// console.log('nom du deuxième field:');
-		// console.log(embed.fields[1].name);
-
-		// embed.fields.forEach(element => {
-		// 	console.log('test:');
-		// 	console.log(element.name);
-		// });
 		message.edit(embed);
 	} catch (error) {
 		console.log(error);
