@@ -347,7 +347,7 @@ function editEmbed(message) {
 		// message.embed[0]
 			// console.log(`fields: ${element}`);
 			// console.log(`fields name: ${element.name}`);
-		});
+		// });
 		// console.log(`fields name = places restantes${message.embeds[0].fields.name="Places restantes:"}`);
 		// embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
 		message.edit(embed);
