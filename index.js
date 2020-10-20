@@ -4,10 +4,12 @@ const client = new Discord.Client();
 const config = require("./config.json");
 const cron = require('node-cron');
 
+gameSheduled = false;
 gameMessage = 0;
 listJoueurs = [];
 author = 0;
-heure = 0;
+heures = 0;
+minutes = 0;
 
 
 client.on('ready',async m => {
@@ -18,22 +20,26 @@ client.on('ready',async m => {
 	  });
 });
 
-try {
-
-	// cron exemple
-	// 	cron.schedule(`${minutes} ${heures} * * *`, () => {
-	// 		client.channels.get(`${PremAnnee.channel}`).send(`PTS/Autonomie, dans 10 minutes!`);
-	// 	}, {
-	// 		scheduled: true,
-	// 		timezone: "Europe/Riga"
-	// 	});
+if (gameSheduled) {
+	try {
+		// cron shedule
+			cron.schedule(`${minutes} ${heures} * * *`, () => {
+				gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure`);
+				deleteGame();
+				console.log('NOW!!!!!!');
+			}, {
+				scheduled: true,
+				timezone: "Europe/Riga"
+			});
 	} catch (error) {
 		let date_ob = new Date();
 		let date = ("0" + date_ob.getDate()).slice(-2);
 		let hours = date_ob.getHours();
 		let minutes = date_ob.getMinutes();
 		console.log(`error at ${hours}:${minutes} \n${error}`);
+	}
 }
+
 
 
 
@@ -57,9 +63,17 @@ client.on('message', async message => {
 				if (index >= args.length-1) {
 					return message.channel.send(`Il manque l'heure de le la session de jeu!`);
 				}
-				var argument = args.shift();
-				var heure = args.shift();
-				createGame(message, heure);
+				let argument = args.shift();
+				let time = args.shift().split("h");
+				var tempHeures = time.shift();
+				var tempMinutes = time.shift();
+				console.log(`arg heure: ${time}`);
+				if (tempHeures > 23 || tempHeures < 0 || tempMinutes > 59 || tempMinutes < 0) {
+					message.channel.send(`Format d'heure invalide!`);
+					return message.channel.send("il doit être sous la forme ```js 0-23h0-60```");
+				}
+				console.log(`format d'heure valide`);
+				createGame(message, heures, minutes);
 				return 0;
 			}
 		});
@@ -105,8 +119,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			throw console.error('Something went wrong when fetching the message: ', error);
 		}
 	}
-
-	console.log(`reaction.id : ${reaction.emoji.id}, réaction to match: 764917952600342539`);
 
 	if (user.bot) return;
 
@@ -154,6 +166,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	//tout les if sont passé, c'est good
 	// ajout dans la liste + ajout du role
 	try {
+		console.log(`Adding user ${user.username}...`);
 		let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
 		let member = reaction.message.guild.members.find(r => r.id === user.id);
 		member.addRole(role);
@@ -204,9 +217,10 @@ client.on('messageReactionRemove', async (reaction, user) => {
 });
 
 //Création d'une sessions de jeu
-function createGame(message, heure) {
-	var joueurs = `work in progress`;
+function createGame(message, inputHeures, inputMinutes) {
 	var emoji = '764917952600342539';
+	heures = inputHeures;
+	minutes = inputMinutes;
 
 	//création de l'embed
 	try {
@@ -228,11 +242,13 @@ function createGame(message, heure) {
 				gameMessage = embedMessage.id;
 			});
 		author = message.author.id;
+
 		// c'est ok, on ajoute le rôle à l'auteur..
 		let role = message.guild.roles.find(r => r.name === "joueurDuSoir");
 		let member = message.guild.members.find(r => r.id === message.author.id);
 		member.addRole(role);
-		// noice
+		// on lance cron.
+		gameSheduled = true;
 	} catch (error) {
 		console.log(error);
 		message.channel.send('missing permissions to react or send embed');	
@@ -241,7 +257,7 @@ function createGame(message, heure) {
 		message.delete();
 	} catch (error) {
 		console.log(error);
-		message.channel.send('missing permissions to delete message');
+		message.channel.send('missing permissions to delete author message');
 	}
 }
 
@@ -276,9 +292,7 @@ function editEmbed(message) {
 
 //suppression de la session de jeu après le timer.
 function deleteGame(message) {
-	listJoueurs.forEach(user => {
-		console.log('mehs');
-	});
+	gameMessage.channel.send(`Delete de game: work in progess`);
 }
 
 // random hexa
