@@ -106,17 +106,19 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		}
 	}
 
-	console.log(`réaction.id : ${reaction.id}, réaction to match: 764917952600342539`);
+	console.log(`reaction.id : ${reaction.emoji.id}, réaction to match: 764917952600342539`);
 
 	if (user.bot) return;
 
-	//Mauvaise réaction
-	
-	// if (reaction.id != "764917952600342539") return;
+	//wrong reaction
+	if (reaction.emoji.id != "764917952600342539") return;
 
 	// si c'est l'auteur du message, on ignore
 	if(user.id == author) {
-		reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!");
+		reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!")
+			.then(msg=> {
+				msg.delete(5000);
+			});
 		reaction.remove(user);
 		return console.log('author already un list, ignoring...');
 	}
