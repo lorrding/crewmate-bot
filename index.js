@@ -172,7 +172,6 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		return console.log('Wrong message. ignoring...');
 	}
 
-	console.log(`liste des joueurs: ${listJoueurs}, user à trouver: ${user.username}`);
 	let userToRemove = listJoueurs.find(userInList => userInList === user.username);
 	if (userToRemove) {
 		// user dans la liste, on remove...
@@ -252,14 +251,14 @@ function editEmbed(message) {
 			listToString+=`${listJoueurs[i]}.`;
 		}
 	}
-	// listJoueurs.forEach(element => {
-	// 	listToString+=`${element}, `;
-	// });
-	// listToString = listToString.slice(0, -2);
-	console.log(listToString);
 	try {
-		let embed = new Discord.RichEmbed(message.embeds[0])
-			.setDescription(`avec: ${listToString}`);
+		if (listJoueurs.length) {
+			let embed = new Discord.RichEmbed(message.embeds[0])
+			.setDescription(`avec: ${listToString}`);			
+		} else {
+			let embed = new Discord.RichEmbed(message.embeds[0])
+			.setDescription(``);
+		}
 		message.edit(embed);
 	} catch (error) {
 		console.log(error);
