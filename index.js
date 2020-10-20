@@ -6,6 +6,7 @@ const cron = require('node-cron');
 
 gameSheduled = false;
 gameMessage = 0;
+gameChannel = "767812168745484328";
 listJoueurs = [];
 author = 0;
 heures = 0;
@@ -30,7 +31,7 @@ try {
 			var m = d.getMinutes();
 			console.log(`h=${h}, heures=${heures},    m=${m}, minutes=${minutes}`);
 			if (h == heures && m == minutes) {
-				gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure`);
+				client.channels.get(gameChannel).send(`<@&767870145091600405>, c'est l'heure!`);
 				console.log('NOW!!!!!!');
 				return deleteGame();
 			}
