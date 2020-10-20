@@ -343,7 +343,15 @@ function editEmbed(message) {
 		} else {
 			embed.setDescription(``);
 		}
+		console.log('embed:');
 		console.log(message.embeds[0]);
+		console.log('contenu des fields:');
+		var embed = message.embed[0];
+		console.log(embed.fields);
+		console.log('premier field:');
+		console.log(embed.fields[0]);
+		console.log('nom du premier field:');
+		console.log(embed.fields[0].name);
 		// message.embed[0]
 			// console.log(`fields: ${element}`);
 			// console.log(`fields name: ${element.name}`);
