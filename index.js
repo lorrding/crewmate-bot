@@ -26,7 +26,7 @@ try {
 	cron.schedule(`* * * * *`, () => {
 		if (gameSheduled) {
 			let d = new Date();
-			var h = d.getHours();
+			var h = d.getUTCHours()+2;
 			var m = d.getMinutes();
 			console.log(`h=${h}, heures=${heures},    m=${m}, minutes=${minutes}`);
 			if (h == heures && m == minutes) {
