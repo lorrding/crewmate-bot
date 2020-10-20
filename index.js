@@ -6,7 +6,7 @@ const cron = require('node-cron');
 
 gameSheduled = false;
 gameMessage = new Discord.Message();
-author = new Discord.GuildMember();
+author = new Discord.User();
 grantedRole = new Discord.Role();
 // gameChannel = "767812168745484328";
 listJoueurs = [];
