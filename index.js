@@ -338,7 +338,7 @@ function editEmbed(message) {
 	}
 	try {
 		var embed = new Discord.RichEmbed(message.embeds[0])
-		embed.fields = null;
+		embed.fields = [];
 		console.log('outside of if:');
 		console.log(listJoueurs.length);
 		if (listJoueurs.length) {
