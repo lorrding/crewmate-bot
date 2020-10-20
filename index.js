@@ -343,28 +343,26 @@ function editEmbed(message) {
 		} else {
 			embed.setDescription(``);
 		}
-		console.log('embed:');
-		console.log(message.embeds[0]);
-		console.log('contenu des fields:');
-		var embed = message.embeds[0];
-		console.log(embed.fields);
-		console.log('premier field:');
 		console.log(embed.fields[0]);
-		console.log('nom du premier field:');
-		console.log(embed.fields[0].name);
-		console.log('nom du deuxième field:');
-		console.log(embed.fields[1].name);
+		embed.fields = null;
+		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
+		embed.addField(`Places restantes:`,`${9-listJoueurs.length}`, true);
+		// console.log('embed:');
+		// console.log(message.embeds[0]);
+		// console.log('contenu des fields:');
+		// var embed = message.embeds[0];
+		// console.log(embed.fields);
+		// console.log('premier field:');
+		// console.log(embed.fields[0]);
+		// console.log('nom du premier field:');
+		// console.log(embed.fields[0].name);
+		// console.log('nom du deuxième field:');
+		// console.log(embed.fields[1].name);
 
-		embed.fields.forEach(element => {
-			console.log('test:');
-			console.log(element.name);
-		});
-		// message.embed[0]
-			// console.log(`fields: ${element}`);
-			// console.log(`fields name: ${element.name}`);
+		// embed.fields.forEach(element => {
+		// 	console.log('test:');
+		// 	console.log(element.name);
 		// });
-		// console.log(`fields name = places restantes${message.embeds[0].fields.name="Places restantes:"}`);
-		// embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
 		message.edit(embed);
 	} catch (error) {
 		console.log(error);
