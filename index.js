@@ -5,9 +5,9 @@ const config = require("./config.json");
 const cron = require('node-cron');
 
 gameSheduled = false;
-gameMessage = new Discord.message;
-author = new Discord.member;
-grantedRole = new Discord.role;
+gameMessage = new Discord.Message();
+author = new Discord.GuildMember();
+grantedRole = new Discord.Role();
 // gameChannel = "767812168745484328";
 listJoueurs = [];
 heures = 0;
@@ -30,7 +30,6 @@ try {
 			let d = new Date();
 			var h = d.getUTCHours()+2;
 			var m = d.getMinutes();
-			console.log(`h=${h}, heures=${heures},    m=${m}, minutes=${minutes}`);
 			if (h == heures && m == minutes) {
 				gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure!`);
 				// client.channels.get(gameChannel).send(`<@&767870145091600405>, c'est l'heure!`);
@@ -70,6 +69,7 @@ if (args) console.log(`With argu ${args}`);
 		if (message.member.roles.highest.comparePositionTo(message.guild.roles.find(t => t.name == 'Trusted player'))) {
 			console.log('role : checked');
 		}
+
 		args.forEach(function(element, index) {
 			// paramétrage de l'heure
 			if (element == "-h" || element == "--heure") {
@@ -344,7 +344,9 @@ function editEmbed(message) {
 
 //suppression de la session de jeu après le timer.
 function deleteGame() {
-
+	if (message.member.roles.highest.comparePositionTo(message.guild.roles.find(t => t.name == 'Trusted player'))) {
+		console.log('role : checked');
+	}
 	gameMessage.channel.send(`Delete de game: work in progess`);
 	// client.channels.get(gameChannel).send(`Delete de game: work in progess`);
 }
