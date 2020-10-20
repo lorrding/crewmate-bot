@@ -172,10 +172,11 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		return console.log('Wrong message. ignoring...');
 	}
 
-	console.log(`liste des joueurs: ${listJoueurs}, user à trouver: ${user.username}`);	
-	if (listJoueurs.find(user => user === user.username)) {
+	console.log(`liste des joueurs: ${listJoueurs}, user à trouver: ${user.username}`);
+	let userToRemove = listJoueurs.find(userInList => userInList === user.username);
+	if (userToRemove) {
 		// user dans la liste, on remove...
-		console.log('User un list, removing...');
+		console.log('User in list, removing...');
 		try {
 			let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
 			let member = reaction.message.guild.members.find(r => r.id === user.id);
@@ -188,7 +189,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		}
 	} else {
 		try {
-			reaction.message.channel.send("Vous n'êtes pas encore dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur");
+			reaction.message.channel.send("Vous n'êtes pas encore dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)");
 		} catch (error) {
 			console.log(error);
 		}
