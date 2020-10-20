@@ -278,7 +278,7 @@ function createGame(message, inputHeures, inputMinutes) {
 		embed.setColor(getHexa());
 		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
-		embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
+		embed.addField(`Places restantes:`,`9`, true);
 		embed.setImage(`https://i.imgur.com/DrX4YVO.png`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
@@ -339,10 +339,14 @@ function editEmbed(message) {
 	try {
 		var embed = new Discord.RichEmbed(message.embeds[0])
 		embed.fields = null;
+		console.log('outside of if:');
+		console.log(listJoueurs.length);
 		if (listJoueurs.length) {
 			embed.setDescription(`avec: ${listToString}`);
-			let NbofJoueurs = 9 - listJoueurs.length			
-			embed.addField(`Places restantes:`,`${NbofJoueurs}`, true);
+			console.log("inside of id:");
+			console.log(listJoueurs.length);
+			// let NbofJoueurs = 9 - listJoueurs.length;		
+			// embed.addField(`Places restantes:`,`${NbofJoueurs}`, true);
 		} else {
 			embed.setDescription(``);
 			embed.addField(`Places restantes:`,`9`, true);
