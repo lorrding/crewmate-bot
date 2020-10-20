@@ -124,28 +124,33 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		return console.log('Max player reached, removing reaction.');
 	}
 
-	// on vérifie que la liste n'est pas vide
-	if (listJoueurs.length) {
-		// si c'est l'auteur du message, on ignore
-		if (user.id == author) {
-			try {		
-				reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!");
-				reaction.remove(user);
-			} catch (error) {
-				console.log(error);
+	
+	// si c'est l'auteur du message, on ignore
+	if (user.id != author) {
+		// on vérifie que la liste n'est pas vide
+		if (listJoueurs.length) {
+			//si il est déjà dans la liste de jeu, on ignore
+			if (listJoueurs.find(user => user == user.username)) {
+				try {		
+					reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur");
+				} catch (error) {
+					console.log(error);
+				}
+				return console.log('user already un list, ignoring...');
 			}
-			return console.log('author already un list, ignoring...');
-		}
 	} else {
-		//si il est déjà dans la liste de jeu, on ignore
-		if (listJoueurs.find(user.username) || user.id == author) {
-			try {		
-				reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur");
-			} catch (error) {
-				console.log(error);
-			}
-			return console.log('user already un list, ignoring...');
+		try {		
+			reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!");
+			reaction.remove(user);
+		} catch (error) {
+			console.log(error);
 		}
+		return console.log('author already un list, ignoring...');
+	}
+	
+	} else {
+		
+		
 	}
 	
 	// ajout dans la liste + ajout du role
@@ -178,7 +183,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		return console.log('Wrong message. ignoring...');
 	}
 
-	if (listJoueurs.find(user.username)) {
+	if (listJoueurs.find(user => user == user.username)) {
 		// user dans la liste, on remove...
 		console.log('User un list, removing...');
 		try {
