@@ -173,7 +173,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 	}
 
 	console.log(`liste des joueurs: ${listJoueurs}, user à trouver: ${user.username}`);	
-	if (listJoueurs.find(user => user == user.username)) {
+	if (listJoueurs.find(user => user === user.username)) {
 		// user dans la liste, on remove...
 		console.log('User un list, removing...');
 		try {
