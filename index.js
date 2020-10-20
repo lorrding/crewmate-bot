@@ -346,7 +346,7 @@ function editEmbed(message) {
 		console.log('embed:');
 		console.log(message.embeds[0]);
 		console.log('contenu des fields:');
-		var embed = message.embed[0];
+		var embed = message.embeds[0];
 		console.log(embed.fields);
 		console.log('premier field:');
 		console.log(embed.fields[0]);
