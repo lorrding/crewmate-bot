@@ -126,6 +126,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 	
 	// si c'est l'auteur du message, on ignore
+	console.log(`user.id:${user.id} , author:${author}`);
 	if (user.id != author) {
 		// on vérifie que la liste n'est pas vide
 		if (listJoueurs.length) {
@@ -146,11 +147,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			console.log(error);
 		}
 		return console.log('author already un list, ignoring...');
-	}
-	
-	} else {
-		
-		
 	}
 	
 	// ajout dans la liste + ajout du role
