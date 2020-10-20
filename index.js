@@ -5,10 +5,10 @@ const config = require("./config.json");
 const cron = require('node-cron');
 
 gameSheduled = false;
-gameMessage = 0;
-gameChannel = "767812168745484328";
+gameMessage = new Discord.message;
+author = new Discord.member;
+// gameChannel = "767812168745484328";
 listJoueurs = [];
-author = 0;
 heures = 0;
 minutes = 0;
 
@@ -31,13 +31,12 @@ try {
 			var m = d.getMinutes();
 			console.log(`h=${h}, heures=${heures},    m=${m}, minutes=${minutes}`);
 			if (h == heures && m == minutes) {
-				client.channels.get(gameChannel).send(`<@&767870145091600405>, c'est l'heure!`);
+				gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure!`);
+				// client.channels.get(gameChannel).send(`<@&767870145091600405>, c'est l'heure!`);
 				console.log('NOW!!!!!!');
 				return deleteGame();
 			}
-			return console.log('Not now...');
 		}
-		console.log('No game sheduled!');
 	}, {
 		scheduled: true,
 		timezone: "Europe/Paris"
@@ -60,21 +59,21 @@ if (args) console.log(`With argu ${args}`);
 
 
 // game
-	if (command === "test") {
-		if (gameSheduled) {
-			return message.channel.send(`Une game est déjà prévu!`);
-		}
+	if (command === "game") {
 		if (!args.length) {
-			return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
+			return message.channel.send("Arguments manquant!\n```-h | --heure -> paramétrage de l'heure\n-d | --delete -> suppression de la game en court```");
 		}
 		args.forEach(function(element, index) {
 			// paramétrage de l'heure
-			if (element == "-h" || element == "-heure") {
+			if (element == "-h" || element == "--heure") {
+				if (gameSheduled) {
+					return message.channel.send(`Une game est déjà prévu!`);
+				}
 				if (index >= args.length-1) {
 					return message.channel.send(`Il manque l'heure de le la session de jeu!`);
 				}
 				let argument = args.shift();
-				let regex = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+				let regex = /^([0-9]|0[0-9]|1[0-9]|2[0-3])[:|h][0-5][0-9]$/;
 				let time = args.shift();
 				var match = time.match(regex);
 				if (match==null) {
@@ -90,6 +89,10 @@ if (args) console.log(`With argu ${args}`);
 				let tempMinutes = time.shift();
 				createGame(message, tempHeures, tempMinutes);
 				return 0;
+			}
+
+			if (element == "-d" || element == "--delete") {
+				console.log('delete...');
 			}
 		});
 	}
@@ -141,7 +144,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	if (reaction.emoji.id != "764917952600342539") return;
 
 	// si c'est l'auteur du message, on ignore
-	if(user.id == author) {
+	if(user.id == author.id) {
 		reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!")
 			.then(msg=> {
 				msg.delete(5000);
@@ -150,7 +153,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		return console.log('author already un list, ignoring...');
 	}
 
-	if (reaction.message.id != gameMessage) {
+	if (reaction.message.id != gameMessage.id) {
 		return console.log('Wrong message. ignoring...');
 	}
 
@@ -202,9 +205,9 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		}
 	}
 
-	if (user.bot || user.id == author) return;
+	if (user.bot || user.id == author.id) return;
 
-	if (reaction.message.id != gameMessage) {
+	if (reaction.message.id != gameMessage.id) {
 		return console.log('Wrong message. ignoring...');
 	}
 
@@ -246,6 +249,7 @@ function createGame(message, inputHeures, inputMinutes) {
 		embed.setColor(getHexa());
 		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heures}h${minutes}`);
+		embed.addField(`Places restantes`,`${10-listJoueurs.length}`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`);
@@ -256,9 +260,9 @@ function createGame(message, inputHeures, inputMinutes) {
 		message.channel.send(embed)
 			.then(embedMessage => {
 				embedMessage.react(emoji);
-				gameMessage = embedMessage.id;
+				gameMessage = embedMessage;
 			});
-		author = message.author.id;
+		author = message.author;
 
 		// c'est ok, on ajoute le rôle à l'auteur..
 		let role = message.guild.roles.find(r => r.name === "joueurDuSoir");
@@ -310,7 +314,8 @@ function editEmbed(message) {
 
 //suppression de la session de jeu après le timer.
 function deleteGame(message) {
-	client.channels.get(gameChannel).send(`Delete de game: work in progess`);
+	gameMessage.channel.send(`Delete de game: work in progess`);
+	// client.channels.get(gameChannel).send(`Delete de game: work in progess`);
 }
 
 // random hexa
