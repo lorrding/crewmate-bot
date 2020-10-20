@@ -102,15 +102,13 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		try {
 			await reaction.fetch();
 		} catch (error) {
-			console.error('Something went wrong when fetching the message: ', error);
-			return;
+			throw console.error('Something went wrong when fetching the message: ', error);
 		}
 	}
 
 	if (user.bot) return;
 
 	// si c'est l'auteur du message, on ignore
-	console.log(`user.id:${user.id} , author:${author}`);
 	if(user.id == author) {
 		reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!");
 		reaction.remove(user);
@@ -127,17 +125,17 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		try {
 			reaction.remove(user);
 		} catch (error) {
-			console.log(error);
+			throw console.log(error);
 		}
 		return console.log('Max player reached, removing reaction.');
 	}
 
 	// on vérifie que la liste n'est pas vide
-	if (listJoueurs.length) {
+	if (listJoueurs.length > 0) {
 		//si il est déjà dans la liste de jeu, on ignore
 		if (listJoueurs.find(user => user == user.username)) {
 			try {		
-				reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur");
+				reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)");
 			} catch (error) {
 				console.log(error);
 			}
@@ -170,7 +168,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		}
 	}
 
-	if (user.bot) return;
+	if (user.bot || user.id == author) return;
 
 	if (reaction.message.id != gameMessage) {
 		return console.log('Wrong message. ignoring...');
@@ -184,7 +182,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 			let member = reaction.message.guild.members.find(r => r.id === user.id);
 			member.remove(role);
 			//role removed, updating list...
-			listJouers.splice(listJouers.indexOf(user.username), 1);
+			listJoueurs.splice(listJoueurs.indexOf(user.username), 1);
 			editEmbed(reaction.message);
 		} catch (error) {
 			console.log(error);
@@ -246,12 +244,12 @@ function editEmbed(message) {
 	for (let i = 0; i < listJoueurs.length; i++) {
 		if (listJoueurs.length > 1) {
 			if (i >= listJoueurs.length-1) {
-				listToString+=`et ${array[i]}.`;
+				listToString+=`et ${listJoueurs[i]}.`;
 			} else {
-				listToString+=`${array[i]}, `;
+				listToString+=`${listJoueurs[i]}, `;
 			}			
 		} else {
-			listToString+=`${array[i]}.`;
+			listToString+=`${listJoueurs[i]}.`;
 		}
 	}
 	// listJoueurs.forEach(element => {
