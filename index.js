@@ -109,7 +109,8 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	if (user.bot) return;
 
 	//Mauvaise réaction
-	if (reaction.id != "764917952600342539") return;
+	console.log(`réaction.id : ${reaction.id}, réaction to match: 764917952600342539`);
+	// if (reaction.id != "764917952600342539") return;
 
 	// si c'est l'auteur du message, on ignore
 	if(user.id == author) {
