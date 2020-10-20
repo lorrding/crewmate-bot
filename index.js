@@ -279,6 +279,7 @@ function createGame(message, inputHeures, inputMinutes) {
 		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
 		embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
+		embed.setImage(`https://i.imgur.com/DrX4YVO.png`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`)
@@ -342,7 +343,8 @@ function editEmbed(message) {
 		} else {
 			embed.setDescription(``);
 		}
-		console.log(message.embeds[0].fieds);
+		console.log(message.embeds[0]);
+		console.log(message.embeds[0]);
 		// embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
 		message.edit(embed);
 	} catch (error) {
