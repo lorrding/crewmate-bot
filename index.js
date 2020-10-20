@@ -202,7 +202,7 @@ function editEmbed(message) {
 	console.log(listToString);
 	try {
 		console.log('on est dans le try');
-		let embed = new Discord.RichEmbed()
+		let embed = new Discord.RichEmbed(message.embeds[0])
 			.setDescription(`liste des joueurs: ${listJoueurs}`);
 		message.edit(embed);
 	} catch (error) {
