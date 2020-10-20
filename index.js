@@ -28,12 +28,13 @@ try {
 			let d = new Date();
 			var h = d.getHours();
 			var m = d.getMinutes();
+			console.log(`h=${h}, heures=${heures},    m=${m}, minutes=${minutes}`);
 			if (h == heures && m == minutes) {
 				gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure`);
 				console.log('NOW!!!!!!');
 				return deleteGame();
 			}
-			console.log('Not now...');
+			return console.log('Not now...');
 		}
 		console.log('No game sheduled!');
 	}, {
@@ -83,11 +84,9 @@ if (args) console.log(`With argu ${args}`);
 					return message.delete();
 				}
 				console.log(`format d'heure valide`);
-				console.log(`arg heure: ${time}`);
 				time = time.split(":");
 				let tempHeures = time.shift();
 				let tempMinutes = time.shift();
-				console.log(`resultat heure: ${tempHeures},resultat minutes: ${tempMinutes}`);
 				createGame(message, tempHeures, tempMinutes);
 				return 0;
 			}
