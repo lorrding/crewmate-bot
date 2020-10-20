@@ -338,15 +338,16 @@ function editEmbed(message) {
 	}
 	try {
 		var embed = new Discord.RichEmbed(message.embeds[0])
+		embed.fields = null;
 		if (listJoueurs.length) {
-			embed.setDescription(`avec: ${listToString}`);			
+			embed.setDescription(`avec: ${listToString}`);
+			let NbofJoueurs = 9 - listJoueurs.length			
+			embed.addField(`Places restantes:`,`${NbofJoueurs}`, true);
 		} else {
 			embed.setDescription(``);
+			embed.addField(`Places restantes:`,`9`, true);
 		}
-		console.log(embed.fields[0]);
-		embed.fields = null;
 		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
-		embed.addField(`Places restantes:`,`${9-listJoueurs.length}`, true);
 		// console.log('embed:');
 		// console.log(message.embeds[0]);
 		// console.log('contenu des fields:');
