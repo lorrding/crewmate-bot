@@ -32,7 +32,7 @@ try {
 		console.log('No game sheduled!');
 		}, {
 			scheduled: true,
-			timezone: "Europe/Riga"
+			timezone: "Europe/Paris"
 		});
 } catch (error) {
 	let date_ob = new Date();
