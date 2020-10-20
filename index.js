@@ -22,22 +22,23 @@ client.on('ready',async m => {
 
 
 try {
-	//test cron
-	cron.schedule(`${minutes} ${heures} * * *`, () => {
-		console.log('running a task every minute');
-	});
 	// cron shedule
-	cron.schedule(`${minutes} ${heures} * * *`, () => {
+	cron.schedule(`* * * * *`, () => {
 		if (gameSheduled) {
-			gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure`);
-			deleteGame();
-			console.log('NOW!!!!!!');
+			let d = new Date();
+			var h = d.getHours();
+			var m = d.getMinutes();
+			if (h == heures && m == minutes) {
+				gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure`);
+				deleteGame();
+				console.log('NOW!!!!!!');
+			}
 		}
 		console.log('No game sheduled!');
-		}, {
-			scheduled: true,
-			timezone: "Europe/Paris"
-		});
+	}, {
+		scheduled: true,
+		timezone: "Europe/Paris"
+	});
 } catch (error) {
 	let date_ob = new Date();
 	let date = ("0" + date_ob.getDate()).slice(-2);
@@ -233,7 +234,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 function createGame(message, inputHeures, inputMinutes) {
 	var emoji = '764917952600342539';
 	var valid = cron.validate(`${inputMinutes} ${inputHeures} * * *`);
-	console.log(valid);
+	console.log(`valid cron format ?: ${valid}`);
 	heures = inputHeures;
 	minutes = inputMinutes;
 
