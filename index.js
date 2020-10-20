@@ -139,14 +139,15 @@ client.on('messageReactionAdd', async (reaction, user) => {
 				}
 				return console.log('user already un list, ignoring...');
 			}
-	} else {
-		try {		
-			reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!");
-			reaction.remove(user);
-		} catch (error) {
-			console.log(error);
+		} else {
+			try {		
+				reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!");
+				reaction.remove(user);
+			} catch (error) {
+				console.log(error);
+			}
+			return console.log('author already un list, ignoring...');
 		}
-		return console.log('author already un list, ignoring...');
 	}
 	
 	// ajout dans la liste + ajout du role
