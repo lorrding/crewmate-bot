@@ -105,10 +105,11 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			return;
 		}
 	}
-	if (user.bot || reaction.message.id != gameMessage) return console.log('bot or wrong message. ignoring...');
 
-	if (listJoueurs.length) {
-		reaction.message.channel.send(`liste des joueurs: ${listJoueurs}`);
+	if (user.bot) return;
+
+	if (reaction.message.id != gameMessage) {
+		return console.log('Wrong message. ignoring...');
 	}
 
 	if (listJoueurs.length >= 10) {
@@ -122,9 +123,14 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		return console.log('Max player reached, removing reaction.');
 	}
 
-	listJoueurs.forEach(element => {
-		if (element == user.username) return console.log('user already un list, ignoring...');
-	});
+	if (listJoueurs.find(user.username)) {
+		try {		
+			reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur");
+		} catch (error) {
+			console.log(error);
+		}
+		return console.log('user already un list, ignoring...');
+	}
 	
 	// ajout dans la liste + ajout du role
 	try {
@@ -150,9 +156,32 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		}
 	}
 
-	if (listJoueurs.find(user => user == user.username)) {
-		
-	} else return console.log('Erreur, user inconnu de la liste des joueurs');
+	if (user.bot) return;
+
+	if (reaction.message.id != gameMessage) {
+		return console.log('Wrong message. ignoring...');
+	}
+
+	if (listJoueurs.find(user.username)) {
+		// user dans la liste, on remove...
+		console.log('User un list, removing...');
+		try {
+			let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
+			let member = reaction.message.guild.members.find(r => r.id === user.id);
+			member.remove(role);
+			//role removed, updating list...
+			listJouers.splice(listJouers.indexOf(user.username), 1);
+			editEmbed(reaction.message);
+		} catch (error) {
+			console.log(error);
+		}
+	} else {
+		try {
+			reaction.message.channel.send("Vous n'êtes pas encore dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur");
+		} catch (error) {
+			console.log(error);
+		}
+	}
 });
 
 //Création d'une sessions de jeu
@@ -195,15 +224,25 @@ function createGame(message, heure) {
 // edition des embeds pour mise à jour de la liste de joueurs
 function editEmbed(message) {
 	var listToString ="";
-	listJoueurs.forEach(element => {
-		listToString+=`${element}, `;
-	});
-	listToString = listToString.slice(0, -2);
+	for (let i = 0; i < listJoueurs.length; i++) {
+		if (listJouers.length > 1) {
+			if (i >= listJoueurs.length-1) {
+				listToString+=`et ${array[i]}.`;
+			} else {
+				listToString+=`${array[i]}, `;
+			}			
+		} else {
+			listToString+=`${array[i]}.`;
+		}
+	}
+	// listJoueurs.forEach(element => {
+	// 	listToString+=`${element}, `;
+	// });
+	// listToString = listToString.slice(0, -2);
 	console.log(listToString);
 	try {
-		console.log('on est dans le try');
 		let embed = new Discord.RichEmbed(message.embeds[0])
-			.setDescription(`liste des joueurs: ${listJoueurs}`);
+			.setDescription(`avec: ${listToString}`);
 		message.edit(embed);
 	} catch (error) {
 		console.log(error);
