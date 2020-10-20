@@ -61,10 +61,11 @@ if (args) console.log(`With argu ${args}`);
 // game
 	if (command === "game") {
 		if (!args.length) {
-			return message.channel.send("Arguments manquant!\n```-h | --heure -> paramétrage de l'heure\n-d | --delete -> suppression de la game en court```")
+			message.channel.send("Arguments manquant!\n```-h | --heure -> paramétrage de l'heure\n-d | --delete -> suppression de la game en court```")
 				.then(msg=> {
 					msg.delete(5000);
 				});
+			return message.delete();
 		}
 		// if (message.member.roles.highest.comparePositionTo(message.guild.roles.find(t => t.name == 'Trusted player'))) {
 		if (message.member.hasPermission('SEND_MESSAGES')) {
@@ -75,16 +76,18 @@ if (args) console.log(`With argu ${args}`);
 			// paramétrage de l'heure
 			if (element == "-h" || element == "--heure") {
 				if (gameSheduled) {
-					return message.channel.send(`Une game est déjà prévu!`)
+					message.channel.send(`Une game est déjà prévu!`)
 						.then(msg=> {
 							msg.delete(5000);
 						});
+					return message.delete();
 				}
 				if (index >= args.length-1) {
-					return message.channel.send(`Il manque l'heure de le la session de jeu!`)
+					message.channel.send(`Il manque l'heure de le la session de jeu!`)
 						.then(msg=> {
 							msg.delete(5000);
 						});
+					return message.delete();
 				}
 				let argument = args.shift();
 				let regex = /^([0-9]|0[0-9]|1[0-9]|2[0-3])[:|h][0-5][0-9]$/;
