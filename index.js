@@ -47,7 +47,7 @@ client.on('message', async message => {
 
 
 // game
-	if (command === "Game") {
+	if (command === "game") {
 		if (!args.length) {
 			return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
 		}
