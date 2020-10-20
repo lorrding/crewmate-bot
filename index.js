@@ -21,6 +21,7 @@ client.on('ready',async m => {
 });
 
 if (gameSheduled) {
+	console.log('A Game is sheduled!');
 	try {
 		// cron shedule
 			cron.schedule(`${minutes} ${heures} * * *`, () => {
@@ -45,11 +46,11 @@ if (gameSheduled) {
 
 client.on('message', async message => {
 	
-	if (!message.content.startsWith(config.prefix) || message.author.bot) return;
-		const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-		const command = args.shift().toLowerCase();
-		console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
-		if (args) console.log(`With argu ${args}`);
+if (!message.content.startsWith(config.prefix) || message.author.bot) return;
+const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
+const command = args.shift().toLowerCase();
+console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
+if (args) console.log(`With argu ${args}`);
 
 
 // game
@@ -67,14 +68,21 @@ client.on('message', async message => {
 					return message.channel.send(`Il manque l'heure de le la session de jeu!`);
 				}
 				let argument = args.shift();
-				let time = args.shift().split("h");
+				let regex = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+				let time = args.shift();
+				var match = time.match(regex);
+				if (match==null) {
+					message.channel.send(`Format d'heure invalide!`);
+					return message.channel.send("il doit être sous la forme ```js 0-23:0-60```");
+				}
+				console.log(`arg heure: ${time}`);
+				time = time.split(":");
 				var tempHeures = time.shift();
 				var tempMinutes = time.shift();
-				console.log(`arg heure: ${time}`);
-				if (tempHeures > 23 || tempHeures < 0 || tempMinutes > 59 || tempMinutes < 0) {
-					message.channel.send(`Format d'heure invalide!`);
-					return message.channel.send("il doit être sous la forme ```js 0-23h0-60```");
-				}
+				console.log(`resultat heure: ${tempHeures},resultat minutes: ${tempMinutes}`);
+				// if (tempHeures > 23 || tempHeures < 0 || tempMinutes > 59 || tempMinutes < 0) {
+					
+				// }
 				console.log(`format d'heure valide`);
 				createGame(message, heures, minutes);
 				return 0;
