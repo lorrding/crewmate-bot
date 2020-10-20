@@ -23,7 +23,7 @@ client.on('ready',async m => {
 
 try {
 	//test cron
-	cron.schedule('* * * * *', () => {
+	cron.schedule(`${minutes} ${heures} * * *`, () => {
 		console.log('running a task every minute');
 	});
 	// cron shedule
