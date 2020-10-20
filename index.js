@@ -30,9 +30,10 @@ try {
 			var m = d.getMinutes();
 			if (h == heures && m == minutes) {
 				gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure`);
-				deleteGame();
 				console.log('NOW!!!!!!');
+				return deleteGame();
 			}
+			console.log('Not now...');
 		}
 		console.log('No game sheduled!');
 	}, {
@@ -265,6 +266,7 @@ function createGame(message, inputHeures, inputMinutes) {
 		member.addRole(role);
 		// on lance cron.
 		gameSheduled = true;
+		console.log(`Game sheduled ?: ${gameSheduled}`);
 	} catch (error) {
 		console.log(error);
 		message.channel.send('missing permissions to react or send embed');	
