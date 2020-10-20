@@ -70,11 +70,11 @@ if (args) console.log(`With argu ${args}`);
 				let time = args.shift();
 				var match = time.match(regex);
 				if (match==null) {
-					var respond1 = message.channel.send(`Format d'heure invalide!`);
-					var respond2 = message.channel.send("l'heure doit être sous la forme ```0-23:0-60```");
-					message.delete()
-					.then(respond1.delete(5000))
-					.then(respond2.delete());
+					message.channel.send("Format d'heure invalide\nl'heure doit être sous la forme ```0-23:0-60```")
+						.then(msg=> {
+							msg.delete(5000);
+						});
+					message.delete();
 				}
 				console.log(`format d'heure valide`);
 				console.log(`arg heure: ${time}`);
