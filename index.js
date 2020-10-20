@@ -274,8 +274,8 @@ function createGame(message, inputHeures, inputMinutes) {
 		
 		embed.setColor(getHexa());
 		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
-		embed.addField(`Ce soir à:`,`${heures}h${minutes}`);
-		embed.addField(`Places restantes`,`${10-listJoueurs.length}`);
+		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
+		embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
 		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`)
@@ -333,13 +333,13 @@ function editEmbed(message) {
 		}
 	}
 	try {
+		var embed = new Discord.RichEmbed(message.embeds[0])
 		if (listJoueurs.length) {
-			var embed = new Discord.RichEmbed(message.embeds[0])
-			.setDescription(`avec: ${listToString}`);			
+			embed.setDescription(`avec: ${listToString}`);			
 		} else {
-			var embed = new Discord.RichEmbed(message.embeds[0])
-			.setDescription(``);
+			embed.setDescription(``);
 		}
+		embed.fields["Places restantes:"]=(`Places restantes:`,`${10-listJoueurs.length}`, true);
 		message.edit(embed);
 	} catch (error) {
 		console.log(error);
