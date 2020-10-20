@@ -352,6 +352,13 @@ function editEmbed(message) {
 		console.log(embed.fields[0]);
 		console.log('nom du premier field:');
 		console.log(embed.fields[0].name);
+		console.log('nom du deuxième field:');
+		console.log(embed.fields[1].name);
+
+		embed.fields.forEach(element => {
+			console.log('test:');
+			console.log(element.name);
+		});
 		// message.embed[0]
 			// console.log(`fields: ${element}`);
 			// console.log(`fields name: ${element.name}`);
