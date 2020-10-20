@@ -20,25 +20,26 @@ client.on('ready',async m => {
 	  });
 });
 
-if (gameSheduled) {
-	console.log('A Game is sheduled!');
-	try {
-		// cron shedule
-			cron.schedule(`${minutes} ${heures} * * *`, () => {
-				gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure`);
-				deleteGame();
-				console.log('NOW!!!!!!');
-			}, {
-				scheduled: true,
-				timezone: "Europe/Riga"
-			});
-	} catch (error) {
-		let date_ob = new Date();
-		let date = ("0" + date_ob.getDate()).slice(-2);
-		let hours = date_ob.getHours();
-		let minutes = date_ob.getMinutes();
-		console.log(`error at ${hours}:${minutes} \n${error}`);
-	}
+
+try {
+	// cron shedule
+	cron.schedule(`${minutes} ${heures} * * *`, () => {
+		if (gameSheduled) {
+			gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure`);
+			deleteGame();
+			console.log('NOW!!!!!!');
+		}
+		console.log('No game sheduled!');
+		}, {
+			scheduled: true,
+			timezone: "Europe/Riga"
+		});
+} catch (error) {
+	let date_ob = new Date();
+	let date = ("0" + date_ob.getDate()).slice(-2);
+	let hours = date_ob.getHours();
+	let minutes = date_ob.getMinutes();
+	console.log(`error at ${hours}:${minutes} \n${error}`);
 }
 
 client.on('message', async message => {
@@ -70,7 +71,7 @@ if (args) console.log(`With argu ${args}`);
 				var match = time.match(regex);
 				if (match==null) {
 					message.channel.send(`Format d'heure invalide!`);
-					return message.channel.send("il doit être sous la forme ```js 0-23:0-60```");
+					return message.channel.send("l'heure doit être sous la forme ```0-23:0-60```");
 				}
 				console.log(`format d'heure valide`);
 				console.log(`arg heure: ${time}`);
@@ -224,6 +225,8 @@ client.on('messageReactionRemove', async (reaction, user) => {
 //Création d'une sessions de jeu
 function createGame(message, inputHeures, inputMinutes) {
 	var emoji = '764917952600342539';
+	var valid = cron.validate(`${inputMinutes} ${inputHeures} * * *`);
+	console.log(valid);
 	heures = inputHeures;
 	minutes = inputMinutes;
 
