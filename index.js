@@ -22,6 +22,10 @@ client.on('ready',async m => {
 
 
 try {
+	//test cron
+	cron.schedule('* * * * *', () => {
+		console.log('running a task every minute');
+	});
 	// cron shedule
 	cron.schedule(`${minutes} ${heures} * * *`, () => {
 		if (gameSheduled) {
