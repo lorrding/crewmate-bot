@@ -109,6 +109,14 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 	if (user.bot) return;
 
+	// si c'est l'auteur du message, on ignore
+	console.log(`user.id:${user.id} , author:${author}`);
+	if(user.id == author) {
+		reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!");
+		reaction.remove(user);
+		return console.log('author already un list, ignoring...');
+	}
+
 	if (reaction.message.id != gameMessage) {
 		return console.log('Wrong message. ignoring...');
 	}
@@ -124,32 +132,20 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		return console.log('Max player reached, removing reaction.');
 	}
 
-	
-	// si c'est l'auteur du message, on ignore
-	console.log(`user.id:${user.id} , author:${author}`);
-	if (user.id != author) {
-		// on vérifie que la liste n'est pas vide
-		if (listJoueurs.length) {
-			//si il est déjà dans la liste de jeu, on ignore
-			if (listJoueurs.find(user => user == user.username)) {
-				try {		
-					reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur");
-				} catch (error) {
-					console.log(error);
-				}
-				return console.log('user already un list, ignoring...');
-			}
-		} else {
+	// on vérifie que la liste n'est pas vide
+	if (listJoueurs.length) {
+		//si il est déjà dans la liste de jeu, on ignore
+		if (listJoueurs.find(user => user == user.username)) {
 			try {		
-				reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!");
-				reaction.remove(user);
+				reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur");
 			} catch (error) {
 				console.log(error);
 			}
-			return console.log('author already un list, ignoring...');
+			return console.log('user already un list, ignoring...');
 		}
 	}
 	
+	//tout les if sont passé, c'est good
 	// ajout dans la liste + ajout du role
 	try {
 		let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
@@ -248,7 +244,7 @@ function createGame(message, heure) {
 function editEmbed(message) {
 	var listToString ="";
 	for (let i = 0; i < listJoueurs.length; i++) {
-		if (listJouers.length > 1) {
+		if (listJoueurs.length > 1) {
 			if (i >= listJoueurs.length-1) {
 				listToString+=`et ${array[i]}.`;
 			} else {
