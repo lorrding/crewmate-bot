@@ -66,7 +66,8 @@ if (args) console.log(`With argu ${args}`);
 					msg.delete(5000);
 				});
 		}
-		if (message.member.roles.highest.comparePositionTo(message.guild.roles.find(t => t.name == 'Trusted player'))) {
+		// if (message.member.roles.highest.comparePositionTo(message.guild.roles.find(t => t.name == 'Trusted player'))) {
+		if (message.member.hasPermission('SEND_MESSAGES')) {
 			console.log('role : checked');
 		}
 
