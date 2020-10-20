@@ -7,6 +7,7 @@ const cron = require('node-cron');
 gameSheduled = false;
 gameMessage = new Discord.message;
 author = new Discord.member;
+grantedRole = new Discord.role;
 // gameChannel = "767812168745484328";
 listJoueurs = [];
 heures = 0;
@@ -18,7 +19,7 @@ client.on('ready',async m => {
 	client.user.setActivity("Among Us", {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
-	  });
+	});
 });
 
 
@@ -43,7 +44,7 @@ try {
 	});
 } catch (error) {
 	let date_ob = new Date();
-	let date = ("0" + date_ob.getDate()).slice(-2);
+	// let date = ("0" + date_ob.getDate()).slice(-2);
 	let hours = date_ob.getHours();
 	let minutes = date_ob.getMinutes();
 	console.log(`error at ${hours}:${minutes} \n${error}`);
@@ -61,16 +62,28 @@ if (args) console.log(`With argu ${args}`);
 // game
 	if (command === "game") {
 		if (!args.length) {
-			return message.channel.send("Arguments manquant!\n```-h | --heure -> paramétrage de l'heure\n-d | --delete -> suppression de la game en court```");
+			return message.channel.send("Arguments manquant!\n```-h | --heure -> paramétrage de l'heure\n-d | --delete -> suppression de la game en court```")
+				.then(msg=> {
+					msg.delete(5000);
+				});
+		}
+		if (message.member.roles.highest.comparePositionTo(message.guild.roles.find(t => t.name == 'Trusted player'))) {
+			console.log('role : checked');
 		}
 		args.forEach(function(element, index) {
 			// paramétrage de l'heure
 			if (element == "-h" || element == "--heure") {
 				if (gameSheduled) {
-					return message.channel.send(`Une game est déjà prévu!`);
+					return message.channel.send(`Une game est déjà prévu!`)
+						.then(msg=> {
+							msg.delete(5000);
+						});
 				}
 				if (index >= args.length-1) {
-					return message.channel.send(`Il manque l'heure de le la session de jeu!`);
+					return message.channel.send(`Il manque l'heure de le la session de jeu!`)
+						.then(msg=> {
+							msg.delete(5000);
+						});
 				}
 				let argument = args.shift();
 				let regex = /^([0-9]|0[0-9]|1[0-9]|2[0-3])[:|h][0-5][0-9]$/;
@@ -125,8 +138,7 @@ if (args) console.log(`With argu ${args}`);
 		} else {
 		message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(nop=>{message.channel.send("Rien à raconter...")});
 		}
-	}
-	
+	}	
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
@@ -159,7 +171,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 	if (listJoueurs.length >= 10) {
 		reaction.message.channel.send("Nombre de joueurs max atteint!");
-		reaction.message.channel.send("<:AU_why:765273043962298410>");
+		reaction.message.channel.send("<:AU_why:765273043962298410>")
+			.then(msg=> {
+				msg.delete(7000);
+			});
 		try {
 			reaction.remove(user);
 		} catch (error) {
@@ -173,7 +188,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		//si il est déjà dans la liste de jeu, on ignore
 		if (listJoueurs.find(user => user == user.username)) {
 			try {		
-				reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)");
+				reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)")
+					.then(msg=> {
+						msg.delete(5000);
+					});
 			} catch (error) {
 				console.log(error);
 			}
@@ -227,7 +245,10 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		}
 	} else {
 		try {
-			reaction.message.channel.send("Vous n'êtes pas encore dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)");
+			reaction.message.channel.send("Vous n'êtes pas encore dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)")
+				.then(msg=> {
+					msg.delete(5000);
+				});
 		} catch (error) {
 			console.log(error);
 		}
@@ -252,7 +273,10 @@ function createGame(message, inputHeures, inputMinutes) {
 		embed.addField(`Places restantes`,`${10-listJoueurs.length}`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
-		message.channel.send(`Erreur lors de la création de l'embed.`);
+		message.channel.send(`Erreur lors de la création de l'embed.`)
+			.then(msg=> {
+				msg.delete(5000);
+			});
 	}
 
 	//tout est good on post l'embed
@@ -273,13 +297,19 @@ function createGame(message, inputHeures, inputMinutes) {
 		console.log(`Game sheduled ?: ${gameSheduled}`);
 	} catch (error) {
 		console.log(error);
-		message.channel.send('missing permissions to react or send embed');	
+		message.channel.send('missing permissions to react or send embed')
+			.then(msg=> {
+				msg.delete(5000);
+			});
 	}
 	try {
 		message.delete();
 	} catch (error) {
 		console.log(error);
-		message.channel.send('missing permissions to delete author message');
+		message.channel.send('missing permissions to delete author message')
+			.then(msg=> {
+				msg.delete(5000);
+			});
 	}
 }
 
@@ -313,7 +343,8 @@ function editEmbed(message) {
 }
 
 //suppression de la session de jeu après le timer.
-function deleteGame(message) {
+function deleteGame() {
+
 	gameMessage.channel.send(`Delete de game: work in progess`);
 	// client.channels.get(gameChannel).send(`Delete de game: work in progess`);
 }
