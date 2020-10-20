@@ -138,6 +138,20 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	reaction.message.channel.send(`liste des joueurs: ${listJoueurs}`);
 });
 
+client.on('messageReactionRemove', async (reaction, user) => {
+	if (reaction.partial) {
+		try {
+			await reaction.fetch();
+		} catch (error) {
+			console.error('Something went wrong when fetching the message: ', error);
+			return;
+		}
+	}
+
+	if (listJoueurs.find(user => user == user.username)) {
+		//user dans la liste
+	} else return console.log('Erreur, user inconnu de la liste des joueurs');
+});
 
 //Création d'une sessions de jeu
 function createGame(message, heure) {
@@ -188,9 +202,7 @@ function editEmbed(message) {
 		console.log('on est dans le try');
 		let embed = new Discord.RichEmbed()
 			.setDescription(`liste des joueurs: ${listJoueurs}`);
-		console.log(message.embeds);
-		console.log(message.embeds[0]);
-		// message.embeds[0].edit(embed)
+		message.embeds[0].edit(embed);
 	} catch (error) {
 		console.log(error);
 	}
