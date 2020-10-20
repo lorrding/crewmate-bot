@@ -180,7 +180,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		try {
 			let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
 			let member = reaction.message.guild.members.find(r => r.id === user.id);
-			member.remove(role);
+			member.removeRole(role);
 			//role removed, updating list...
 			listJoueurs.splice(listJoueurs.indexOf(user.username), 1);
 			editEmbed(reaction.message);
