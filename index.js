@@ -342,7 +342,7 @@ function editEmbed(message) {
 		} else {
 			embed.setDescription(``);
 		}
-		console.log(message.embed[0].fieds);
+		console.log(message.embeds[0].fieds);
 		// embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
 		message.edit(embed);
 	} catch (error) {
