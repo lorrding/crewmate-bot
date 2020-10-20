@@ -310,7 +310,7 @@ function editEmbed(message) {
 
 //suppression de la session de jeu après le timer.
 function deleteGame(message) {
-	gameMessage.channel.send(`Delete de game: work in progess`);
+	client.channels.get(gameChannel).send(`Delete de game: work in progess`);
 }
 
 // random hexa
