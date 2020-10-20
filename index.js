@@ -154,8 +154,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	} catch (error) {
 		console.log(error);
 	}
-	
-	reaction.message.channel.send(`liste des joueurs: ${listJoueurs}`);
 });
 
 client.on('messageReactionRemove', async (reaction, user) => {
@@ -174,6 +172,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		return console.log('Wrong message. ignoring...');
 	}
 
+	console.log(`liste des joueurs: ${listJoueurs}, user à trouver: ${user.username}`);	
 	if (listJoueurs.find(user => user == user.username)) {
 		// user dans la liste, on remove...
 		console.log('User un list, removing...');
