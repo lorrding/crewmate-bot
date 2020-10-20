@@ -41,9 +41,6 @@ if (gameSheduled) {
 	}
 }
 
-
-
-
 client.on('message', async message => {
 	
 if (!message.content.startsWith(config.prefix) || message.author.bot) return;
@@ -75,16 +72,13 @@ if (args) console.log(`With argu ${args}`);
 					message.channel.send(`Format d'heure invalide!`);
 					return message.channel.send("il doit être sous la forme ```js 0-23:0-60```");
 				}
+				console.log(`format d'heure valide`);
 				console.log(`arg heure: ${time}`);
 				time = time.split(":");
-				var tempHeures = time.shift();
-				var tempMinutes = time.shift();
+				let tempHeures = time.shift();
+				let tempMinutes = time.shift();
 				console.log(`resultat heure: ${tempHeures},resultat minutes: ${tempMinutes}`);
-				// if (tempHeures > 23 || tempHeures < 0 || tempMinutes > 59 || tempMinutes < 0) {
-					
-				// }
-				console.log(`format d'heure valide`);
-				createGame(message, heures, minutes);
+				createGame(message, tempHeures, tempMinutes);
 				return 0;
 			}
 		});
