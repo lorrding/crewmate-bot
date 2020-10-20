@@ -339,7 +339,8 @@ function editEmbed(message) {
 		} else {
 			embed.setDescription(``);
 		}
-		embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
+		console.log(message.embed[0].fieds);
+		// embed.addField(`Places restantes:`,`${10-listJoueurs.length}`, true);
 		message.edit(embed);
 	} catch (error) {
 		console.log(error);
