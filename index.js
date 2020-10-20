@@ -108,6 +108,8 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 	if (user.bot) return;
 
+	if (reaction.id != "764917952600342539") return;
+
 	// si c'est l'auteur du message, on ignore
 	if(user.id == author) {
 		reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!");
