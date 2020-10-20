@@ -54,6 +54,9 @@ client.on('message', async message => {
 
 // game
 	if (command === "test") {
+		if (gameSheduled) {
+			return message.channel.send(`Une game est déjà prévu!`);
+		}
 		if (!args.length) {
 			return message.channel.send(`Il manque des arguments pour créer l'évenement!`);
 		}
@@ -228,7 +231,7 @@ function createGame(message, inputHeures, inputMinutes) {
 		
 		embed.setColor(getHexa());
 		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
-		embed.addField(`Ce soir à:`,`${heure}`);
+		embed.addField(`Ce soir à:`,`${heures}h${minutes}`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`);
