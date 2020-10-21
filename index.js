@@ -7,15 +7,7 @@ const cron = require('node-cron');
 
 dev = false;
 
-gameSheduled = false;
-gameMessage = new Discord.Message();
-author = new Discord.User();
-//grantedRole = new Discord.Role();
-// gameChannel = "767812168745484328";
-listJoueurs = [];
-heures = 0;
-minutes = 0;
-
+setGlobales();
 
 client.on('ready',async m => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
@@ -72,6 +64,7 @@ if (args) console.log(`With argu ${args}`);
 	if (dev) {
 		return console.log('MODE DEV, ignoring...');
 	}
+
 // game
 	if (command === "game" || command === "g") {
 		if (!args.length) {
@@ -86,10 +79,10 @@ if (args) console.log(`With argu ${args}`);
 		}
 
 		args.forEach(function(element, index) {
-			// paramétrage de l'heure
+			// création d'une partie
 			if (element == "-h" || element == "--heure") {
 				if (gameSheduled) {
-					message.channel.send(`Une game est déjà prévu!`)
+					message.channel.send(`Une partie est déjà prévu!`)
 						.then(msg=> {
 							msg.delete(5000);
 						});
@@ -107,16 +100,16 @@ if (args) console.log(`With argu ${args}`);
 				let time = args.shift();
 				var match = time.match(regex);
 				if (match==null) {
-					message.channel.send("Format d'heure invalide \nL'heure doit être sous la forme ```0-23:0-60```")
+					message.channel.send("Format d'heure invalide \nL'heure doit être sous la forme ```0-23[h|:]0-60```")
 						.then(msg=> {
 							msg.delete(5000);
 						});
 					return message.delete();
 				}
-				console.log(`format d'heure valide`);
+				console.log(`format d'heure?: valide`);
 				if (time.search("h")) {
 					time = time.split("h");	
-				} else {
+				} else if (time.search(":")) {
 					time = time.split(":");
 				}
 				let tempHeures = time.shift();
@@ -125,8 +118,49 @@ if (args) console.log(`With argu ${args}`);
 				return 0;
 			}
 
+			//suppression d'un partie en court
 			if (element == "-d" || element == "--delete") {
-				console.log('delete...');
+				// on check si une game est en court
+				if (!gameSheduled) {
+					message.channel.send("Aucune partie n'est prévue!")
+						.then(msg=> {
+							msg.delete(5000);
+						});
+					return message.delete();
+				}
+
+				// on check si c'est bien l'auteur de la game ou un admin
+				if (message.author.id != author.id || !message.member.hasPermission('ADMINISTRATOR')) {
+					message.channel.send("Vous n'êtes pas à l'origine de cette partie ou n'avez pas les droits pour les annuler!")
+						.then(msg=> {
+							msg.delete(5000);
+						});
+					return message.delete();
+				}
+
+				//c'est good, on suprime
+				message.delete();
+				deleteGame();
+
+				// message.channel.send("Confirmer l'annulation de la partie ?\n(réagissez avec <:AU_thumbsup:764917952600342539> pour valider ou <:AU_why:765273043962298410> pour annuler)")
+				// 	.then(msg => {
+				// 		let emojiYes = '764917952600342539';
+				// 		let emojiNo = '765273043962298410';
+				// 		msg.react(emojiYes);
+				// 		msg.react(emojiNo);
+				// 		const filter = (reaction, user) => reaction.emoji.id === '764917952600342539' && user.id === message.author.id;
+				// 		const collector = message.createReactionCollector(filter, { time: 10000 });
+				// 		collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
+				// 		collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+
+				// 		// var filter = (reaction, user) => {
+				// 		// 	return reaction.emoji.id === '764917952600342539' || reaction.emoji.id === '765273043962298410' && user.id === message.author.id;
+				// 		// };
+				// 		// msg.awaitReactions(filter, { time: 10000 })
+				// 		// 	.then(collected => console.log(collected.first()))
+  				// 		// 	.catch(console.error);
+				// 	});
+
 			}
 		});
 	}
@@ -174,7 +208,13 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		}
 	}
 
-	if (user.bot) return;
+	//if bot, then don't
+	if (user.bot) return 0;
+
+	//if wrong message, then don't
+	if (reaction.message.id != gameMessage.id) {
+		return 0;
+	}
 
 	//wrong reaction
 	if (reaction.emoji.id != "764917952600342539") return;
@@ -187,10 +227,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
 			});
 		reaction.remove(user);
 		return console.log('author already un list, ignoring...');
-	}
-
-	if (reaction.message.id != gameMessage.id) {
-		return console.log('Wrong message. ignoring...');
 	}
 
 	if (listJoueurs.length >= 10) {
@@ -287,7 +323,7 @@ function createGame(message, inputHeures, inputMinutes) {
 
 	var emoji = '764917952600342539';
 	var valid = cron.validate(`${inputMinutes} ${inputHeures} * * *`);
-	console.log(`valid cron format ?: ${valid}`);
+	console.log(`Cron format ?: ${valid}`);
 	heures = inputHeures;
 	minutes = inputMinutes;
 
@@ -377,11 +413,58 @@ function editEmbed(message) {
 
 //suppression de la session de jeu après le timer.
 function deleteGame() {
-	if (message.member.roles.highest.comparePositionTo(message.guild.roles.find(t => t.name == 'Trusted player'))) {
-		console.log('role : checked');
+	console.log('suppression de la partie en court...');
+	var msg = gameMessage.channel.send(`Suppression de la partie...`)
+		.then(msg=> {
+			msg.delete(3000);
+		});
+	
+	// on vire le role à tout les joueurs
+	try {
+		// on retire le rôle à l'auteur de la partie:
+		let role = gameMessage.guild.roles.find(r => r.name === "joueurDuSoir");
+		let member = gameMessage.guild.members.find(r => r.id === author.id);
+		member.removeRole(role);
+		
+		// puis à toute la liste de joueurs
+		console.log(listJoueurs);
+		listJoueurs.forEach(joueurs => {
+			console.log(joueurs);
+			let role = gameMessage.guild.roles.find(r => r.name === "joueurDuSoir");
+			let member = gameMessage.guild.members.find(r => r.user.username === joueurs);
+			member.removeRole(role);
+		});
+	} catch (error) {
+		console.log(error);
 	}
-	gameMessage.channel.send(`Delete de game: work in progess`);
-	// client.channels.get(gameChannel).send(`Delete de game: work in progess`);
+		
+	try {
+		gameMessage.channel.send(`Suppression terminé!`)
+		.then(msg2=> {
+			msg2.delete(3000);
+		});
+		gameMessage.delete();
+	} catch (error) {
+		console.log(error);
+		gameMessage.channel.send("Erreur lors de la suppression des message!")
+		.then(msg=> {
+			msg.delete(5000);
+		});
+	}
+	//on reset les variables
+	setGlobales();
+	return 0;
+}
+
+// définition / reset des variables globales
+function setGlobales() {
+	gameSheduled = false;
+	gameMessage = new Discord.Message();
+	author = new Discord.User();
+	//grantedRole = new Discord.Role();
+	listJoueurs = [];
+	heures = 0;
+	minutes = 0;	
 }
 
 // random hexa
