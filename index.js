@@ -60,9 +60,9 @@ console.log(`Command ${command} by ${message.author.username}#${message.author.d
 if (args) console.log(`With argu ${args}`);
 
 // activate/desactivate for dev
-	if (command === "dev") {
+	if (command === "dev" && message.author.id == "224230450099519488") {
 		if (dev) {
-			message.channel.send(`passage en mode normal.`);
+			message.channel.send(`retour en mode normal.`);
 			dev = false;
 		} else {
 			message.channel.send(`Ok, passage en dev mode.`);
@@ -284,7 +284,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 
 //Création d'une sessions de jeu
 function createGame(message, inputHeures, inputMinutes) {
-	
+
 	var emoji = '764917952600342539';
 	var valid = cron.validate(`${inputMinutes} ${inputHeures} * * *`);
 	console.log(`valid cron format ?: ${valid}`);
