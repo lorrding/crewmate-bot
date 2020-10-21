@@ -5,6 +5,8 @@ const config = require("./config.json");
 const connect = require("./connect.js")
 const cron = require('node-cron');
 
+dev = false;
+
 gameSheduled = false;
 gameMessage = new Discord.Message();
 author = new Discord.User();
@@ -57,7 +59,19 @@ const command = args.shift().toLowerCase();
 console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
 if (args) console.log(`With argu ${args}`);
 
-
+// activate/desactivate for dev
+	if (command === "dev") {
+		if (dev) {
+			message.channel.send(`passage en mode normal.`);
+			dev = false;
+		} else {
+			message.channel.send(`Ok, passage en dev mode.`);
+			dev = true;
+		}
+	}
+	if (dev) {
+		return console.log('MODE DEV, ignoring...');
+	}
 // game
 	if (command === "game" || command === "g") {
 		if (!args.length) {
@@ -149,6 +163,9 @@ if (args) console.log(`With argu ${args}`);
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
+	if (dev) {
+		return console.log('MODE DEV, ignoring...');
+	}
 	if (reaction.partial) {
 		try {
 			await reaction.fetch();
@@ -221,6 +238,9 @@ client.on('messageReactionAdd', async (reaction, user) => {
 });
 
 client.on('messageReactionRemove', async (reaction, user) => {
+	if (dev) {
+		return console.log('MODE DEV, ignoring...');
+	}
 	if (reaction.partial) {
 		try {
 			await reaction.fetch();
@@ -264,6 +284,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 
 //Création d'une sessions de jeu
 function createGame(message, inputHeures, inputMinutes) {
+	
 	var emoji = '764917952600342539';
 	var valid = cron.validate(`${inputMinutes} ${inputHeures} * * *`);
 	console.log(`valid cron format ?: ${valid}`);
