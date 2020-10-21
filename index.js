@@ -343,7 +343,7 @@ function createGame(message, inputHeures, inputMinutes) {
 		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
 		embed.addField(`Places restantes:`,`9`, true);
-		embed.setImage(`https://i.imgur.com/BfuApoI.png`);
+		embed.setImage(`https://i.imgur.com/8sd2fgo.png`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`)
@@ -396,7 +396,10 @@ function editEmbed(message) {
 	for (let i = 0; i < listJoueurs.length; i++) {
 		if (listJoueurs.length > 1) {
 			if (i >= listJoueurs.length-1) {
-				listToString+=`et ${listJoueurs[i]}.`;
+				//on remove ", "
+				listToString.slice(0, -2);
+				// et on met le dernier élément à la place 
+				listToString+=` et ${listJoueurs[i]}.`;
 			} else {
 				listToString+=`${listJoueurs[i]}, `;
 			}			
