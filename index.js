@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 const config = require("./config.json");
+const connect = require("./connect.js")
 const cron = require('node-cron');
 
 gameSheduled = false;
@@ -22,9 +23,8 @@ client.on('ready',async m => {
 	});
 });
 
-
+//cron shedule
 try {
-	// cron shedule
 	cron.schedule(`* * * * *`, () => {
 		if (gameSheduled) {
 			let d = new Date();
@@ -59,7 +59,7 @@ if (args) console.log(`With argu ${args}`);
 
 
 // game
-	if (command === "game") {
+	if (command === "game" || command === "g") {
 		if (!args.length) {
 			message.channel.send("Arguments manquant!\n```-h | --heure -> paramétrage de l'heure\n-d | --delete -> suppression de la game en court```")
 				.then(msg=> {
@@ -67,7 +67,6 @@ if (args) console.log(`With argu ${args}`);
 				});
 			return message.delete();
 		}
-		// if (message.member.roles.highest.comparePositionTo(message.guild.roles.find(t => t.name == 'Trusted player'))) {
 		if (message.member.hasPermission('SEND_MESSAGES')) {
 			console.log('role : checked');
 		}
@@ -339,8 +338,6 @@ function editEmbed(message) {
 	try {
 		var embed = new Discord.RichEmbed(message.embeds[0])
 		embed.fields = [];
-		console.log('outside of if:');
-		console.log(listJoueurs.length);
 		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
 		if (listJoueurs.length) {
 			embed.setDescription(`avec: ${listToString}`);
@@ -378,4 +375,4 @@ function getRandom(min, max) {
 	return Math.floor(Math.random() * (max - min +1)) + min;
 }
 
-client.login(process.env.BOT_TOKEN);
+connect.login(client);
