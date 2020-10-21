@@ -6,7 +6,7 @@ const connect = require("./connect.js")
 const cron = require('node-cron');
 
 dev = false;
-
+pingMsg = new Discord.Message();
 setGlobales();
 
 client.on('ready',async m => {
@@ -19,20 +19,20 @@ client.on('ready',async m => {
 
 //cron shedule
 try {
-	cron.schedule(`* * * * *`, () => {
+	var task = cron.schedule(`* * * * *`, () => {
 		if (gameSheduled) {
 			let d = new Date();
 			var h = d.getUTCHours()+2;
 			var m = d.getMinutes();
 			if (h == heures && m == minutes) {
-				gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure!`);
-				// client.channels.get(gameChannel).send(`<@&767870145091600405>, c'est l'heure!`);
+				pingMsg = gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure de jouer!\n Venez dans le vocal et rejoignez la game`);
 				console.log('NOW!!!!!!');
-				return deleteGame();
+				console.log('game is launched, deleting game object');
+				return setTimeout(() => {  deleteGame(); }, 1000);
 			}
 		}
 	}, {
-		scheduled: true,
+		scheduled: false,
 		timezone: "Europe/Paris"
 	});
 } catch (error) {
@@ -54,11 +54,19 @@ if (args) console.log(`With argu ${args}`);
 // activate/desactivate for dev
 	if (command === "dev" && message.author.id == "224230450099519488") {
 		if (dev) {
-			message.channel.send(`retour en mode normal.`);
 			dev = false;
+			message.channel.send(`retour en mode normal.`)
+				.then(msg=> {
+					msg.delete(5000);
+				});
+			message.delete();
 		} else {
-			message.channel.send(`Ok, passage en dev mode.`);
 			dev = true;
+			message.channel.send(`Ok, passage en dev mode.`)
+				.then(msg=> {
+					msg.delete(5000);
+				});
+			message.delete();
 		}
 	}
 	if (dev) {
@@ -335,7 +343,7 @@ function createGame(message, inputHeures, inputMinutes) {
 		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
 		embed.addField(`Places restantes:`,`9`, true);
-		embed.setImage(`https://i.imgur.com/DrX4YVO.png`);
+		embed.setImage(`https://i.imgur.com/BfuApoI.png`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
 	} catch (error) {
 		message.channel.send(`Erreur lors de la création de l'embed.`)
@@ -357,8 +365,12 @@ function createGame(message, inputHeures, inputMinutes) {
 		let role = message.guild.roles.find(r => r.name === "joueurDuSoir");
 		let member = message.guild.members.find(r => r.id === message.author.id);
 		member.addRole(role);
+
 		// on lance cron.
+		task.start();
 		gameSheduled = true;
+		//delete l'ancienne game si elle existe...
+		// delOldGame();
 		console.log(`Game sheduled ?: ${gameSheduled}`);
 	} catch (error) {
 		console.log(error);
@@ -418,23 +430,30 @@ function deleteGame() {
 		.then(msg=> {
 			msg.delete(3000);
 		});
+
+	// on arrête cron
+	console.log('stoping cron shedule..');
+	task.stop();
 	
 	// on vire le role à tout les joueurs
 	try {
-		// on retire le rôle à l'auteur de la partie:
-		let role = gameMessage.guild.roles.find(r => r.name === "joueurDuSoir");
-		let member = gameMessage.guild.members.find(r => r.id === author.id);
-		member.removeRole(role);
 		
-		// puis à toute la liste de joueurs
-		console.log(listJoueurs);
+		// on retire le rôle à toute la liste de joueurs:
 		listJoueurs.forEach(joueurs => {
-			console.log(joueurs);
 			let role = gameMessage.guild.roles.find(r => r.name === "joueurDuSoir");
 			let member = gameMessage.guild.members.find(r => r.user.username === joueurs);
 			member.removeRole(role);
 		});
+		
+		// puis à l'auteur de la partie:
+		let role = gameMessage.guild.roles.find(r => r.name === "joueurDuSoir");
+		let member = gameMessage.guild.members.find(r => r.id === author.id);
+		member.removeRole(role);
 	} catch (error) {
+		gameMessage.channel.send("Erreur lors de la suppression du rôles au joueurs!")
+		.then(msg=> {
+			msg.delete(5000);
+		});
 		console.log(error);
 	}
 		
@@ -443,7 +462,6 @@ function deleteGame() {
 		.then(msg2=> {
 			msg2.delete(3000);
 		});
-		gameMessage.delete();
 	} catch (error) {
 		console.log(error);
 		gameMessage.channel.send("Erreur lors de la suppression des message!")
@@ -451,8 +469,13 @@ function deleteGame() {
 			msg.delete(5000);
 		});
 	}
-	//on reset les variables
+	// on log la game
+	// logOldGame(pingMsg);
+	//puis on reset les variables dans la fonction
+	gameMessage.delete();
 	setGlobales();
+	// setTimeout(() => {  pingMsg.delete(); }, 60000);
+	pingMsg = new Discord.Message();
 	return 0;
 }
 
@@ -461,10 +484,37 @@ function setGlobales() {
 	gameSheduled = false;
 	gameMessage = new Discord.Message();
 	author = new Discord.User();
-	//grantedRole = new Discord.Role();
 	listJoueurs = [];
 	heures = 0;
 	minutes = 0;	
+}
+
+function logOldGame(pingMsg) {
+	console.log('on log les obj');
+	oldGame = gameMessage;
+	oldPingMsg = pingMsg;
+}
+
+function delOldGame() {
+	if (typeof oldGame === 'undefined') {
+		//première game, pas de log à delete, on crée les obj
+		oldGame = new Discord.Message();
+		oldPingMsg = new Discord.Message();
+		return 0;
+	} else {
+		oldGame.delete();
+		oldPingMsg.delete();
+		oldGame = new Discord.Message();
+		oldPingMsg = new Discord.Message();
+	}
+}
+
+async function sleep(ms) {
+	try {
+		await sleep(ms);
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 // random hexa
