@@ -88,7 +88,7 @@ if (args) console.log(`With argu ${args}`);
 
 		args.forEach(function(element, index) {
 			// création d'une partie
-			if (element == "-h" || element == "--heure") {
+			if (element == "-h" || element == "-heure") {
 				if (gameSheduled) {
 					message.channel.send(`Une partie est déjà prévu!`)
 						.then(msg=> {
@@ -108,28 +108,33 @@ if (args) console.log(`With argu ${args}`);
 				let time = args.shift();
 				var match = time.match(regex);
 				if (match==null) {
+					console.log('invalid time format, return');
 					message.channel.send("Format d'heure invalide \nL'heure doit être sous la forme ```0-23[h|:]0-60```")
-						.then(msg=> {
-							msg.delete(5000);
-						});
+					.then(msg=> {
+						msg.delete(5000);
+					});
 					return message.delete();
 				}
-				console.log(`format d'heure?: valide`);
-				if (time.search("h")) {
+				console.log(`format d'heure ${time}: valide`);
+				if (time.search("h") != -1) {
+					console.log('detecting h..');
 					time = time.split("h");	
-				} else if (time.search(":")) {
+				} else {
+					console.log('no h.., using :');
 					time = time.split(":");
 				}
 				let tempHeures = time.shift();
 				let tempMinutes = time.shift();
+				console.log(`heures: ${tempHeures}, minutes: ${tempMinutes}`);
 				createGame(message, tempHeures, tempMinutes);
 				return 0;
 			}
 
 			//suppression d'un partie en court
-			if (element == "-d" || element == "--delete") {
+			if (element == "-d" || element == "-delete") {
 				// on check si une game est en court
 				if (!gameSheduled) {
+					console.log('no game found...');
 					message.channel.send("Aucune partie n'est prévue!")
 						.then(msg=> {
 							msg.delete(5000);
@@ -139,6 +144,7 @@ if (args) console.log(`With argu ${args}`);
 
 				// on check si c'est bien l'auteur de la game ou un admin
 				if (message.author.id != author.id || !message.member.hasPermission('ADMINISTRATOR')) {
+					console.log('nole : not admin or creator');
 					message.channel.send("Vous n'êtes pas à l'origine de cette partie ou n'avez pas les droits pour les annuler!")
 						.then(msg=> {
 							msg.delete(5000);
@@ -149,6 +155,7 @@ if (args) console.log(`With argu ${args}`);
 				//c'est good, on suprime
 				message.delete();
 				deleteGame();
+				return 0;
 
 				// message.channel.send("Confirmer l'annulation de la partie ?\n(réagissez avec <:AU_thumbsup:764917952600342539> pour valider ou <:AU_why:765273043962298410> pour annuler)")
 				// 	.then(msg => {
@@ -170,6 +177,14 @@ if (args) console.log(`With argu ${args}`);
 				// 	});
 
 			}
+
+			console.log('no arguments found for -g');
+			message.channel.send(`argument invalide ou non détecté!`)
+				.then(msg=> {
+					msg.delete(5000);
+				});
+			return message.delete();
+
 		});
 	}
 
@@ -187,7 +202,7 @@ if (args) console.log(`With argu ${args}`);
 
 // help
 	if (command === "help") {
-		message.channel.send("Work in progress");
+		message.channel.send("Soon..");
 	}
 
 // say 
@@ -201,10 +216,13 @@ if (args) console.log(`With argu ${args}`);
 		} else {
 		message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(nop=>{message.channel.send("Rien à raconter...")});
 		}
-	}	
+	}
+
+	console.log('testing1');
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
+	console.log('test2');
 	if (dev) {
 		return console.log('MODE DEV, ignoring...');
 	}
@@ -212,7 +230,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		try {
 			await reaction.fetch();
 		} catch (error) {
-			throw console.error('Something went wrong when fetching the message: ', error);
+			return console.log(`Something went wrong when fetching the message: ${error}`);
 		}
 	}
 
@@ -246,7 +264,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		try {
 			reaction.remove(user);
 		} catch (error) {
-			throw console.log(error);
+			return console.log(error);
 		}
 		return console.log('Max player reached, removing reaction.');
 	}
@@ -335,13 +353,41 @@ function createGame(message, inputHeures, inputMinutes) {
 	heures = inputHeures;
 	minutes = inputMinutes;
 
+	// check de l'heure pour plus de cohérence...
+	var date = new Date();
+	var embedTime = "";
+	var dateH = date.getUTCHours()+2;
+	if (dateH <= heures) {
+		if (date.getMinutes() < minutes) {
+			embedTime+="Ce ";
+		} else {
+			embedTime+="Demain ";
+		}
+	} else {
+		embedTime+="Demain ";
+	}
+	if (heures >= 18 || embedTime < 3) {
+		embedTime+= "soir";
+	} else if (heures >= 14) {
+		if (embedTime == "Ce ") {
+			embedTime= embedTime.slice(0, -1); 
+			embedTime+= "t aprèm";
+		} else  {
+			embedTime+= "aprèm";
+		}
+	} else if (embedTime >= 12) {
+		embedTime+= "midi";
+	} else {
+		embedTime+= "matin";
+	}
+
 	//création de l'embed
 	try {
 		var embed = new Discord.RichEmbed();
 		
 		embed.setColor(getHexa());
 		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
-		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
+		embed.addField(`${embedTime} à:`,`${heures}h${minutes}`, true);
 		embed.addField(`Places restantes:`,`9`, true);
 		embed.setImage(`https://i.imgur.com/8sd2fgo.png`);
 		embed.setFooter(`Réagissez en dessous pour participer`);
@@ -369,9 +415,9 @@ function createGame(message, inputHeures, inputMinutes) {
 		// on lance cron.
 		task.start();
 		gameSheduled = true;
+		console.log(`Game sheduled ?: ${gameSheduled}`);
 		//delete l'ancienne game si elle existe...
 		// delOldGame();
-		console.log(`Game sheduled ?: ${gameSheduled}`);
 	} catch (error) {
 		console.log(error);
 		message.channel.send('missing permissions to react or send embed')
@@ -397,7 +443,7 @@ function editEmbed(message) {
 		if (listJoueurs.length > 1) {
 			if (i >= listJoueurs.length-1) {
 				//on remove ", "
-				listToString.slice(0, -2);
+				listToString = listToString.slice(0, -2);
 				// et on met le dernier élément à la place 
 				listToString+=` et ${listJoueurs[i]}.`;
 			} else {
@@ -489,7 +535,7 @@ function setGlobales() {
 	author = new Discord.User();
 	listJoueurs = [];
 	heures = 0;
-	minutes = 0;	
+	minutes = 0;
 }
 
 function logOldGame(pingMsg) {
