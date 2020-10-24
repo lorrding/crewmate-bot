@@ -2,8 +2,9 @@ const Discord = require('discord.js');
 
 const client = new Discord.Client();
 const config = require("./config.json");
-const connect = require("./connect.js")
+const connect = require("./connect.js");
 const cron = require('node-cron');
+const Game = require('./Game.js');
 
 dev = false;
 pingMsg = new Discord.Message();
@@ -123,10 +124,22 @@ if (args) console.log(`With argu ${args}`);
 					console.log('no h.., using :');
 					time = time.split(":");
 				}
+
 				let tempHeures = time.shift();
 				let tempMinutes = time.shift();
 				console.log(`heures: ${tempHeures}, minutes: ${tempMinutes}`);
-				createGame(message, tempHeures, tempMinutes);
+
+				// checking time for cron format
+				if (cron.validate(`${tempMinutes} ${tempHeures} * * *`)) {
+					console.log(`Cron format ?: true`);
+					try {
+						gameTest = new Game.Game(message, tempHeures, tempMinutes);
+					} catch (error) {
+						console.log('aled: '+error);
+					}					
+				} else {
+					console.log('invalid cron fromat!');
+				}
 				return 0;
 			}
 
@@ -217,12 +230,9 @@ if (args) console.log(`With argu ${args}`);
 		message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(nop=>{message.channel.send("Rien à raconter...")});
 		}
 	}
-
-	console.log('testing1');
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
-	console.log('test2');
 	if (dev) {
 		return console.log('MODE DEV, ignoring...');
 	}
@@ -236,6 +246,9 @@ client.on('messageReactionAdd', async (reaction, user) => {
 
 	//if bot, then don't
 	if (user.bot) return 0;
+
+	console.log('testing game object:');
+	gameTest.addPlayer(reaction, user);
 
 	//if wrong message, then don't
 	if (reaction.message.id != gameMessage.id) {
@@ -343,98 +356,6 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		}
 	}
 });
-
-//Création d'une sessions de jeu
-function createGame(message, inputHeures, inputMinutes) {
-
-	var emoji = '764917952600342539';
-	var valid = cron.validate(`${inputMinutes} ${inputHeures} * * *`);
-	console.log(`Cron format ?: ${valid}`);
-	heures = inputHeures;
-	minutes = inputMinutes;
-
-	// check de l'heure pour plus de cohérence...
-	var date = new Date();
-	var embedTime = "";
-	var dateH = date.getUTCHours()+2;
-	if (dateH <= heures) {
-		if (date.getMinutes() < minutes) {
-			embedTime+="Ce ";
-		} else {
-			embedTime+="Demain ";
-		}
-	} else {
-		embedTime+="Demain ";
-	}
-	if (heures >= 18 || embedTime < 3) {
-		embedTime+= "soir";
-	} else if (heures >= 14) {
-		if (embedTime == "Ce ") {
-			embedTime= embedTime.slice(0, -1); 
-			embedTime+= "t aprèm";
-		} else  {
-			embedTime+= "aprèm";
-		}
-	} else if (embedTime >= 12) {
-		embedTime+= "midi";
-	} else {
-		embedTime+= "matin";
-	}
-
-	//création de l'embed
-	try {
-		var embed = new Discord.RichEmbed();
-		
-		embed.setColor(getHexa());
-		embed.setAuthor(`${message.author.username} propose de jouer`, `${message.author.displayAvatarURL}`);
-		embed.addField(`${embedTime} à:`,`${heures}h${minutes}`, true);
-		embed.addField(`Places restantes:`,`9`, true);
-		embed.setImage(`https://i.imgur.com/8sd2fgo.png`);
-		embed.setFooter(`Réagissez en dessous pour participer`);
-	} catch (error) {
-		message.channel.send(`Erreur lors de la création de l'embed.`)
-			.then(msg=> {
-				msg.delete(5000);
-			});
-	}
-
-	//tout est good on post l'embed
-	try {
-		message.channel.send(embed)
-			.then(embedMessage => {
-				embedMessage.react(emoji);
-				gameMessage = embedMessage;
-			});
-		author = message.author;
-
-		// c'est ok, on ajoute le rôle à l'auteur..
-		let role = message.guild.roles.find(r => r.name === "joueurDuSoir");
-		let member = message.guild.members.find(r => r.id === message.author.id);
-		member.addRole(role);
-
-		// on lance cron.
-		task.start();
-		gameSheduled = true;
-		console.log(`Game sheduled ?: ${gameSheduled}`);
-		//delete l'ancienne game si elle existe...
-		// delOldGame();
-	} catch (error) {
-		console.log(error);
-		message.channel.send('missing permissions to react or send embed')
-			.then(msg=> {
-				msg.delete(5000);
-			});
-	}
-	try {
-		message.delete();
-	} catch (error) {
-		console.log(error);
-		message.channel.send('missing permissions to delete author message')
-			.then(msg=> {
-				msg.delete(5000);
-			});
-	}
-}
 
 // edition des embeds pour mise à jour de la liste de joueurs
 function editEmbed(message) {
@@ -564,18 +485,6 @@ async function sleep(ms) {
 	} catch (error) {
 		console.log(error);
 	}
-}
-
-// random hexa
-function getHexa() {
-	return '#'+Math.floor(Math.random()*16777215).toString(16);
-}
-
-// random function
-function getRandom(min, max) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min +1)) + min;
 }
 
 connect.login(client);
