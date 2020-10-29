@@ -82,9 +82,9 @@ if (args) console.log(`With argu ${args}`);
 				});
 			return message.delete();
 		}
-		if (message.member.hasPermission('SEND_MESSAGES')) {
-			console.log('role : checked');
-		}
+		// if (message.member.hasPermission('SEND_MESSAGES')) {
+		// 	console.log('role : checked');
+		// }
 
 		args.forEach(function(element, index) {
 			// création d'une partie
@@ -217,12 +217,9 @@ if (args) console.log(`With argu ${args}`);
 		message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(nop=>{message.channel.send("Rien à raconter...")});
 		}
 	}
-
-	console.log('testing1');
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
-	console.log('test2');
 	if (dev) {
 		return console.log('MODE DEV, ignoring...');
 	}
