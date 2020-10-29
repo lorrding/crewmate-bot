@@ -83,9 +83,10 @@ if (args) console.log(`With argu ${args}`);
 				});
 			return message.delete();
 		}
-		if (message.member.hasPermission('SEND_MESSAGES')) {
-			console.log('role : checked');
-		}
+
+		// if (message.member.hasPermission('SEND_MESSAGES')) {
+		// 	console.log('role : checked');
+		// }
 
 		args.forEach(function(element, index) {
 			// création d'une partie
