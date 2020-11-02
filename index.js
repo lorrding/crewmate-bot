@@ -1,10 +1,12 @@
-const Discord = require('discord.js');
+const Discord = require('discord.js')
+const cron = require('node-cron')
 
-const client = new Discord.Client();
-const config = require("./config.json");
-const connect = require("./connect.js");
-const cron = require('node-cron');
-const Game = require('./Game.js');
+const config = require("./config.json")
+const connect = require("./connect.js")
+const Game = require('./Game.js')
+const minigames = require('./minigames.js')
+
+const client = new Discord.Client()
 
 dev = false;
 pingMsg = new Discord.Message();
