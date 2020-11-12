@@ -4,40 +4,57 @@ const cron = require('node-cron')
 const config = require("./config.json")
 const connect = require("./connect.js")
 const Game = require('./Game.js')
-const minigames = require('./minigames.js')
+const GameManager = require('./GameManager.js')
+
+const { sendThenDelete} = require('./toolbox')
 
 const client = new Discord.Client()
 
 dev = false;
-pingMsg = new Discord.Message();
-setGlobales();
+pingMsg = new Discord.Message(undefined, undefined, undefined)
 
-client.on('ready',async m => {
-	console.log(`logged in as ${client.user.tag}, in ${client.channels.size} channels of ${client.guilds.size} server.`);
-	client.user.setActivity("Among Us", {
+client.on('ready',async () => {
+	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
+	await client.user.setActivity("Among Us", {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
-	});
+	})
+
+	// const minigames = require('./minigames.js')
+	// let channel = client.channels.cache.get('772570387208208424')
+	// minigames.CacheCache(channel)
+	// minigames.SlenderMan(channel)
+	// minigames.PieceSecu(channel)
+	// minigames.ChambreSecu2(channel)
+	// minigames.CoursPoursuite(channel)
+	// minigames.Protips(channel)
+
+	const gameManager = new GameManager.GameManager()
+	const channel = client.channels.cache.find(channel => channel.id === '767812168745484328')
+	channel.send("test obj")
+		.then(message=> {
+			gameManager.addGame(message, "15", "20")
+		});
 });
 
+let task = cron.schedule(`* * * * *`, () => {
+	if (gameSheduled) {
+		let d = new Date();
+		let h = d.getUTCHours() + 2;
+		let m = d.getMinutes();
+		if (h === heures && m === minutes) {
+			pingMsg = gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure de jouer!\n Venez dans le vocal et rejoignez la game`);
+			console.log('NOW!!!!!!');
+			console.log('game is launched, deleting game object');
+			return setTimeout(() => {  deleteGame(); }, 1000);
+		}
+	}
+}, {
+	scheduled: false,
+	timezone: "Europe/Paris"
+});
 //cron shedule
 try {
-	var task = cron.schedule(`* * * * *`, () => {
-		if (gameSheduled) {
-			let d = new Date();
-			var h = d.getUTCHours()+2;
-			var m = d.getMinutes();
-			if (h == heures && m == minutes) {
-				pingMsg = gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure de jouer!\n Venez dans le vocal et rejoignez la game`);
-				console.log('NOW!!!!!!');
-				console.log('game is launched, deleting game object');
-				return setTimeout(() => {  deleteGame(); }, 1000);
-			}
-		}
-	}, {
-		scheduled: false,
-		timezone: "Europe/Paris"
-	});
 } catch (error) {
 	let date_ob = new Date();
 	// let date = ("0" + date_ob.getDate()).slice(-2);
@@ -49,78 +66,55 @@ try {
 client.on('message', async message => {
 	
 if (!message.content.startsWith(config.prefix) || message.author.bot) return;
-const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-const command = args.shift().toLowerCase();
-console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`);
-if (args) console.log(`With argu ${args}`);
+const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
+const command = args.shift().toLowerCase()
+console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`)
+if (args) console.log(`With argu ${args}`)
 
 // activate/desactivate for dev
-	if (command === "dev" && message.author.id == "224230450099519488") {
+	if (command === "dev" && message.author.id === "224230450099519488") {
 		if (dev) {
-			dev = false;
-			message.channel.send(`retour en mode normal.`)
-				.then(msg=> {
-					msg.delete(5000);
-				});
-			message.delete();
+			dev = false
+			sendThenDelete(message.channel, `retour en mode normal.`)
 		} else {
-			dev = true;
-			message.channel.send(`Ok, passage en dev mode.`)
-				.then(msg=> {
-					msg.delete(5000);
-				});
-			message.delete();
+			dev = true
+			sendThenDelete(message.channel, `Ok, passage en dev mode.`)
 		}
 	}
 	if (dev) {
-		return console.log('MODE DEV, ignoring...');
+		return console.log('MODE DEV, ignoring...')
 	}
 
 // game
 	if (command === "game" || command === "g") {
-		if (!args.length) {
-			message.channel.send("Arguments manquant!\n```-h | --heure -> paramétrage de l'heure\n-d | --delete -> suppression de la game en court```")
-				.then(msg=> {
-					msg.delete(5000);
-				});
-			return message.delete();
-		}
-
-		// if (message.member.hasPermission('SEND_MESSAGES')) {
-		// 	console.log('role : checked');
-		// }
+		if (!args.length) return sendThenDelete(message.channel, "Arguments manquant!\n```-h | --heure -> paramétrage de l'heure\n-d | --delete -> suppression de la game en court```")
 
 		args.forEach(function(element, index) {
 			// création d'une partie
-			if (element == "-h" || element == "-heure") {
+			if (element === "-h" || element === "-heure") {
 				if (gameSheduled) {
 					message.channel.send(`Une partie est déjà prévu!`)
 						.then(msg=> {
-							msg.delete(5000);
+							sendThenDelete(message.channel, msg, 5000)
 						});
 					return message.delete();
 				}
 				if (index >= args.length-1) {
 					message.channel.send(`Il manque l'heure de le la session de jeu!`)
 						.then(msg=> {
-							msg.delete(5000);
+							sendThenDelete(message.channel, msg, 5000)
 						});
 					return message.delete();
 				}
-				let argument = args.shift();
 				let regex = /^([0-9]|0[0-9]|1[0-9]|2[0-3])[:|h][0-5][0-9]$/;
 				let time = args.shift();
-				var match = time.match(regex);
+				let match = time.match(regex);
 				if (match==null) {
 					console.log('invalid time format, return');
-					message.channel.send("Format d'heure invalide \nL'heure doit être sous la forme ```0-23[h|:]0-60```")
-					.then(msg=> {
-						msg.delete(5000);
-					});
-					return message.delete();
+					return sendThenDelete(message.channel, "Format d'heure invalide \nL'heure doit être sous la forme ```0-23[h|:]0-60```")
 				}
 				console.log(`format d'heure ${time}: valide`);
-				if (time.search("h") != -1) {
+				if (time.search("h") !== -1) {
 					console.log('detecting h..');
 					time = time.split("h");	
 				} else {
@@ -147,23 +141,23 @@ if (args) console.log(`With argu ${args}`);
 			}
 
 			//suppression d'un partie en court
-			if (element == "-d" || element == "-delete") {
+			if (element === "-d" || element === "-delete") {
 				// on check si une game est en court
 				if (!gameSheduled) {
 					console.log('no game found...');
 					message.channel.send("Aucune partie n'est prévue!")
 						.then(msg=> {
-							msg.delete(5000);
+							sendThenDelete(message.channel, msg, 5000)
 						});
 					return message.delete();
 				}
 
 				// on check si c'est bien l'auteur de la game ou un admin
-				if (message.author.id != author.id || !message.member.hasPermission('ADMINISTRATOR')) {
+				if (message.author.id !== author.id || !message.member.hasPermission('ADMINISTRATOR')) {
 					console.log('nole : not admin or creator');
 					message.channel.send("Vous n'êtes pas à l'origine de cette partie ou n'avez pas les droits pour les annuler!")
 						.then(msg=> {
-							msg.delete(5000);
+							sendThenDelete(message.channel, msg, 5000)
 						});
 					return message.delete();
 				}
@@ -197,7 +191,7 @@ if (args) console.log(`With argu ${args}`);
 			console.log('no arguments found for -g');
 			message.channel.send(`argument invalide ou non détecté!`)
 				.then(msg=> {
-					msg.delete(5000);
+					sendThenDelete(message.channel, msg, 5000)
 				});
 			return message.delete();
 
@@ -206,31 +200,31 @@ if (args) console.log(`With argu ${args}`);
 
 // ping
 	if (command === "ping") {
-		var embed = new Discord.RichEmbed();
+		let embed = new Discord.RichEmbed();
 		embed.setColor('#FFFFFF');
 		const m = await message.channel.send("Ping?");
 		embed.setAuthor(`${message.author.username} -> ping`, `${message.author.displayAvatarURL}`);
 		embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ping)}ms.`);
-		message.delete();
+		await message.delete();
 		m.delete();
-		message.channel.send(embed);
+		await message.channel.send(embed);
 	}
 
 // help
 	if (command === "help") {
-		message.channel.send("Soon..");
+		await message.channel.send("Soon..");
 	}
 
 // say 
 	if (command === "say") {
-		message.delete().catch(O_o=>{});
+		message.delete().catch(()=>{});
 		if (message.mentions.users.size) {
-			const userid = message.mentions.users.map(user => {
+			message.mentions.users.map(user => {
 				return `${user.id}`;
 			});
-			message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(nop=>{message.channel.send("Rien à raconter...")});
+			message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(()=>{message.channel.send("Rien à raconter...")});
 		} else {
-		message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(nop=>{message.channel.send("Rien à raconter...")});
+		message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(()=>{message.channel.send("Rien à raconter...")});
 		}
 	}
 });
@@ -254,31 +248,31 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	gameTest.addPlayer(reaction, user);
 
 	//if wrong message, then don't
-	if (reaction.message.id != gameMessage.id) {
+	if (reaction.message.id !== gameMessage.id) {
 		return 0;
 	}
 
 	//wrong reaction
-	if (reaction.emoji.id != "764917952600342539") return;
+	if (reaction.emoji.id !== "764917952600342539") return;
 
 	// si c'est l'auteur du message, on ignore
-	if(user.id == author.id) {
+	if(user.id === author.id) {
 		reaction.message.channel.send("La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!")
 			.then(msg=> {
-				msg.delete(5000);
+				sendThenDelete(message.channel, msg, 5000)
 			});
-		reaction.remove(user);
+		await reaction.remove(user);
 		return console.log('author already un list, ignoring...');
 	}
 
 	if (listJoueurs.length >= 10) {
-		reaction.message.channel.send("Nombre de joueurs max atteint!");
+		await reaction.message.channel.send("Nombre de joueurs max atteint!");
 		reaction.message.channel.send("<:AU_why:765273043962298410>")
 			.then(msg=> {
 				msg.delete(7000);
 			});
 		try {
-			reaction.remove(user);
+			await reaction.remove(user);
 		} catch (error) {
 			return console.log(error);
 		}
@@ -288,11 +282,11 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	// on vérifie que la liste n'est pas vide
 	if (listJoueurs.length > 0) {
 		//si il est déjà dans la liste de jeu, on ignore
-		if (listJoueurs.find(user => user == user.username)) {
+		if (listJoueurs.find(user => user === user.username)) {
 			try {		
 				reaction.message.channel.send("Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)")
 					.then(msg=> {
-						msg.delete(5000);
+						sendThenDelete(message.channel, msg, 5000)
 					});
 			} catch (error) {
 				console.log(error);
@@ -307,7 +301,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 		console.log(`Adding user ${user.username}...`);
 		let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
 		let member = reaction.message.guild.members.find(r => r.id === user.id);
-		member.addRole(role);
+		await member.addRole(role);
 		listJoueurs.push(`${user.username}`);
 		editEmbed(reaction.message);
 	} catch (error) {
@@ -321,16 +315,16 @@ client.on('messageReactionRemove', async (reaction, user) => {
 	}
 	if (reaction.partial) {
 		try {
-			await reaction.fetch();
+			reaction = await reaction.fetch();
 		} catch (error) {
 			console.error('Something went wrong when fetching the message: ', error);
 			return;
 		}
 	}
 
-	if (user.bot || user.id == author.id) return;
+	if (user.bot || user.id === author.id) return;
 
-	if (reaction.message.id != gameMessage.id) {
+	if (reaction.message.id !== gameMessage.id) {
 		return console.log('Wrong message. ignoring...');
 	}
 
@@ -341,7 +335,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		try {
 			let role = reaction.message.guild.roles.find(r => r.name === "joueurDuSoir");
 			let member = reaction.message.guild.members.find(r => r.id === user.id);
-			member.removeRole(role);
+			await member.removeRole(role);
 			//role removed, updating list...
 			listJoueurs.splice(listJoueurs.indexOf(user.username), 1);
 			editEmbed(reaction.message);
@@ -352,7 +346,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		try {
 			reaction.message.channel.send("Vous n'êtes pas encore dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)")
 				.then(msg=> {
-					msg.delete(5000);
+					sendThenDelete(message.channel, msg, 5000)
 				});
 		} catch (error) {
 			console.log(error);
@@ -362,7 +356,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 
 // edition des embeds pour mise à jour de la liste de joueurs
 function editEmbed(message) {
-	var listToString ="";
+	let listToString = "";
 	for (let i = 0; i < listJoueurs.length; i++) {
 		if (listJoueurs.length > 1) {
 			if (i >= listJoueurs.length-1) {
@@ -378,7 +372,7 @@ function editEmbed(message) {
 		}
 	}
 	try {
-		var embed = new Discord.RichEmbed(message.embeds[0])
+		let embed = new Discord.RichEmbed(message.embeds[0]);
 		embed.fields = [];
 		embed.addField(`Ce soir à:`,`${heures}h${minutes}`, true);
 		if (listJoueurs.length) {
@@ -389,7 +383,7 @@ function editEmbed(message) {
 			embed.setDescription(``);
 			embed.addField(`Places restantes:`,`9`, true);
 		}
-		message.edit(embed);
+		message.edit(embed).then(() => {});
 	} catch (error) {
 		console.log(error);
 	}
@@ -399,12 +393,11 @@ function editEmbed(message) {
 //suppression de la session de jeu après le timer.
 function deleteGame() {
 	console.log('suppression de la partie en court...');
-	var msg = gameMessage.channel.send(`Suppression de la partie...`)
+	gameMessage.channel.send(`Suppression de la partie...`)
 		.then(msg=> {
 			msg.delete(3000);
 		});
-
-	// on arrête cron
+// on arrête cron
 	console.log('stoping cron shedule..');
 	task.stop();
 	
@@ -425,7 +418,7 @@ function deleteGame() {
 	} catch (error) {
 		gameMessage.channel.send("Erreur lors de la suppression du rôles au joueurs!")
 		.then(msg=> {
-			msg.delete(5000);
+			sendThenDelete(message.channel, msg, 5000)
 		});
 		console.log(error);
 	}
@@ -439,7 +432,7 @@ function deleteGame() {
 		console.log(error);
 		gameMessage.channel.send("Erreur lors de la suppression des message!")
 		.then(msg=> {
-			msg.delete(5000);
+			sendThenDelete(message.channel, msg, 5000)
 		});
 	}
 	// on log la game
@@ -448,46 +441,46 @@ function deleteGame() {
 	gameMessage.delete();
 	setGlobales();
 	// setTimeout(() => {  pingMsg.delete(); }, 60000);
-	pingMsg = new Discord.Message();
+	pingMsg = new Discord.Message(undefined, undefined, undefined);
 	return 0;
 }
 
 // définition / reset des variables globales
-function setGlobales() {
-	gameSheduled = false;
-	gameMessage = new Discord.Message();
-	author = new Discord.User();
-	listJoueurs = [];
-	heures = 0;
-	minutes = 0;
-}
+// function setGlobales() {
+// 	gameSheduled = false;
+// 	gameMessage = new Discord.Message(undefined, undefined, undefined);
+// 	//author = new Discord.User(undefined, undefined);
+// 	listJoueurs = [];
+// 	heures = 0;
+// 	minutes = 0;
+// }
 
-function logOldGame(pingMsg) {
-	console.log('on log les obj');
-	oldGame = gameMessage;
-	oldPingMsg = pingMsg;
-}
+// function logOldGame(pingMsg) {
+// 	console.log('on log les obj');
+// 	oldGame = gameMessage;
+// 	oldPingMsg = pingMsg;
+// }
 
-function delOldGame() {
-	if (typeof oldGame === 'undefined') {
-		//première game, pas de log à delete, on crée les obj
-		oldGame = new Discord.Message();
-		oldPingMsg = new Discord.Message();
-		return 0;
-	} else {
-		oldGame.delete();
-		oldPingMsg.delete();
-		oldGame = new Discord.Message();
-		oldPingMsg = new Discord.Message();
-	}
-}
+// function delOldGame() {
+// 	if (typeof oldGame === 'undefined') {
+// 		//première game, pas de log à delete, on crée les obj
+// 		oldGame = new Discord.Message();
+// 		oldPingMsg = new Discord.Message();
+// 		return 0;
+// 	} else {
+// 		oldGame.delete();
+// 		oldPingMsg.delete();
+// 		oldGame = new Discord.Message();
+// 		oldPingMsg = new Discord.Message();
+// 	}
+// }
 
-async function sleep(ms) {
-	try {
-		await sleep(ms);
-	} catch (error) {
-		console.log(error);
-	}
-}
+// async function sleep(ms) {
+// 	try {
+// 		await sleep(ms);
+// 	} catch (error) {
+// 		console.log(error);
+// 	}
+// }
 
 connect.login(client);
