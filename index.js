@@ -2,16 +2,15 @@ const Discord = require('discord.js')
 const cron = require('node-cron')
 
 const config = require("./config.json")
-const connect = require("./connect.js")
-const Game = require('./Game.js')
-const GameManager = require('./GameManager.js')
+const connect = require("./connect")
+const Game = require('./Game')
+const GameManager = require('./GameManager')
 
 const { sendThenDelete} = require('./toolbox')
 
 const client = new Discord.Client()
-
-dev = false;
-pingMsg = new Discord.Message(undefined, undefined, undefined)
+const gameManager = new GameManager.GameManager()
+dev = false
 
 client.on('ready',async () => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
@@ -29,13 +28,14 @@ client.on('ready',async () => {
 	// minigames.CoursPoursuite(channel)
 	// minigames.Protips(channel)
 
-	const gameManager = new GameManager.GameManager()
-	const channel = client.channels.cache.find(channel => channel.id === '767812168745484328')
-	channel.send("test obj")
-		.then(message=> {
-			gameManager.addGame(message, "15", "20")
-		});
-});
+	//---- tests
+	// let channel = client.channels.cache.find(channel => channel.id === '767812168745484328')
+	// channel.send("test obj")
+	// 	.then(message=> {
+	// 		gameManager.addGame(message, "15", "20")
+	// 	})
+	//----
+})
 
 let task = cron.schedule(`* * * * *`, () => {
 	if (gameSheduled) {
@@ -87,70 +87,27 @@ if (args) console.log(`With argu ${args}`)
 
 // game
 	if (command === "game" || command === "g") {
-		if (!args.length) return sendThenDelete(message.channel, "Arguments manquant!\n```-h | --heure -> paramétrage de l'heure\n-d | --delete -> suppression de la game en court```")
+		if (!args.length) return sendThenDelete(message.channel, "Arguments manquant!\n-a ou --add suivi de l'heure pour ajouter une game\n-d | --delete -> suppression de la game en court```")
 
 		args.forEach(function(element, index) {
 			// création d'une partie
-			if (element === "-h" || element === "-heure") {
-				if (gameSheduled) {
-					message.channel.send(`Une partie est déjà prévu!`)
-						.then(msg=> {
-							sendThenDelete(message.channel, msg, 5000)
-						});
-					return message.delete();
-				}
-				if (index >= args.length-1) {
-					message.channel.send(`Il manque l'heure de le la session de jeu!`)
-						.then(msg=> {
-							sendThenDelete(message.channel, msg, 5000)
-						});
-					return message.delete();
-				}
-				let regex = /^([0-9]|0[0-9]|1[0-9]|2[0-3])[:|h][0-5][0-9]$/;
-				let time = args.shift();
-				let match = time.match(regex);
-				if (match==null) {
-					console.log('invalid time format, return');
-					return sendThenDelete(message.channel, "Format d'heure invalide \nL'heure doit être sous la forme ```0-23[h|:]0-60```")
-				}
-				console.log(`format d'heure ${time}: valide`);
-				if (time.search("h") !== -1) {
-					console.log('detecting h..');
-					time = time.split("h");	
-				} else {
-					console.log('no h.., using :');
-					time = time.split(":");
-				}
-
-				let tempHeures = time.shift();
-				let tempMinutes = time.shift();
-				console.log(`heures: ${tempHeures}, minutes: ${tempMinutes}`);
-
-				// checking time for cron format
-				if (cron.validate(`${tempMinutes} ${tempHeures} * * *`)) {
-					console.log(`Cron format ?: true`);
-					try {
-						gameTest = new Game.Game(message, tempHeures, tempMinutes);
-					} catch (error) {
-						console.log('aled: '+error);
-					}					
-				} else {
-					console.log('invalid cron fromat!');
-				}
-				return 0;
+			if (element === "-a" || element === "-add" || element === "-h") {
+				args.shift()
+				return gameManager.addGame(message, args)
 			}
 
 			//suppression d'un partie en court
 			if (element === "-d" || element === "-delete") {
-				// on check si une game est en court
-				if (!gameSheduled) {
-					console.log('no game found...');
-					message.channel.send("Aucune partie n'est prévue!")
-						.then(msg=> {
-							sendThenDelete(message.channel, msg, 5000)
-						});
-					return message.delete();
-				}
+				return gameManager.deleteGame(message)
+				// // on check si une game est en court
+				// if (!gameSheduled) {
+				// 	console.log('no game found...');
+				// 	message.channel.send("Aucune partie n'est prévue!")
+				// 		.then(msg=> {
+				// 			sendThenDelete(message.channel, msg, 5000)
+				// 		});
+				// 	return message.delete();
+				// }
 
 				// on check si c'est bien l'auteur de la game ou un admin
 				if (message.author.id !== author.id || !message.member.hasPermission('ADMINISTRATOR')) {
@@ -188,13 +145,15 @@ if (args) console.log(`With argu ${args}`)
 
 			}
 
-			console.log('no arguments found for -g');
-			message.channel.send(`argument invalide ou non détecté!`)
-				.then(msg=> {
-					sendThenDelete(message.channel, msg, 5000)
-				});
-			return message.delete();
-
+			sendThenDelete(message, `argument invalide ou non détecté!`)
+			let msgChannel = message.channel
+			try {
+				console.log('no arguments found for -g')
+				message.delete({timeout: 5000})
+			} catch (error) {
+				sendThenDelete(msgChannel, 'Error deleting message.')
+					.then(console.log(error))
+			}
 		});
 	}
 
@@ -244,13 +203,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	//if bot, then don't
 	if (user.bot) return 0;
 
-	console.log('testing game object:');
-	gameTest.addPlayer(reaction, user);
-
-	//if wrong message, then don't
-	if (reaction.message.id !== gameMessage.id) {
-		return 0;
-	}
+	// //if wrong message, then don't
+	// if (reaction.message.id !== gameMessage.id) {
+	// 	return 0;
+	// }
 
 	//wrong reaction
 	if (reaction.emoji.id !== "764917952600342539") return;
