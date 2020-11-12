@@ -1,5 +1,4 @@
 module.exports = {
-
 	//send a message, then delete it after x millisecondes
 	sendThenDelete : function (channel, message, ms = 5000) {
 		try {

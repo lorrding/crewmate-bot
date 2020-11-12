@@ -168,7 +168,7 @@ class Game {
 		}
 
 		try {
-			//try adding role to player
+			//try adding role to players
 			let player = this.#guild.members.cache.find(r => r.id === this.#author.id)
 			player.roles.add(this.#role)
 		} catch (error) {
