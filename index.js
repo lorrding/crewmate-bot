@@ -18,15 +18,6 @@ client.on('ready',async () => {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
 	})
-	
-	// const minigames = require('./minigames.js')
-	// let channel = client.channels.cache.get('772570387208208424')
-	// minigames.CacheCache(channel)
-	// minigames.SlenderMan(channel)
-	// minigames.PieceSecu(channel)
-	// minigames.ChambreSecu2(channel)
-	// minigames.CoursPoursuite(channel)
-	// minigames.Protips(channel)
 })
 
 client.on('message', async message => {
