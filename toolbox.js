@@ -17,18 +17,19 @@ module.exports = {
 		let date = new Date()
 		
 		//today or tomorrow ?
-		if (date.getUTCHours()+2 <= hours) { // utc+2 = summer
-			if (date.getUTCMinutes()+2 < minutes) { // utc+1 = winter
-				str += "Ce "
-			} else {
-				str += "Demain "
-			}
-		} else {
-			str += "Demain "
-		}
+		console.log(date.getUTCHours()+1)
+		console.log(hours)
+		console.log(date.getUTCMinutes())
+		console.log(minutes)
+		// utc+2 = summer /---/ utc+1 = winter
+		if (date.getUTCHours()+1 < hours) {str += "Ce "}
+		else if (date.getUTCHours()+1 === hours) {
+			if (date.getUTCMinutes() < minutes) {str += "Ce "}
+			else {str += "Demain "}
+		} else {str += "Demain "}
 
 		// morning, evening, night..?
-		if (18 <= hours < 3) {
+		if (hours >= 18 || hours < 3) {
 			str += "soir"
 		} else if (hours >= 14) {
 			if (str === "Ce ") {
@@ -37,7 +38,7 @@ module.exports = {
 			} else  {
 				str += "après-midi"
 			}
-		} else if (str >= 12) {
+		} else if (hours >= 12) {
 			str += "midi"
 		} else {
 			str += "matin"
