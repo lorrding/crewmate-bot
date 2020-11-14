@@ -16,14 +16,10 @@ module.exports = {
 		let str = ""
 		let date = new Date()
 		
-		//today or tomorrow ?
-		console.log(date.getUTCHours()+1)
-		console.log(hours)
-		console.log(date.getUTCMinutes())
-		console.log(minutes)
-		// utc+2 = summer /---/ utc+1 = winter
+		//today or tomorrow ? utc+1 = summer /---/ utc+0 = winter
+		console.log("creating embed time..")
 		if (date.getUTCHours()+1 < hours) {str += "Ce "}
-		else if (date.getUTCHours()+1 === hours) {
+		else if (date.getUTCHours()+1 == hours) {
 			if (date.getUTCMinutes() < minutes) {str += "Ce "}
 			else {str += "Demain "}
 		} else {str += "Demain "}
