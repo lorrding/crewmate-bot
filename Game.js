@@ -6,7 +6,7 @@ class Game {
 
 	#guild //guild the game is scheduled
 	#channel //channel the game is scheduled
-	#role //role to manage players
+	// #role //role to manage players
 	#message = new Discord.Message(undefined, undefined, undefined) // embed that represent the game
 	#author //= new Discord.User(new Discord.Client(), undefined) // author of the game as a user
 	#listPlayers = [] // list of all players, excluding author as user
@@ -19,7 +19,7 @@ class Game {
 
 	constructor(message, hours, minutes, manager) {
 		this.#guild = message.guild
-		this.#role = message.guild.roles.cache.find(r => r.name === "joueurDuSoir");
+		// this.#role = message.guild.roles.cache.find(r => r.name === "joueurDuSoir");
 		this.#channel = message.channel
 		this.#author = message.author
 		this.#hours = hours
@@ -42,30 +42,30 @@ class Game {
 			.then(console.log(error))
 		}
 
-		try {
-			//try adding role to player
-			let player = this.#guild.members.cache.find(r => r.id === member.id)
-			player.roles.add(this.#role)
-		} catch (error) {
-			return sendThenDelete(this.#channel, 'missing permission to add role.')
-			.then(console.log(error))
-		}
+		// try {
+		// 	//try adding role to player
+		// 	let player = this.#guild.members.cache.find(r => r.id === member.id)
+		// 	player.roles.add(this.#role)
+		// } catch (error) {
+		// 	return sendThenDelete(this.#channel, 'missing permission to add role.')
+		// 	.then(console.log(error))
+		// }
 
 		//everything's good
 		this.editEmbed()
 	}
 
-	removePlayer(user) { // removing role from a user
+	removePlayer(user) { // removing role for a user
 		console.log(`removing: ${user.username}`)
-		try {
-			// getting user as guild member
-			let member = this.#guild.members.cache.find(r => r.id === user.id)
-			member.roles.remove(this.#role).then(() => {
-				console.log("role removed fro members...")})
-		} catch (error) {
-			return sendThenDelete(this.#channel, 'missing permission to remove role.')
-				.then(console.log(error))
-		}
+		// try {
+		// 	// getting user as guild member
+		// 	let member = this.#guild.members.cache.find(r => r.id === user.id)
+		// 	member.roles.remove(this.#role).then(() => {
+		// 		console.log("role removed fro members...")})
+		// } catch (error) {
+		// 	return sendThenDelete(this.#channel, 'missing permission to remove role.')
+		// 		.then(console.log(error))
+		// }
 		// updating playerList
 		try {
 			this.#listPlayers.splice(this.#listPlayers.indexOf(user), 1)
@@ -76,20 +76,20 @@ class Game {
 
 	removeAllPlayers() { // removing role to every players of the game:
 
-		// removing role
-		try {
-			this.#listPlayers.forEach(player => {
-				let member = this.#guild.members.cache.find(r => r.id === player.id)
-				member.roles.remove(this.#role).then(() => {})
-			});
-			console.log("role removed for every player..")
-		} catch (error) {
-			return sendThenDelete(this.#channel, 'missing permission to remove role.')
-				.then(console.log(error))
-		}
-		// removing role from author
-		this.removePlayer(this.#author)
-		console.log("role removed for author..")
+		// // removing role
+		// try {
+		// 	this.#listPlayers.forEach(player => {
+		// 		let member = this.#guild.members.cache.find(r => r.id === player.id)
+		// 		member.roles.remove(this.#role).then(() => {})
+		// 	});
+		// 	console.log("role removed for every player..")
+		// } catch (error) {
+		// 	return sendThenDelete(this.#channel, 'missing permission to remove role.')
+		// 		.then(console.log(error))
+		// }
+		// // removing role from author
+		// this.removePlayer(this.#author)
+		// console.log("role removed for author..")
 
 		// updating playerList
 		this.#listPlayers = []
@@ -106,7 +106,7 @@ class Game {
 				// removing everything else
 				this.#message = undefined
 				this.#guild = undefined
-				this.#role = undefined
+				// this.#role = undefined
 				this.#hours = undefined
 				this.#minutes = undefined
 				this.#manager = undefined
@@ -188,14 +188,14 @@ class Game {
 				.then(console.log(error))
 		}
 
-		try {
-			//try adding role to players
-			let player = this.#guild.members.cache.find(r => r.id === this.#author.id)
-			player.roles.add(this.#role)
-		} catch (error) {
-			sendThenDelete(this.#channel, 'missing permission to add role.')
-			.then(console.log(error))
-		}
+		// try {
+		// 	//try adding role to players
+		// 	let player = this.#guild.members.cache.find(r => r.id === this.#author.id)
+		// 	player.roles.add(this.#role)
+		// } catch (error) {
+		// 	sendThenDelete(this.#channel, 'missing permission to add role.')
+		// 	.then(console.log(error))
+		// }
 	}
 
 	cronSchedule() {
