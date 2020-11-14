@@ -116,9 +116,14 @@ client.on('message', async message => {
 		}
 	}
 
-// addme
+// addMe
 	if (command === "addme") {
-		sendThenDelete(message.channel, "https://discord.com/oauth2/authorize?client_id=767802286550155296&permissions=486464&scope=bot", 30000)
+		try {
+			message.author.createDM().then(DMChannel => DMChannel.send("https://discord.com/oauth2/authorize?client_id=767802286550155296&permissions=486464&scope=bot"))
+			await message.delete()
+		} catch (e) {
+			return console.log(${e})
+		}
 	}
 })
 
