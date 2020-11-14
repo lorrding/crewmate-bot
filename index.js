@@ -122,7 +122,7 @@ client.on('message', async message => {
 			message.author.createDM().then(DMChannel => DMChannel.send("https://discord.com/oauth2/authorize?client_id=767802286550155296&permissions=486464&scope=bot"))
 			await message.delete()
 		} catch (e) {
-			return console.log(${e})
+			return console.log(`${e}`)
 		}
 	}
 })
