@@ -7,8 +7,8 @@ class Game {
 	#channel //channel the game is scheduled
 	#role //role to manage players
 	#message = new Discord.Message(undefined, undefined, undefined) // embed that represent the game
-	#author //= new Discord.User(new Discord.Client(), undefined) // author of the game
-	#listPlayers = [] // list of all players, excluding author
+	#author //= new Discord.User(new Discord.Client(), undefined) // author of the game as a user
+	#listPlayers = [] // list of all players, excluding author as user
 	#hours // hours of the game
 	#minutes // minutes of the game
 	static #EMOJI = "764917952600342539" // static emoji for adding players
@@ -25,64 +25,20 @@ class Game {
 	}
 
 	addPlayer(reaction, member) {
-		//if wrong message, then don't
-		if (reaction.message.id !== this.#message.id) return 0
-
-		//if wrong reaction, then don't
-		if (reaction.emoji.id !== Game.#EMOJI) return 0
-
-		// if author of game, then don't
-		console.log('author: '+this.getAuthor());
-		if(member.id === this.#author.id) {
-			try {
-				reaction.users.remove(member).then(() => {})
-			} catch (error) {
-				return sendThenDelete(this.#channel, 'missing permission to remove reaction.')
-				.then(console.log(error))
-			}
-			sendThenDelete(this.#channel, "La personne qui propose de jouer est déjà dans la liste des joueurs, pas besoin de réagir au message!")
-			return console.log('(from gObject) Author already un list, ignoring...')
-		}
-
-		//if already 10 players, then don't
-		if (this.#listPlayers.length >= 10) {
-			try {
-				reaction.users.remove(member).then(() => {})
-			} catch (error) {
-				return sendThenDelete(this.#channel, 'missing permission to remove reaction.')
-				.then(console.log(error))
-			}
-			sendThenDelete(this.#channel, "Nombre de joueurs max atteint!")
-			sendThenDelete(this.#channel, "<:AU_why:765273043962298410>")
-			console.log('Max players reached!');
-		}
-
-		//checking if user isn't already in list of players
-		if (this.#listPlayers.length > 0 && this.#listPlayers.find(user => user === user.username)) {
-			try {
-				reaction.user.remove()
-			} catch (error) {
-				return sendThenDelete(this.#channel, 'missing permission to remove reaction.')
-				.then(console.log(error))
-			}
-			sendThenDelete(this.#channel ,5000, "Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)")
-			return console.log('user already un list, ignoring...')
-		}
 
 		//everything's ok
 		try {
 			// try adding user in list of players
 			console.log(`Adding user ${member.username}...`)
-			this.#listPlayers.push(`${member.username}`)
-			// editEmbed(reaction.message)
+			this.#listPlayers.push(member)
 		} catch (error) {
-			return sendThenDelete(this.#channel, `Erreur, impossible d'ajouter le jouer à la liste des participants.`)
+			return sendThenDelete(this.#channel, `Error trying to add member to player list.`)
 			.then(console.log(error))
 		}
 
 		try {
 			//try adding role to player
-			let player = this.#guild.members.find(r => r.id === member.id)
+			let player = this.#guild.members.cache.find(r => r.id === member.id)
 			player.roles.add(this.#role)
 		} catch (error) {
 			return sendThenDelete(this.#channel, 'missing permission to add role.')
@@ -91,6 +47,54 @@ class Game {
 
 		//everything's good
 		this.editEmbed()
+	}
+
+	removePlayer(user) { // removing role from a user
+		console.log(`removing: ${user.username}`)
+		try {
+			// getting user as guild member
+			let member = this.#guild.members.cache.find(r => r.id === user.id)
+			member.roles.remove(this.#role).then(() => {
+				console.log("role removed from member..")})
+		} catch (error) {
+			return sendThenDelete(this.#channel, 'missing permission to remove role.')
+				.then(console.log(error))
+		}
+		// updating playerList
+		try {
+			this.#listPlayers.splice(this.#listPlayers.indexOf(user), 1)
+		} catch (e) {
+			return sendThenDelete(this.#channel, `${e}`)
+		}
+	}
+
+	removeAllPlayers() { // removing role to every players of the game:
+
+		// removing role
+		try {
+			this.#listPlayers.forEach(player => {
+				let member = this.#guild.members.cache.find(r => r.id === player.id)
+				member.roles.remove(this.#role).then(() => {})
+			});
+			console.log("role removed for every player..")
+		} catch (error) {
+			return sendThenDelete(this.#channel, 'missing permission to remove role.')
+				.then(console.log(error))
+		}
+		// removing role from author
+		this.removePlayer(this.#author)
+		console.log("role removed for author..")
+
+		// updating playerList
+		this.#listPlayers = []
+	}
+
+	deleteGame() {
+		this.removeAllPlayers()
+		this.#message.fetch().then(message => {
+			message.delete().then(() => {})
+		})
+		return true
 	}
 
 	createEmbed() {
@@ -105,7 +109,7 @@ class Game {
 			embed.setFooter(`Réagissez en dessous pour participer`)
 			return embed
 		} catch (error) {
-			throw sendThenDelete(this.#channel, "Erreur lors de la création de l'embed.")
+			return sendThenDelete(this.#channel, "Erreur lors de la création de l'embed.")
 				.then(console.log(error))
 		}
 	}
@@ -118,7 +122,7 @@ class Game {
 			embed = new Discord.MessageEmbed(this.#message.embeds[0])
 			embed.fields = []
 		} catch (error) {
-			sendThenDelete(this.#channel, "Error copying embed.")
+			return sendThenDelete(this.#channel, "Error copying embed.")
 				.then(console.log(error))
 		}
 
@@ -127,28 +131,22 @@ class Game {
 			embed.addField(`${formatEmbedTime(this.#hours, this.#minutes)} à:`,`${this.#hours}h${this.#minutes}`, true)
 
 			if (this.#listPlayers.length) {
-				embed.setDescription(`avec: ${formatListPlayers(this.#listPlayers)}`)
-				// let Nbplayers = 9 - this.#listPlayers.length;
 				embed.addField(`Places restantes:`,`${9 - this.#listPlayers.length}`, true)
+				embed.addField(`avec:`, `${formatListPlayers(this.#listPlayers)}`)
 			} else {
-				embed.setDescription(``)
 				embed.addField(`Places restantes:`,`9`, true)
 			}
 		} catch (error) {
-			sendThenDelete(this.#channel, "Error updating fields.")
+			return sendThenDelete(this.#channel, "Error updating fields.")
 				.then(console.log(error))
 		}
 
-		//try sending embed
+		//try updating message embed
 		try {
-			this.#channel.send(embed)
-				//adding reaction
-				.then(embedMessage => {
-					embedMessage.react(Game.#EMOJI).then(() => {})
-					this.#message = embedMessage
-				})
+			this.#message.fetch().then(message => message.edit(embed))
+			console.log("game message edited")
 		} catch (error) {
-			sendThenDelete(this.#channel, "missing permissions to send embed or react.")
+			return sendThenDelete(this.#channel, "missing permissions to send embed or react.")
 				.then(console.log(error))
 		}
 	}
@@ -181,13 +179,13 @@ class Game {
 		return this.#guild
 	}
 
-	getRole() {
-		return this.#role
-	}
-
-	// getChannel() {
-	// 	return this.#channel
+	// getRole() {
+	// 	return this.#role
 	// }
+
+	getChannel() {
+		return this.#channel
+	}
 
 	getMessage() {
 		return this.#message
@@ -197,19 +195,19 @@ class Game {
 		return this.#author
 	}
 
-	// getListPlayers() {
-	// 	return this.#listPlayers
-	// }
-	//
+	getListPlayers() {
+		return this.#listPlayers
+	}
+
 	// getHours() {
 	// 	return this.#hours
 	// }
-	//
+
 	// getMinutes() {
 	// 	return this.#minutes
 	// }
 
-	static getEmoji() {
+	getEmoji() {
 		return Game.#EMOJI
 	}
 }
