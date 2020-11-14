@@ -13,17 +13,33 @@ class GameManager {
 	}
 
 	createGame(message, tempHeures, tempMinutes) {
-		this.#gameList.push(new Game.Game(message, tempHeures, tempMinutes))
+		this.#gameList.push(new Game.Game(message, tempHeures, tempMinutes, this))
 		this.#guildList.push(message.guild)
 		return this.#authorList.push(message.author)
 	}
 
 	deleteGame(message) {
-		// checking if message's author is a game author or has admin rights
-		if (!(this.#gameList.some(game => game.getAuthor().id === message.author.id) || message.member.hasPermission('ADMINISTRATOR'))) {
-			sendThenDelete(message.channel, `Vous n'êtes à l'origine d'aucune partie ou n'avez pas les droits suffisants pour en annuler!`)
+
+		// checking if a game exist
+		if (this.#gameList.length) {
+			// checking if a game is currently scheduled in the channel
+			if (!this.#gameList.some(game => game.getChannel().id === message.channel.id)) return sendThenDelete(message.channel, "Aucun partie n'est prévue dans ce channel!").then(
+				message => message.delete()
+			)
+
+			// checking if message's author is a game author or has admin rights
+			if (!(this.#gameList.some(game => game.getAuthor().id === message.author.id) || message.member.hasPermission('ADMINISTRATOR'))) {
+				sendThenDelete(message.channel, `Vous n'êtes à l'origine d'aucune partie ou n'avez pas les droits suffisants pour en annuler!`)
+			}
+		} else {
+			return sendThenDelete(message.channel, "Aucun partie n'est prévue dans ce channel!").then(
+				message => message.delete()
+			)
 		}
+
+
 		let game
+
 		if (this.#gameList.some(game => game.getAuthor().id === message.author.id)) {
 			console.log('user deleting his own game');
 			sendThenDelete(message.channel, "Suppression de votre partie...")
@@ -33,12 +49,11 @@ class GameManager {
 			sendThenDelete(message.channel, "Par les pouvoir de l'admin, j'exige la suppression de la partie liée à ce channel...")
 			game = this.#gameList.find(game => game.getChannel().id === message.channel.id)
 		}
-		game.deleteGame()
-		console.log("removing game from gameList, guildList and authorList")
-		this.#gameList.splice(this.#gameList.indexOf(game), 1)
-		this.#guildList.splice(this.#guildList.indexOf(game.getGuild()), 1)
-		this.#authorList.splice(this.#authorList.indexOf(game.getAuthor()), 1)
-		sendThenDelete(message.channel,"Suppression terminée!")
+
+		//removing game from manager
+		this.removeGame(game, message)
+		//deleting game
+		game.deleteSelf()
 		return message.delete()
 	}
 
@@ -58,6 +73,18 @@ class GameManager {
 			sendThenDelete(message.channel, `Une partie existe déjà sur ce serveur Discord!`)
 		}
 		return message.delete()
+	}
+
+	removeGame(game, message) {
+		try {
+			console.log("removing game from gameList, guildList and authorList")
+			this.#gameList.splice(this.#gameList.indexOf(game), 1)
+			this.#guildList.splice(this.#guildList.indexOf(game.getGuild()), 1)
+			this.#authorList.splice(this.#authorList.indexOf(game.getAuthor()), 1)
+			sendThenDelete(message.channel,"Suppression terminée!")
+		} catch (e) {
+			return sendThenDelete(message.channel, `${e}`)
+		}
 	}
 
 	async manageAddReaction(reaction, user) {

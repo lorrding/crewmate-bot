@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const cron = require('node-cron')
+// const cron = require('node-cron')
 
 const connect = require("./connect")
 
@@ -29,32 +29,6 @@ client.on('ready',async () => {
 	// minigames.Protips(channel)
 })
 
-// let task = cron.schedule(`* * * * *`, () => {
-// 	if (gameScheduled) {
-// 		let d = new Date()
-// 		let h = d.getUTCHours() + 2
-// 		let m = d.getMinutes()
-// 		if (h === heures && m === minutes) {
-// 			pingMsg = gameMessage.channel.send(`<@&767870145091600405>, c'est l'heure de jouer!\n Venez dans le vocal et rejoignez la game`)
-// 			console.log('NOW!!!!!!')
-// 			console.log('game is launched, deleting game object')
-// 			return setTimeout(() => {  deleteGame() }, 1000)
-// 		}
-// 	}
-// }, {
-// 	scheduled: false,
-// 	timezone: "Europe/Paris"
-// })
-// //cron schedule
-// try {
-// } catch (error) {
-// 	let date_ob = new Date()
-// 	// let date = ("0" + date_ob.getDate()).slice(-2)
-// 	let hours = date_ob.getHours()
-// 	let minutes = date_ob.getMinutes()
-// 	console.log(`error at ${hours}:${minutes} \n${error}`)
-// }
-
 client.on('message', async message => {
 	
 	if (!message.content.startsWith(config.prefix) || message.author.bot) return
@@ -82,19 +56,24 @@ client.on('message', async message => {
 		args.forEach(function(element) {
 
 			// création d'une partie
-			if (element === "-a" || element === "-add" || element === "-h") {
+			if (element === "-add" || element === "-a") {
 				args.shift()
 				return gameManager.addGame(message, args)
 			}
 
 			//suppression d'un partie en court
-			if (element === "-d" || element === "-delete") {
+			if (element === "-delete" || element === "-d") {
 				return gameManager.deleteGame(message)
+			}
+
+			//help
+			if ( element === "-help" || element === "-h") {
+				// return help("game")
 			}
 
 			let channel = message.channel
 			try {
-				sendThenDelete(channel, `argument invalide ou non détecté!`)
+				sendThenDelete(channel, `argument invalide ou non détecté!\n tapez '*/game -help*' pour plus d'info...`)
 				console.log('no arguments found for /game')
 				return message.delete()
 			} catch (error) {

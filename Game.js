@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const { sendThenDelete, formatEmbedTime, formatListPlayers, getHexa } = require('./toolbox')
+const Cron = require('./Cron')
 
 class Game {
 
@@ -11,15 +12,20 @@ class Game {
 	#listPlayers = [] // list of all players, excluding author as user
 	#hours // hours of the game
 	#minutes // minutes of the game
+	#cron // cron object related to this game
+	#manager // manager of every game
+
 	static #EMOJI = "764917952600342539" // static emoji for adding players
 
-	constructor(message, hours, minutes) {
+	constructor(message, hours, minutes, manager) {
 		this.#guild = message.guild
 		this.#role = message.guild.roles.cache.find(r => r.name === "joueurDuSoir");
 		this.#channel = message.channel
 		this.#author = message.author
 		this.#hours = hours
 		this.#minutes = minutes
+		this.#cron = new Cron.Cron(this.#hours, this.#minutes, this)
+		this.#manager = manager
 
 		this.sendEmbed(this.createEmbed())
 	}
@@ -55,7 +61,7 @@ class Game {
 			// getting user as guild member
 			let member = this.#guild.members.cache.find(r => r.id === user.id)
 			member.roles.remove(this.#role).then(() => {
-				console.log("role removed from member..")})
+				console.log("role removed fro members...")})
 		} catch (error) {
 			return sendThenDelete(this.#channel, 'missing permission to remove role.')
 				.then(console.log(error))
@@ -87,12 +93,28 @@ class Game {
 
 		// updating playerList
 		this.#listPlayers = []
+		this.#author = undefined
 	}
 
-	deleteGame() {
+	deleteSelf() {
+		// removing players
 		this.removeAllPlayers()
+
+		// removing game message
 		this.#message.fetch().then(message => {
-			message.delete().then(() => {})
+			message.delete().then(() => {
+				// removing everything else
+				this.#message = undefined
+				this.#guild = undefined
+				this.#role = undefined
+				this.#hours = undefined
+				this.#minutes = undefined
+				this.#manager = undefined
+				//removing cron obj
+				this.#cron.destructor()
+				this.#cron = undefined
+				this.#channel = undefined
+			})
 		})
 		return true
 	}
@@ -107,6 +129,7 @@ class Game {
 			embed.addField(`Places restantes:`,`9`, true)
 			embed.setImage(`https://i.imgur.com/8sd2fgo.png`)
 			embed.setFooter(`Réagissez en dessous pour participer`)
+			console.log("sending embed...")
 			return embed
 		} catch (error) {
 			return sendThenDelete(this.#channel, "Erreur lors de la création de l'embed.")
@@ -172,6 +195,38 @@ class Game {
 		} catch (error) {
 			sendThenDelete(this.#channel, 'missing permission to add role.')
 			.then(console.log(error))
+		}
+	}
+
+	cronSchedule() {
+		console.log(`Cron schedule ping for game in ${this.#channel.name} of ${this.getGuild()}`)
+		// mentioning all players
+		try {
+			let str = ` C'est l'heure de jouer!\n`
+			str += `${this.#author} `
+			this.#listPlayers.forEach(player => {
+				str += `<@!${player.id}> `
+			});
+			if (this.#listPlayers.length > 0) {
+				str += `venez dans le vocal!`
+			} else if (this.#listPlayers.length > 5) {
+				str += `venez dans le vocal! \n Mais vous manquera surement quelques joueurs... <:AU_why:765273043962298410>`
+			} else {
+				str += `\nIl te manque des amis par contre <:AU_why:765273043962298410>`
+			}
+			sendThenDelete(this.#channel, str, 300000)
+		} catch (error) {
+			return sendThenDelete(this.#channel, 'Error mentioning all players!')
+				.then(console.log(error))
+		}
+		try {
+			sendThenDelete(this.#channel, "<:AU_gun:765273098336337970>", 300000).then(() => {
+				//deleting game after 5 minutes
+				// this.#manager.deleteGame(this, this.#message)
+				this.#cron.deleteRelatedGame()
+			})
+		} catch (e) {
+			return sendThenDelete(this.#channel, `${e}`)
 		}
 	}
 
