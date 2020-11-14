@@ -118,7 +118,7 @@ client.on('message', async message => {
 
 // addme
 	if (command === "addme") {
-		message.reply('https://discord.com/oauth2/authorize?client_id=767802286550155296&permissions=486464&scope=bot')
+		sendThenDelete(message.channel, "https://discord.com/oauth2/authorize?client_id=767802286550155296&permissions=486464&scope=bot", 30000)
 	}
 })
 
