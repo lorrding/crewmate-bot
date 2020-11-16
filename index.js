@@ -42,36 +42,40 @@ client.on('message', async message => {
 
 // game
 	if (command === "game" || command === "g") {
-		if (!args.length) return sendThenDelete(message.channel, "Arguments manquant!\n-a ou --add suivi de l'heure pour ajouter une game\n-d | --delete -> suppression de la game en court```")
+		if (!args.length) {
+			sendThenDelete(message.channel, "Arguments manquant!\n-a ou --add suivi de l'heure pour ajouter une game\n-d | --delete -> suppression de la game en court```")
+			return message.delete()
+		}
 
-		args.forEach(function(element) {
+		let element = args[0]
 
-			// création d'une partie
-			if (element === "-add" || element === "-a") {
-				args.shift()
-				return gameManager.addGame(message, args)
-			}
+		// création d'une partie
+		if (element === "-add" || element === "-a") {
+			args.shift()
+			return gameManager.addGame(message, args)
+		}
 
-			//suppression d'un partie en court
-			if (element === "-delete" || element === "-d") {
-				return gameManager.deleteGame(message)
-			}
+		//suppression d'un partie en court
+		if (element === "-delete" || element === "-d") {
+			return gameManager.deleteGame(message)
+		}
 
-			//help
-			if ( element === "-help" || element === "-h") {
-				// return help("game")
-			}
+		//help
+		if ( element === "-help" || element === "-h") {
+			sendThenDelete(message.channel, "soon..")
+			return message.delete()
+			// return help("game")
+		}
 
-			let channel = message.channel
-			try {
-				sendThenDelete(channel, `argument invalide ou non détecté!\n tapez '*/game -help*' pour plus d'info...`)
-				console.log('no arguments found for /game')
-				return message.delete()
-			} catch (error) {
-				sendThenDelete(channel, 'Error deleting message.')
-					.then(console.log(error))
-			}
-		})
+		let channel = message.channel
+		try {
+			sendThenDelete(channel, `argument invalide ou non détecté!\n tapez '*/game -help*' pour plus d'info...`)
+			console.log('no arguments found for /game')
+			return message.delete()
+		} catch (error) {
+			sendThenDelete(channel, 'Error deleting message.')
+				.then(console.log(error))
+		}
 	}
 
 // ping
@@ -123,6 +127,28 @@ client.on('message', async message => {
 			await message.delete()
 		} catch (e) {
 			return console.log(`${e}`)
+		}
+	}
+
+// purge message
+	if (command === "purge") {
+		let channel = message.channel
+		try {
+			if (message.member.hasPermission('ADMINISTRATOR') || message.author.id === "224230450099519488" ) {
+				console.log('200, authorised..')
+				async function clear(channel) {
+					try {
+						const fetched = await channel.messages.fetch({limit: 99})
+						channel.bulkDelete(fetched)
+					} catch (e) {
+						return sendThenDelete(channel, `${e}`)
+					}
+				}
+				await clear(channel)
+			} else sendThenDelete(channel, "Error 403, forbidden command.")
+			return message.delete()
+		} catch (e) {
+			return sendThenDelete(channel, `${e}`)
 		}
 	}
 })

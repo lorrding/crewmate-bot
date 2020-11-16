@@ -26,12 +26,11 @@ class Cron {
 	deleteRelatedGame() {
 		console.log("5 minutes before deleting game")
 		this.#task= new cron.schedule(`5 * * * *`, () => {
-				console.log("deleting Game...")
-				this.#game.deleteSelf()
-			}, {
-				timezone : "Europe/Paris"
-			}
-		)
+			console.log("deleting Game...")
+			this.#game.deleteSelf()
+		}, {
+			timezone : "Europe/Paris"
+		})
 	}
 
 	destructor() {

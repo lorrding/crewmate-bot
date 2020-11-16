@@ -67,7 +67,7 @@ class GameManager {
 					this.createGame(message, hours, minutes)
 				}
 			} else {
-				sendThenDelete(message.channel, `Vous êtes déjà l'auteur d'une partie!`)
+				sendThenDelete(message.channel, `Vous êtes déjà l'auteur d'une partie prévue!`)
 			}
 		} else {
 			sendThenDelete(message.channel, `Une partie existe déjà sur ce serveur Discord!`)
