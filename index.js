@@ -18,6 +18,12 @@ client.on('ready',async () => {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
 	})
+	client.channels.fetch('767812168745484328')
+		.then(channel => {
+			let date = new Date()
+			channel.send(`Reboot done at ${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getUTCFullYear()}`)
+		})
+		.catch(console.error);
 })
 
 client.on('message', async message => {
@@ -88,16 +94,29 @@ client.on('message', async message => {
 				embed.setAuthor(`${message.author.username} -> ping`, `${message.author.avatarURL()}`)
 				embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ws.ping)}ms.`)
 				m.delete()
-				return sendThenDelete(message.channel, embed, 10000).then(m => message.delete())
+				return sendThenDelete(message.channel, embed, 10000).then(() => message.delete())
 		} catch (e) {
 			return sendThenDelete(message.channel, `${e}`)
 		}
 	}
 
+// uptime
+if (command === "uptime") {
+	try {
+		let embed = new Discord.MessageEmbed()
+			.setColor('#00FFFF')
+			.setAuthor(`${message.author.username} -> uptime`, `${message.author.avatarURL()}`)
+			.addField(`Current uptime:`,`${client.uptime} ms (${Math.round(client.uptime/3600000)} hours).`)
+		return sendThenDelete(message.channel, embed, 30000).then(() => message.delete())
+	} catch (e) {
+		return sendThenDelete(message.channel, `${e}`)
+	}
+}
+
 // help
 	if (command === "help") {
 		try {
-			return sendThenDelete(message.channel, "Soon..").then(m => message.delete())
+			return sendThenDelete(message.channel, "Soon..").then(() => message.delete())
 		} catch (e) {
 			return sendThenDelete(message.channel, `${e}`)
 		}
@@ -154,7 +173,7 @@ client.on('message', async message => {
 })
 
 client.on('messageReactionAdd', async (reaction, user) => {
-	if (dev && message.channel.id === "767812168745484328") {
+	if (dev && reaction.message.channel.id === "767812168745484328") {
 		return console.log('MODE DEV, ignoring...')
 	}
 	if (reaction.partial) {
@@ -173,7 +192,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 
 client.on('messageReactionRemove', async (reaction, user) => {
-	if (dev && message.channel.id === "767812168745484328") {
+	if (dev && reaction.message.channel.id === "767812168745484328") {
 		return console.log('MODE DEV, ignoring...')
 	}
 	if (reaction.partial) {
