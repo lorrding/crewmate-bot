@@ -28,6 +28,7 @@ class Game {
 		this.#manager = manager
 
 		this.sendEmbed(this.createEmbed())
+
 	}
 
 	addPlayer(reaction, member) {
@@ -124,7 +125,7 @@ class Game {
 		try {
 			let embed = new Discord.MessageEmbed()
 			embed.setColor(getHexa())
-			embed.setAuthor(`${this.#author.username} propose de jouer`, this.#author.displayAvatarURL)
+			embed.setAuthor(`${this.#author.username} propose de jouer à Among Us`, this.#author.avatarURL())
 			embed.addField(`${formatEmbedTime(this.#hours, this.#minutes)} à:`,`${this.#hours}h${this.#minutes}`, true)
 			embed.addField(`Places restantes:`,`9`, true)
 			embed.setImage(`https://i.imgur.com/8sd2fgo.png`)
@@ -254,13 +255,13 @@ class Game {
 		return this.#listPlayers
 	}
 
-	// getHours() {
-	// 	return this.#hours
-	// }
+	getHours() {
+		return this.#hours
+	}
 
-	// getMinutes() {
-	// 	return this.#minutes
-	// }
+	getMinutes() {
+		return this.#minutes
+	}
 
 	getEmoji() {
 		return Game.#EMOJI

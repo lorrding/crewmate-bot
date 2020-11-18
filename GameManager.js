@@ -32,9 +32,8 @@ class GameManager {
 				sendThenDelete(message.channel, `Vous n'êtes à l'origine d'aucune partie ou n'avez pas les droits suffisants pour en annuler!`)
 			}
 		} else {
-			return sendThenDelete(message.channel, "Aucun partie n'est prévue dans ce channel!").then(
-				message => message.delete()
-			)
+			sendThenDelete(message.channel, "Aucun partie n'est prévue dans ce channel!")
+			return message.delete()
 		}
 
 
