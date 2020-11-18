@@ -37,8 +37,9 @@ client.on('message', async message => {
 			dev = true
 			sendThenDelete(message.channel, `Ok, passage en dev mode.`)
 		}
+		await message.delete()
 	}
-	if (dev) return console.log('MODE DEV, ignoring...')
+	if (dev && message.channel.id === "767812168745484328") return console.log('MODE DEV, ignoring...')
 
 // game
 	if (command === "game" || command === "g") {
@@ -82,13 +83,12 @@ client.on('message', async message => {
 	if (command === "ping") {
 		try {
 			let embed = new Discord.MessageEmbed()
-			embed.setColor('#FFFFFF')
-			const m = await message.channel.send("Ping?")
-			embed.setAuthor(`${message.author.username} -> ping`, `${message.author.displayAvatarURL}`)
-			embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ping)}ms.`)
-			await message.delete()
-			m.delete()
-			await message.channel.send(embed)
+				.setColor('#FFFFFF')
+				const m = await message.channel.send("Ping?")
+				embed.setAuthor(`${message.author.username} -> ping`, `${message.author.avatarURL()}`)
+				embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ws.ping)}ms.`)
+				m.delete()
+				return sendThenDelete(message.channel, embed, 10000).then(m => message.delete())
 		} catch (e) {
 			return sendThenDelete(message.channel, `${e}`)
 		}
@@ -97,7 +97,7 @@ client.on('message', async message => {
 // help
 	if (command === "help") {
 		try {
-			await message.channel.send("Soon..")
+			return sendThenDelete(message.channel, "Soon..").then(m => message.delete())
 		} catch (e) {
 			return sendThenDelete(message.channel, `${e}`)
 		}
@@ -139,7 +139,7 @@ client.on('message', async message => {
 				async function clear(channel) {
 					try {
 						const fetched = await channel.messages.fetch({limit: 99})
-						channel.bulkDelete(fetched)
+						await channel.bulkDelete(fetched)
 					} catch (e) {
 						return sendThenDelete(channel, `${e}`)
 					}
@@ -154,7 +154,7 @@ client.on('message', async message => {
 })
 
 client.on('messageReactionAdd', async (reaction, user) => {
-	if (dev) {
+	if (dev && message.channel.id === "767812168745484328") {
 		return console.log('MODE DEV, ignoring...')
 	}
 	if (reaction.partial) {
@@ -173,7 +173,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 
 client.on('messageReactionRemove', async (reaction, user) => {
-	if (dev) {
+	if (dev && message.channel.id === "767812168745484328") {
 		return console.log('MODE DEV, ignoring...')
 	}
 	if (reaction.partial) {
