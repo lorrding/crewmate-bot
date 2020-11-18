@@ -210,4 +210,11 @@ client.on('messageReactionRemove', async (reaction, user) => {
 	await gameManager.manageRemoveReaction(reaction, user)
 })
 
+client.on('guildMemberAdd', member => {
+	console.log("new user detected!")
+	let channel = member.guild.channels.cache.find(ch => ch.name === 'member-log')
+	if (!channel) return console.log("cannot find channel")
+	channel.send(`Bienvenue sur le serveur ${member}\nPense à aller voir les <#764910769132929048>. Le code pour rejoindre les parties est dans <#764910769132929049>`)
+})
+
 connect.login(client)
