@@ -1,6 +1,7 @@
 const { sendThenDelete } = require('./toolbox')
 const Game = require('./Game')
 const CronManager = require('./CronManager')
+const database = require('./database')
 
 //class used to manager every game objects
 class GameManager {
@@ -13,9 +14,11 @@ class GameManager {
 	}
 
 	createGame(message, tempHeures, tempMinutes) {
-		this.#gameList.push(new Game.Game(message, tempHeures, tempMinutes, this))
+		let game = new Game.Game(message, tempHeures, tempMinutes, this)
+		this.#gameList.push(game)
 		this.#guildList.push(message.guild)
-		return this.#authorList.push(message.author)
+		this.#authorList.push(message.author)
+		// return new database.Database().addGameDB(game)
 	}
 
 	deleteGame(message) {
@@ -174,6 +177,10 @@ class GameManager {
 
 		// in case nothing is found..
 		console.log("no user found... error")
+	}
+
+	restoreGame() {
+
 	}
 }
 

@@ -7,17 +7,20 @@ const config = require("./config.json")
 
 const GameManager = require('./GameManager')
 const { sendThenDelete} = require('./toolbox')
+const database = require('./database')
 
 const client = new Discord.Client()
 const gameManager = new GameManager.GameManager()
-let dev = false
 
+let dev = false
 client.on('ready',async () => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
+
 	await client.user.setActivity("Among Us", {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
 	})
+	let database1 = new database.Database()
 })
 
 client.on('message', async message => {
