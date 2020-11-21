@@ -1,4 +1,5 @@
 const { sendThenDelete } = require('./toolbox')
+const { MessageEmbed } = require('discord.js')
 const Game = require('./Game')
 const CronManager = require('./CronManager')
 
@@ -10,6 +11,7 @@ class GameManager {
 	#CronManager = new CronManager.CronManager()
 
 	constructor() {
+		console.log("game manager ready")
 	}
 
 	createGame(message, tempHeures, tempMinutes) {
@@ -53,7 +55,12 @@ class GameManager {
 		this.removeGame(game, message)
 		//deleting game
 		game.deleteSelf()
-		return message.delete()
+		try {
+			message.delete()
+		} catch (e) {
+			return console.log("message unavailable")
+		}
+		return 0;
 	}
 
 	addGame(message, args) {
@@ -71,7 +78,11 @@ class GameManager {
 		} else {
 			sendThenDelete(message.channel, `Une partie existe déjà sur ce serveur Discord!`)
 		}
-		return message.delete()
+		try {
+			message.delete()
+		} catch (e) {
+			return console.log("message unavailable")
+		}
 	}
 
 	removeGame(game, message) {
@@ -174,6 +185,26 @@ class GameManager {
 
 		// in case nothing is found..
 		console.log("no user found... error")
+	}
+
+	dumpVars() {
+		let embed = new MessageEmbed()
+		try {
+			console.log(`looping through ${this.#gameList.length} game(s)`)
+			if (this.#gameList.length) {
+				this.#gameList.forEach(game => {
+					embed.addField("Guild",game.getGuild().name)
+					embed.addField("Channel",game.getMessage().channel.name)
+					embed.addField("Author",game.getAuthor().username)
+					embed.addField("Time:",`${game.getHours()}h${game.getMinutes()}`)
+					embed.addField("Players",game.getGuild().name)
+				})
+				return embed
+			}
+			return "no game..";
+		} catch (e) {
+			return e
+		}
 	}
 }
 
