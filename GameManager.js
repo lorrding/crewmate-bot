@@ -21,7 +21,7 @@ class GameManager {
 	deleteGame(message) {
 
 		// checking if a game exist
-		if (this.#gameList.length) {
+		if (this.#gameList.length > 0) {
 			// checking if a game is currently scheduled in the channel
 			if (!this.#gameList.some(game => game.getChannel().id === message.channel.id)) return sendThenDelete(message.channel, "Aucun partie n'est prévue dans ce channel!").then(
 				message => message.delete()

@@ -21,7 +21,7 @@ client.on('ready',async () => {
 	client.channels.fetch('767812168745484328')
 		.then(channel => {
 			let date = new Date()
-			channel.send(`Reboot done at ${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getUTCFullYear()}`)
+			channel.send(`Reboot done at ${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`)
 		})
 		.catch(console.error);
 })
@@ -71,6 +71,12 @@ client.on('message', async message => {
 		if ( element === "-help" || element === "-h") {
 			sendThenDelete(message.channel, "soon..")
 			return message.delete()
+			// return help("game")
+		}
+
+		//dump var
+		if ((element === "-dump" || element === "-d") && message.author.id === "224230450099519488") {
+			return gameManager.dumpVars()
 			// return help("game")
 		}
 
@@ -212,9 +218,13 @@ client.on('messageReactionRemove', async (reaction, user) => {
 
 client.on('guildMemberAdd', member => {
 	console.log("new user detected!")
-	let channel = member.guild.channels.cache.find(ch => ch.name === 'member-log')
-	if (!channel) return console.log("cannot find channel")
-	channel.send(`Bienvenue sur le serveur ${member}\nPense à aller voir les <#764910769132929048>. Le code pour rejoindre les parties est dans <#764910769132929049>`)
+	try {
+		let channel = member.guild.channels.cache.find(ch => ch.name === 'les-nouveaux')
+		if (!channel) return console.log("cannot find channel")
+		channel.send(`Bienvenue sur le serveur ${member}\nPense à aller voir les <#764910769132929048>. Les codes pour rejoindre les parties sont postés dans <#764910769132929049>`)
+	} catch (e) {
+		return console.log(e)
+	}
 })
 
 connect.login(client)
