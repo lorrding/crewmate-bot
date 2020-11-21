@@ -43,30 +43,12 @@ class Game {
 			.then(console.log(error))
 		}
 
-		// try {
-		// 	//try adding role to player
-		// 	let player = this.#guild.members.cache.find(r => r.id === member.id)
-		// 	player.roles.add(this.#role)
-		// } catch (error) {
-		// 	return sendThenDelete(this.#channel, 'missing permission to add role.')
-		// 	.then(console.log(error))
-		// }
-
 		//everything's good
 		this.editEmbed()
 	}
 
 	removePlayer(user) { // removing role for a user
 		console.log(`removing: ${user.username}`)
-		// try {
-		// 	// getting user as guild member
-		// 	let member = this.#guild.members.cache.find(r => r.id === user.id)
-		// 	member.roles.remove(this.#role).then(() => {
-		// 		console.log("role removed fro members...")})
-		// } catch (error) {
-		// 	return sendThenDelete(this.#channel, 'missing permission to remove role.')
-		// 		.then(console.log(error))
-		// }
 		// updating playerList
 		try {
 			this.#listPlayers.splice(this.#listPlayers.indexOf(user), 1)
@@ -76,21 +58,6 @@ class Game {
 	}
 
 	removeAllPlayers() { // removing role to every players of the game:
-
-		// // removing role
-		// try {
-		// 	this.#listPlayers.forEach(player => {
-		// 		let member = this.#guild.members.cache.find(r => r.id === player.id)
-		// 		member.roles.remove(this.#role).then(() => {})
-		// 	});
-		// 	console.log("role removed for every player..")
-		// } catch (error) {
-		// 	return sendThenDelete(this.#channel, 'missing permission to remove role.')
-		// 		.then(console.log(error))
-		// }
-		// // removing role from author
-		// this.removePlayer(this.#author)
-		// console.log("role removed for author..")
 
 		// updating playerList
 		this.#listPlayers = []
