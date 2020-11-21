@@ -6,7 +6,7 @@ const connect = require("./connect")
 const config = require("./config.json")
 
 const GameManager = require('./GameManager')
-const { sendThenDelete} = require('./toolbox')
+const { sendThenDelete, help} = require('./toolbox')
 
 const client = new Discord.Client()
 const gameManager = new GameManager.GameManager()
@@ -69,14 +69,25 @@ client.on('message', async message => {
 
 		//help
 		if ( element === "-help" || element === "-h") {
-			sendThenDelete(message.channel, "soon..")
-			return message.delete()
-			// return help("game")
+			try {
+				message.author.createDM().then(DMChannel => DMChannel.send(help("-g")))
+			} catch (e) {
+				return sendThenDelete(message.channel, `${e}`)
+			}
+			if (message.channel.type !== "dm") {
+				try {
+					await message.delete()
+				} catch (e) {
+					return sendThenDelete(message.channel, `${e}`)
+				}
+			}
+			return 0;
 		}
 
 		//dump var
-		if ((element === "-dump" || element === "-d") && message.author.id === "224230450099519488") {
-			return gameManager.dumpVars()
+		if ((element === "-dump" || element === "-dmp") && message.author.id === "224230450099519488") {
+			sendThenDelete(message.channel, gameManager.dumpVars(),30000)
+			return message.delete()
 			// return help("game")
 		}
 
@@ -107,24 +118,31 @@ client.on('message', async message => {
 	}
 
 // uptime
-if (command === "uptime") {
-	try {
-		let embed = new Discord.MessageEmbed()
-			.setColor('#00FFFF')
-			.setAuthor(`${message.author.username} -> uptime`, `${message.author.avatarURL()}`)
-			.addField(`Current uptime:`,`${client.uptime} ms (${Math.round(client.uptime/3600000)} hours).`)
-		return sendThenDelete(message.channel, embed, 30000).then(() => message.delete())
-	} catch (e) {
-		return sendThenDelete(message.channel, `${e}`)
-	}
-}
-
-// help
-	if (command === "help") {
+	if (command === "uptime") {
 		try {
-			return sendThenDelete(message.channel, "Soon..").then(() => message.delete())
+			let embed = new Discord.MessageEmbed()
+				.setColor('#00FFFF')
+				.setAuthor(`${message.author.username} -> uptime`, `${message.author.avatarURL()}`)
+				.addField(`Current uptime:`,`${client.uptime} ms (${Math.round(client.uptime/3600000)} hours).`)
+			return sendThenDelete(message.channel, embed, 30000).then(() => message.delete())
 		} catch (e) {
 			return sendThenDelete(message.channel, `${e}`)
+		}
+	}
+
+// help
+	if (command === "help" || command === "h") {
+		try {
+			message.author.createDM().then(DMChannel => DMChannel.send(help(args[0])))
+		} catch (e) {
+			return sendThenDelete(message.channel, `${e}`)
+		}
+		if (message.channel.type !== "dm") {
+			try {
+				await message.delete()
+			} catch (e) {
+				return sendThenDelete(message.channel, `${e}`)
+			}
 		}
 	}
 
