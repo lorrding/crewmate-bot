@@ -13,7 +13,7 @@ class Cron {
 		this.#hours = hours
 		this.#minutes = minutes
 		this.#game = game
-		this.#task= new cron.schedule(`${this.#minutes} ${this.#hours} * * *`, () => {
+		this.#task = new cron.schedule(`${this.#minutes} ${this.#hours} * * *`, () => {
 			console.log("It is time for me to ping..")
 			game.cronSchedule()
 		}, {
@@ -25,24 +25,24 @@ class Cron {
 
 	deleteRelatedGame() {
 		console.log("5 minutes before deleting game")
-		this.#task= new cron.schedule(`5 * * * *`, () => {
+		this.#task = new cron.schedule(`5 * * * *`, () => {
 			console.log("deleting Game...")
 			this.#game.deleteSelf()
 		}, {
 			timezone : "Europe/Paris"
 		})
+		this.#task.start()
 	}
 
 	destructor() {
-		let channel = this.#game.getChannel()
 		try {
 			this.#hours = undefined
 			this.#minutes = undefined
 			this.#task.destroy()
 			this.#game = undefined
 		} catch (e) {
-			sendThenDelete(channel, `${e}`)
-			return console.log('------ error deleting cron obj! ------')
+			console.log('------ error deleting cron obj! ------')
+			return console.log(e)
 		}
 	}
 }

@@ -50,7 +50,7 @@ client.on('message', async message => {
 // game
 	if (command === "game" || command === "g") {
 		if (!args.length) {
-			sendThenDelete(message.channel, "Arguments manquant!\n-a ou --add suivi de l'heure pour ajouter une game\n-d | --delete -> suppression de la game en court```")
+			sendThenDelete(message.channel, "Arguments manquant!\n /game -help pour plus d'infos")
 			return message.delete()
 		}
 
@@ -85,7 +85,7 @@ client.on('message', async message => {
 		}
 
 		//dump var
-		if ((element === "-dump" || element === "-dmp") && message.author.id === "224230450099519488") {
+		if ((element === "-dump" || element === "-dmp") && (message.member.hasPermission('ADMINISTRATOR') || message.author.id === "224230450099519488")) {
 			sendThenDelete(message.channel, gameManager.dumpVars(),30000)
 			return message.delete()
 			// return help("game")
@@ -188,7 +188,7 @@ client.on('message', async message => {
 					}
 				}
 				await clear(channel)
-			} else sendThenDelete(channel, "Error 403, forbidden command.")
+			} else sendThenDelete(channel, "403, forbidden command.")
 			return message.delete()
 		} catch (e) {
 			return sendThenDelete(channel, `${e}`)

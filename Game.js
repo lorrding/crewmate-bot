@@ -177,8 +177,7 @@ class Game {
 			});
 			if (this.#listPlayers.length > 0) {
 				str += `venez dans le vocal!`
-			} else if (this.#listPlayers.length > 5) {
-				str += `venez dans le vocal! \n Mais il vous manquera surement quelques joueurs... <:AU_why:765273043962298410>`
+				if (this.#listPlayers.length <= 5) str += `\n Mais il vous manquera surement quelques joueurs... <:AU_why:765273043962298410>`
 			} else {
 				str += `\nIl te manque des amis par contre <:AU_why:765273043962298410>`
 			}
@@ -189,8 +188,9 @@ class Game {
 		}
 		try {
 			sendThenDelete(this.#channel, "<:AU_gun:765273098336337970>", 300000).then(() => {
+				//removing game from manager
+				this.#manager.removeGame(this, this.#message)
 				//deleting game after 5 minutes
-				// this.#manager.deleteGame(this, this.#message)
 				this.#cron.deleteRelatedGame()
 			})
 		} catch (e) {

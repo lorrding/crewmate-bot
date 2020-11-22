@@ -25,9 +25,7 @@ class GameManager {
 		// checking if a game exist
 		if (this.#gameList.length > 0) {
 			// checking if a game is currently scheduled in the channel
-			if (!this.#gameList.some(game => game.getChannel().id === message.channel.id)) return sendThenDelete(message.channel, "Aucun partie n'est prévue dans ce channel!").then(
-				message => message.delete()
-			)
+			if (!this.#gameList.some(game => game.getChannel().id === message.channel.id)) return sendThenDelete(message.channel, "Aucun partie n'est prévue dans ce channel!")
 
 			// checking if message's author is a game author or has admin rights
 			if (!(this.#gameList.some(game => game.getAuthor().id === message.author.id) || message.member.hasPermission('ADMINISTRATOR'))) {
