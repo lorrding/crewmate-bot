@@ -8,7 +8,7 @@ const config = require("./config.json")
 const GameManager = require('./GameManager')
 const { sendThenDelete, help} = require('./toolbox')
 
-const client = new Discord.Client()
+const client = new Discord.Client({ partials: ['REACTION']})
 const gameManager = new GameManager.GameManager()
 let dev = false
 
@@ -179,17 +179,35 @@ client.on('message', async message => {
 		try {
 			if (message.member.hasPermission('ADMINISTRATOR') || message.author.id === "224230450099519488" ) {
 				console.log('200, authorised..')
-				async function clear(channel) {
-					try {
-						const fetched = await channel.messages.fetch({limit: 99})
-						await channel.bulkDelete(fetched)
-					} catch (e) {
-						return sendThenDelete(channel, `${e}`)
-					}
+				console.log(args[0])
+
+				switch (args[0]) {
+					case "-all":
+						if (parseInt(args[1]) <= 0 || parseInt(args[1]) >= 100) return sendThenDelete(channel, "le nombre de message à supprimer doit être entre 1 et 99")
+						try {
+							console.log(`starting deletion of ${args[1]} messages..`)
+							const fetched = await channel.messages.fetch({limit: parseInt(args[1])})
+							fetched.forEach(fetchedMessage => {
+								if (fetchedMessage.deletable) fetchedMessage.delete()
+							})
+						} catch (e) {
+							return sendThenDelete(channel, `${e}`)
+						}
+						break
+					case "-bulk":
+						try {
+							console.log(`bulk deleting message that are less than 2 weeks old..`)
+							const fetched = await channel.messages.fetch({limit: 99})
+							channel.bulkDelete(fetched, true)
+						} catch (e) {
+							return sendThenDelete(channel, `${e}`)
+						}
+						break
 				}
-				await clear(channel)
-			} else sendThenDelete(channel, "403, forbidden command.")
-			return message.delete()
+			} else {
+				sendThenDelete(channel, "403, forbidden command.")
+				return message.delete()
+			}
 		} catch (e) {
 			return sendThenDelete(channel, `${e}`)
 		}
@@ -200,38 +218,49 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	if (dev && reaction.message.channel.id === "767812168745484328") {
 		return console.log('MODE DEV, ignoring...')
 	}
-	if (reaction.partial) {
-		try {
-			reaction = await reaction.fetch()
-		} catch (error) {
-			return console.log(`Something went wrong when fetching the message: ${error}`)
-		}
-	}
-
 	//if bot, then don't
 	if (user.bot) return 0
 
-	//calling gameManager to check everything else...
-	await gameManager.manageAddReaction(reaction, user)
+	if (reaction.partial) {
+		console.log('partial reaction. Fetching...')
+		reaction.fetch()
+			.then(fullReaction => {
+				//calling gameManager to check everything else...
+				gameManager.manageAddReaction(fullReaction, user)
+			})
+			.catch(e => {
+				console.log('Something went wrong when fetching the reaction: ', e);
+			})
+	} else {
+		console.log('The reaction is not partial.')
+		//calling gameManager to check everything else...
+		await gameManager.manageAddReaction(reaction, user)
+	}
 })
 
 client.on('messageReactionRemove', async (reaction, user) => {
 	if (dev && reaction.message.channel.id === "767812168745484328") {
 		return console.log('MODE DEV, ignoring...')
 	}
-	if (reaction.partial) {
-		try {
-			reaction = await reaction.fetch()
-		} catch (error) {
-			console.error('Something went wrong when fetching the message: ', error)
-			return
-		}
-	}
 
 	if (user.bot) return 0
 
-	//calling gameManager to check everything else...
-	await gameManager.manageRemoveReaction(reaction, user)
+	if (reaction.partial) {
+		console.log('partial reaction. Fetching...')
+		reaction.fetch()
+			.then(fullReaction => {
+				//calling gameManager to check everything else...
+				return gameManager.manageRemoveReaction(fullReaction, user)
+			})
+			.catch(e => {
+				console.log('Something went wrong when fetching the reaction: ', e);
+			})
+	} else {
+		console.log('The reaction is not partial.')
+		//calling gameManager to check everything else...
+		await gameManager.manageRemoveReaction(reaction, user)
+	}
+	return 0
 })
 
 client.on('guildMemberAdd', member => {
