@@ -1,5 +1,4 @@
 const cron = require('node-cron')
-const { sendThenDelete } = require('./toolbox')
 
 class Cron {
 
