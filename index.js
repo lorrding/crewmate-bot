@@ -47,7 +47,7 @@ client.on('message', async message => {
 		}
 		await message.delete()
 	}
-	if (dev && message.channel.id === "767812168745484328") return console.log('MODE DEV, ignoring...')
+	if (dev) return console.log('MODE DEV, ignoring...')
 
 // game
 	if (command === "game" || command === "g") {
@@ -231,7 +231,7 @@ client.on('message', async message => {
 				dispatcher = await play(connection, message, url)
 			}
 		} else {
-			sendThenDelete(message.channel, "Vous n'êtes dans aucun channel vocal que peux rejoindre!")
+			sendThenDelete(message.channel, "Vous n'êtes dans aucun channel vocal que je peux rejoindre!")
 		}
 		return message.delete()
 	}
@@ -248,7 +248,7 @@ client.on('message', async message => {
 // })
 
 client.on('messageReactionAdd', async (reaction, user) => {
-	if (dev && reaction.message.channel.id === "767812168745484328") {
+	if (dev) {
 		return console.log('MODE DEV, ignoring...')
 	}
 	//if bot, then don't
@@ -272,7 +272,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 
 client.on('messageReactionRemove', async (reaction, user) => {
-	if (dev && reaction.message.channel.id === "767812168745484328") {
+	if (dev) {
 		return console.log('MODE DEV, ignoring...')
 	}
 
