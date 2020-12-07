@@ -33,13 +33,13 @@ module.exports = {
 	// format text for game embed message
 	formatEmbedTime : function(hours, minutes) {
 		let str = ""
-		let {getUTCHours, getUTCMinutes} = new Date()
+		let date = new Date()
 		
 		//today or tomorrow ? utc+1 = summer /---/ utc+0 = winter
 		console.log("creating embed time..")
-		if (getUTCHours()+1 < hours) {str += "Ce "}
-		else if (getUTCHours()+1 == hours) {
-			if (getUTCMinutes() < minutes) {str += "Ce "}
+		if (date.getUTCHours()+1 < hours) {str += "Ce "}
+		else if (date.getUTCHours()+1 == hours) {
+			if (date.getUTCMinutes() < minutes) {str += "Ce "}
 			else {str += "Demain "}
 		} else {str += "Demain "}
 
