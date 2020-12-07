@@ -1,4 +1,5 @@
 const {MessageEmbed} = require('discord.js')
+const ytdl = require('ytdl-core-discord');
 
 module.exports = {
 	//send a message, then delete it after x millisecondes
@@ -16,13 +17,13 @@ module.exports = {
 	// format text for game embed message
 	formatEmbedTime : function(hours, minutes) {
 		let str = ""
-		let date = new Date()
+		let {getUTCHours, getUTCMinutes} = new Date()
 		
 		//today or tomorrow ? utc+1 = summer /---/ utc+0 = winter
 		console.log("creating embed time..")
-		if (date.getUTCHours()+1 < hours) {str += "Ce "}
-		else if (date.getUTCHours()+1 == hours) {
-			if (date.getUTCMinutes() < minutes) {str += "Ce "}
+		if (getUTCHours()+1 < hours) {str += "Ce "}
+		else if (getUTCHours()+1 == hours) {
+			if (getUTCMinutes() < minutes) {str += "Ce "}
 			else {str += "Demain "}
 		} else {str += "Demain "}
 
@@ -102,7 +103,16 @@ module.exports = {
 				break
 		}
 		return message
-	}
+	},
+
+	play : async function (connection, message, url) {
+		if (!ytdl.validateURL(url)) return this.sendThenDelete(message.channel, "format de vidéo invalide!")
+		return connection.play(await ytdl(url), {type: 'opus'})
+	},
+
+	// disconnect : function (connection) {
+	// 	return connection.disconnect()
+	// }
 
 	// random number between to included integers
 	// getRandom : function (min, max) {

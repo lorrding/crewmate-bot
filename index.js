@@ -6,11 +6,13 @@ const connect = require("./connect")
 const config = require("./config.json")
 
 const GameManager = require('./GameManager')
-const { sendThenDelete, help} = require('./toolbox')
+const { sendThenDelete, help, play, disconnect} = require('./toolbox')
 
 const client = new Discord.Client({ partials: ['REACTION']})
 const gameManager = new GameManager.GameManager()
 let dev = false
+
+let dispatcher
 
 client.on('ready',async () => {
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
@@ -212,7 +214,38 @@ client.on('message', async message => {
 			return sendThenDelete(channel, `${e}`)
 		}
 	}
+
+// voice
+	if (command === "play") {
+		// checking if the message come from a guild
+		if (!message.guild) return
+
+		if (message.member.voice.channel && message.member.voice.channel.joinable) {
+			// playing lofi
+			let url = args[0]
+			const connection = await message.member.voice.channel.join()
+
+			if (url === "lofi" || url === "-lofi") {
+				dispatcher = await play(connection, message, 'https://www.youtube.com/watch?v=5qap5aO4i9A')
+			} else {
+				dispatcher = await play(connection, message, url)
+			}
+		} else {
+			sendThenDelete(message.channel, "Vous n'êtes dans aucun channel vocal que peux rejoindre!")
+		}
+		return message.delete()
+	}
 })
+
+// client.on('voiceStateUpdate', (oldStat, newState) => {
+// 	if (!client.voice.connections.some(aConnection => aConnection.channel.id === oldStat.channelID)) return
+// 	let connection = client.voice.connections.find(aConnection => aConnection.channel.id === oldStat.channelID)
+//
+// 	console.log(connection.channel.members.size)
+// 	if (connection == undefined) return
+// 	if (connection.channel.members.size < 2) client.setTimeout( disconnect(),60000 ,connection)
+// 	console.log("bot is the only member in the voice channel, disconnecting in 60 secondes...")
+// })
 
 client.on('messageReactionAdd', async (reaction, user) => {
 	if (dev && reaction.message.channel.id === "767812168745484328") {
@@ -273,5 +306,17 @@ client.on('guildMemberAdd', member => {
 		return console.log(e)
 	}
 })
+
+// dispatcher.on('start', () => {
+// 	console.log('crewmate bot is now playing audio!');
+// });
+//
+// dispatcher.on('finish', () => {
+// 	console.log('song finished!');
+//
+// });
+//
+// // Always remember to handle errors appropriately!
+// dispatcher.on('error', console.error);
 
 connect.login(client)

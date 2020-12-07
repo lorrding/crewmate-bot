@@ -1,7 +1,7 @@
 {
 	"name": "crewmate-bot",
-	"description": "Discord bot for managing 'Among us' games",
-	"version": "2.0.0",
+	"description": "Discord bot for managing 'Among us' games, and other funny stuff",
+	"version": "2.1.0",
 	"main": "index.js",
 	"scripts": {
 		"start": "node index.js"
@@ -9,6 +9,7 @@
 	"dependencies": {
 		"discord.js": "12.3.1",
 		"node-cron": "^2.0.3",
-		"request": "2.88.2"
+		"request": "2.88.2",
+		"ytdl-core-discord": "^1.2.4"
 	}
 }
