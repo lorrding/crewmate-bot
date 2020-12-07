@@ -103,11 +103,23 @@ module.exports = {
 					{ name: '-help', value: 'Affiche cet aide'}
 				])
 				break
+			case "-play":
+			case "-p":
+				message.setTitle("play {Argument}")
+				message.setDescription("La commande **/play** fait venir le bot dans votre salon vocal et joue la vidéo youtube en argument\n")
+				message.addFields([
+					{ name: 'url', value: "n'importe quel lien youtube valide"},
+					{ name: 'lofi', value: "Stream directement du lofi"},
+					{ name: 'doom', value: 'Stream directement du doom'},
+					{ name: '-help', value: 'Affiche cet aide'}
+				])
+				break
 			default:
 				message.setTitle("help -{Argument}")
 				message.setDescription("La commande **/help** vous affiche les différentes commandes utilisables pour interagir avec le bot.")
 				message.addFields([
 					{ name: 'game*', value: "Permet de créer une partie dans le channel actuel"},
+					{ name: 'play*', value: "Rejoint le channel vocal et joue la vidéo youtube"},
 					{ name: 'ping', value: "Affiche le ping du bot ainsi que celle de l'Api discord"},
 					{ name: 'uptime', value: 'Affiche depuis quand le bot est actif (temps depuis le dernier reboot)'},
 					{ name: 'help', value: 'Affiche ce message'},
@@ -121,11 +133,11 @@ module.exports = {
 		return message
 	},
 
-	play : async function (connection, message, url) {
+	play : function (connection, message, url) {
 		let {sendThenDelete} = require('./toolbox')
 		if (!validateURL(url)) return sendThenDelete(message.channel, "format de vidéo invalide!")
 		sendThenDelete(message.channel, "👌")
-		return connection.play(await ytdl(url), {type: 'opus'})
+		return connection.play(ytdl(url), {type: 'opus'})
 	},
 
 	// disconnect : function (connection) {

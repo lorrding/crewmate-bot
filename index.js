@@ -224,15 +224,33 @@ client.on('message', async message => {
 			let url = args[0]
 			const connection = await message.member.voice.channel.join()
 
-			if (url === "lofi" || url === "-lofi") {
-				dispatcher = await play(connection, message, 'https://www.youtube.com/watch?v=5qap5aO4i9A')
-			} else {
-				dispatcher = await play(connection, message, url)
+			switch (url) {
+				case "lofi": case "-lofi":
+					dispatcher = await play(connection, message, 'https://www.youtube.com/watch?v=5qap5aO4i9A')
+					break;
+				case "-help": case "-h":
+					//help
+					try {
+						message.author.createDM().then(DMChannel => DMChannel.send(help("-p")))
+					} catch (e) {
+						return sendThenDelete(message.channel, `${e}`)
+					}
+					if (message.channel.type !== "dm") {
+						try {
+							await message.delete()
+						} catch (e) {
+							return sendThenDelete(message.channel, `${e}`)
+						}
+					}
+					break;
+				default:
+					dispatcher = await play(connection, message, url)
+					break;
 			}
 		} else {
 			sendThenDelete(message.channel, "Vous n'êtes dans aucun channel vocal que je peux rejoindre!")
 		}
-		// await deleteMessage(client, message)
+		// deleteMessage(client, message)
 	}
 
 // rr
@@ -245,7 +263,7 @@ client.on('message', async message => {
 		} else {
 			sendThenDelete(message.channel, "Cannot rickRoll here")
 		}
-		// await deleteMessage(client, message)
+		// deleteMessage(client, message)
 	}
 })
 
