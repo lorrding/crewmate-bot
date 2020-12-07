@@ -1,12 +1,11 @@
 const Discord = require('discord.js')
-// const cron = require('node-cron')
 
 const connect = require("./connect")
 
 const config = require("./config.json")
 
 const GameManager = require('./GameManager')
-const { sendThenDelete, help, play, disconnect} = require('./toolbox')
+const { sendThenDelete, help, play, deleteMessage} = require('./toolbox')
 
 const client = new Discord.Client({ partials: ['REACTION']})
 const gameManager = new GameManager.GameManager()
@@ -233,7 +232,20 @@ client.on('message', async message => {
 		} else {
 			sendThenDelete(message.channel, "Vous n'êtes dans aucun channel vocal que je peux rejoindre!")
 		}
-		return message.delete()
+		// await deleteMessage(client, message)
+	}
+
+// rr
+	if (command === "rr") {
+		// checking if the message come from a guild
+		if (!message.guild) return
+		if (message.member.voice.channel && message.member.voice.channel.joinable) {
+			const connection = await message.member.voice.channel.join()
+			dispatcher = await play(connection, message, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+		} else {
+			sendThenDelete(message.channel, "Cannot rickRoll here")
+		}
+		// await deleteMessage(client, message)
 	}
 })
 

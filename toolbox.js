@@ -1,5 +1,6 @@
 const {MessageEmbed} = require('discord.js')
 const ytdl = require('ytdl-core-discord');
+const {validateURL} = require('ytdl-core')
 
 module.exports = {
 	//send a message, then delete it after x millisecondes
@@ -12,6 +13,21 @@ module.exports = {
 		} catch (error) {
 			console.log(`Error deleting message...\n${error}`);
 		}
+	},
+
+	deleteMessage : async function (client, message, ms = 0) {
+		try {
+			message.delete({timeout: ms})
+		} catch (error) {
+			console.log(`Error deleting message...\n${error}`);
+		}
+		// let guild = client.guilds.fetch(message.guild.id)
+		// let member = (await guild).members.fetch(client.user.id)
+		// if ((await member).hasPermission('MANAGE_MESSAGES')) {
+		// 	return message.delete({timeout : ms})
+		// }else {
+		// 	return 0;
+		// }
 	},
 
 	// format text for game embed message
@@ -106,7 +122,9 @@ module.exports = {
 	},
 
 	play : async function (connection, message, url) {
-		if (!ytdl.validateURL(url)) return this.sendThenDelete(message.channel, "format de vidéo invalide!")
+		let {sendThenDelete} = require('./toolbox')
+		if (!validateURL(url)) return sendThenDelete(message.channel, "format de vidéo invalide!")
+		sendThenDelete(message.channel, "👌")
 		return connection.play(await ytdl(url), {type: 'opus'})
 	},
 
