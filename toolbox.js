@@ -1,6 +1,7 @@
 const {MessageEmbed} = require('discord.js')
-const ytdl = require('ytdl-core-discord');
-const {validateURL} = require('ytdl-core')
+// const ytdl = require('ytdl-core-discord');
+// const {validateURL, } = require('ytdl-core')
+const ytdl = require('ytdl-core')
 
 module.exports = {
 	//send a message, then delete it after x millisecondes
@@ -135,9 +136,22 @@ module.exports = {
 
 	play : function (connection, message, url) {
 		let {sendThenDelete} = require('./toolbox')
-		if (!validateURL(url)) return sendThenDelete(message.channel, "format de vidéo invalide!")
+		let valide
+		let dispatcher = false
+		try {
+			valide = ytdl.validateURL(url)
+			if (!valide) return sendThenDelete(message.channel, "format de vidéo invalide!")
+		} catch (e) {
+			return sendThenDelete(message.channel, `${e}`)
+		}
+		try {
+			dispatcher = connection.play(ytdl(`${url}`, { quality: 'highestaudio' }), {volume: 0.5,})
+			// connection.play(ytdl(url), {type: 'opus'})
+		} catch (e) {
+			return sendThenDelete(message.channel, `${e}`)
+		}
 		sendThenDelete(message.channel, "👌")
-		return connection.play(ytdl(url), {type: 'opus'})
+		return dispatcher
 	},
 
 	// disconnect : function (connection) {

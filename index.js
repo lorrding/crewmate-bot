@@ -14,7 +14,7 @@ let dev = false
 let dispatcher
 
 client.on('ready',async () => {
-	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
+	console.log(`\nlogged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
 	await client.user.setActivity("Among Us", {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
@@ -32,7 +32,7 @@ client.on('message', async message => {
 	if (!message.content.startsWith(config.prefix) || message.author.bot) return
 	const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
 	const command = args.shift().toLowerCase()
-	console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`)
+	console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`)
 	if (args.length) console.log(`With args ${args}`)
 
 // activate/deactivate for dev
