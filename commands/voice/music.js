@@ -1,5 +1,5 @@
-const ytdl = require('ytdl-core-discord')
-const {validateURL} = require('ytdl-core')
+const {help} = require("../help/help")
+const ytdl = require('ytdl-core')
 const { sendThenDelete } = require('../../toolbox')
 
 let dispatcher;
@@ -69,7 +69,18 @@ async function playMusic(message, arg) {
 }
 
 function play(connection, message, url) {
-	if (!validateURL(url)) return sendThenDelete(message.channel, "format de vidéo invalide!")
+	let valide
+	try {
+		valide = ytdl.validateURL(url)
+		if (!valide) return sendThenDelete(message.channel, "format de vidéo invalide!")
+	} catch (e) {
+		return sendThenDelete(message.channel, `${e}`)
+	}
+	try {
+		dispatcher = connection.play(ytdl(`${url}`, { quality: 'highestaudio' }), {volume: 0.5,})
+	} catch (e) {
+		return sendThenDelete(message.channel, `${e}`)
+	}
 	sendThenDelete(message.channel, "👌")
-	return connection.play(ytdl(url), {type: 'opus'})
+	return dispatcher
 }

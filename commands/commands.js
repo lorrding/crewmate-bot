@@ -10,7 +10,7 @@ module.exports = {
 
 function manageMessage(message, command, args, client, gameManager) {
 	// formatting message
-	console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`)
+	console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`)
 	if (args.length) console.log(`With args ${args}`)
 
 	// switch between every know commands
@@ -24,7 +24,7 @@ function manageMessage(message, command, args, client, gameManager) {
 		case "purge":
 			return purge(message, message.channel, args)
 		case "uptime":
-			return uptime(message, client)
+			return uptime(message)
 		case "help":
 			return helpFunc(message, args)
 		case "play": case "pause": case "stop": case "rr":
@@ -36,13 +36,13 @@ function manageMessage(message, command, args, client, gameManager) {
 	}
 }
 
-async function ping(message, client) {
+async function ping(message) {
 	try {
 		let embed = new MessageEmbed()
 			.setColor('#FFFFFF')
 		const m = await message.channel.send("Ping?")
 		embed.setAuthor(`${message.author.username} -> ping`, `${message.author.avatarURL()}`)
-		embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ws.ping)}ms.`)
+		embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(message.client.ws.ping)}ms.`)
 		m.delete()
 		return sendThenDelete(message.channel, embed, 10000).then(() => message.delete())
 	} catch (e) {
@@ -113,16 +113,21 @@ async function purge(message, channel, args) {
 	}
 }
 
-function uptime(message, client) {
-	try {
-		let embed = new MessageEmbed()
-			.setColor('#00FFFF')
-			.setAuthor(`${message.author.username} -> uptime`, `${message.author.avatarURL()}`)
-			.addField(`Current uptime:`,`${client.uptime} ms (${Math.round(client.uptime/3600000)} hours).`)
-		return sendThenDelete(message.channel, embed, 30000).then(() => message.delete())
-	} catch (e) {
-		return sendThenDelete(message.channel, `${e}`)
-	}
+function uptime(message) {
+	let seconds = Math.floor(message.client.uptime / 1000)
+	let minutes = Math.floor(seconds / 60)
+	let hours = Math.floor(minutes / 60)
+	let days = Math.floor(hours / 24)
+
+	seconds %= 60
+	minutes %= 60
+	hours %= 24
+
+	return sendThenDelete(message.channel, new MessageEmbed()
+		.setColor('#00FFFF')
+		.setAuthor(`${message.author.username} -> uptime`, `${message.author.avatarURL()}`)
+		.addField(`Current uptime:`,`${days} day(s), ${hours} hours, ${minutes} minutes, ${seconds} seconds`), 30000
+		).then(() => message.delete())
 }
 
 async function helpFunc(message, args) {

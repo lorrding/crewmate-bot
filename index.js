@@ -11,17 +11,19 @@ const gameManager = new GameManager()
 let dev = false
 
 client.on('ready',async () => {
-	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
+	console.log(`\nlogged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
 	await client.user.setActivity("Among Us", {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
 	})
-	client.channels.fetch('767812168745484328')
-		.then(channel => {
-			let date = new Date()
-			channel.send(`Reboot done at ${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`)
-		})
-		.catch(console.error);
+	if (client.user.username === "Crewmate-bot") {
+		client.channels.fetch('767812168745484328')
+			.then(channel => {
+				let date = new Date()
+				channel.send(`Reboot done at ${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`)
+			})
+			.catch(console.error);
+	}
 })
 
 client.on('message', async message => {
