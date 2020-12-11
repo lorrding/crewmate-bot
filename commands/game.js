@@ -2,6 +2,7 @@ const {help} = require("../help/help");
 const {sendThenDelete} = require("../toolbox");
 const {GameManager} = require("../Games/GameManager")
 const gameManager = new GameManager()
+exports.gameManager = gameManager
 
 module.exports = {
 	name: "game",

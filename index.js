@@ -14,6 +14,8 @@ client.commands = new Collection()
 client.queue = new Map()
 client.prefix = prefix
 
+const { gameManager } = require('./commands/game')
+
 client.on('ready',async () => {
 	console.log(`\nlogged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
 	await client.user.setActivity("Among Us", {
