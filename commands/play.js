@@ -1,6 +1,5 @@
 const {sendThenDelete, play} = require("../toolbox")
 const {help} = require("../help/help")
-const {broadcast} = require('../index')
 
 module.exports = {
 	name: "play",

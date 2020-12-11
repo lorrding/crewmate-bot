@@ -105,6 +105,7 @@ module.exports = {
 		} catch (e) {
 			return sendThenDelete(message.channel, `${e}`)
 		}
+		message.delete()
 		return sendThenDelete(message.channel, "👌")
 	}
 

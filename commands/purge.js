@@ -17,7 +17,9 @@ module.exports = {
 						const fetched = await message.channel.messages.fetch({limit: parseInt(args[1])})
 						fetched.forEach(fetchedMessage => {
 							if (fetchedMessage.deletable) fetchedMessage.delete()
-						})
+						}).then(
+							console.log(`messages deleted..`)
+						)
 					} catch (e) {
 						return sendThenDelete(message.channel, `${e}`)
 					}
