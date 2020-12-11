@@ -22,7 +22,7 @@ module.exports = {
 
 		embed.setTimestamp()
 
-		await message.author.createDM().then(DMChannel => DMChannel.send(`https://discord.com/oauth2/authorize?client_id=${message.client.user.id}&permissions=3434560&scope=bot`))
+		await message.author.createDM().then(DMChannel => DMChannel.send(embed))
 		message.delete().catch(() => {})
 		await message.author.deleteDM()
 	}
