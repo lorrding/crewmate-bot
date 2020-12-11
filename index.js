@@ -14,7 +14,8 @@ client.commands = new Collection()
 client.queue = new Map()
 client.prefix = prefix
 
-const { gameManager } = require('./commands/game')
+const {GameManager} = require("./Games/GameManager")
+const gameManager = new GameManager()
 
 client.on('ready',async () => {
 	console.log(`\nlogged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
@@ -66,7 +67,7 @@ client.on('message', async message => {
 	if (args.length) console.log(`With args ${args}`)
 
 	try {
-		commandToExec.execute(message, args, command)
+		commandToExec.execute(message, args, command, gameManager)
 	} catch (e) {
 		console.error(e)
 		return sendThenDelete(message.channel, `${e}`)
