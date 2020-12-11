@@ -1,4 +1,4 @@
-const { sendThenDelete } = require('./toolbox')
+const { sendThenDelete } = require('../toolbox')
 const { MessageEmbed } = require('discord.js')
 const Game = require('./Game')
 const CronManager = require('./CronManager')

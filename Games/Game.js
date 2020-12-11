@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const { sendThenDelete, formatEmbedTime, formatListPlayers, getHexa } = require('./toolbox')
+const { sendThenDelete, formatEmbedTime, formatListPlayers, getHexa } = require('../toolbox')
 const Cron = require('./Cron')
 
 class Game {

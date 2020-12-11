@@ -1,3 +1,5 @@
+const ytdl = require('ytdl-core')
+
 module.exports = {
 	//send a message, then delete it after x millisecondes
 	sendThenDelete : function (channel, message, ms = 5000) {
@@ -83,9 +85,27 @@ module.exports = {
 	},
 
 	inDev : function (channel) {
-		const { sendThenDelete} = require('./toolbox')
+		const { sendThenDelete } = require('./toolbox')
 		console.log('MODE DEV, ignoring...')
 		return sendThenDelete(channel, "I'm currently in dev! try again later or mp lording#0400.")
+	},
+
+	play : function (connection, message, url) {
+		const { sendThenDelete } = require('./toolbox')
+
+		let valide
+		try {
+			valide = ytdl.validateURL(url)
+			if (!valide) return sendThenDelete(message.channel, "format de vidéo invalide!")
+		} catch (e) {
+			return sendThenDelete(message.channel, `${e}`)
+		}
+		try {
+			connection.play(ytdl(`${url}`, {quality: 'highestaudio'}), {volume: 0.5})
+		} catch (e) {
+			return sendThenDelete(message.channel, `${e}`)
+		}
+		return sendThenDelete(message.channel, "👌")
 	}
 
 	// disconnect : function (connection) {

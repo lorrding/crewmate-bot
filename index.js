@@ -1,14 +1,21 @@
-const Discord = require('discord.js')
-const connect = require("./connect")
-const config = require("./config.json")
+const {play} = require("./toolbox");
+const { readdirSync } = require("fs")
+const { join } = require("path")
+
+const {Client, Collection } = require("discord.js")
+
+const { prefix } = require("./config.json")
 const { sendThenDelete, inDev } = require('./toolbox')
-const { manageMessage } = require("./commands/commands")
-const { GameManager } = require('./GameManager')
+const { dev } = require('./commands/dev')
 
-const client = new Discord.Client({ partials: ['REACTION']})
-const gameManager = new GameManager()
+const client = new Client({ partials: ['REACTION']})
+client.login(process.env.BOT_TOKEN).then(() => {})
+client.commands = new Collection()
+client.queue = new Map()
+client.prefix = prefix
 
-let dev = false
+const broadcast = client.voice.createBroadcast()
+exports.broadcast = broadcast
 
 client.on('ready',async () => {
 	console.log(`\nlogged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
@@ -22,40 +29,50 @@ client.on('ready',async () => {
 				let date = new Date()
 				channel.send(`Reboot done at ${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`)
 			})
-			.catch(console.error);
+			.catch(console.error)
 	}
 })
 
+
+client.on("warn", (info) => console.log(info))
+
+client.on("error", (e) =>  console.error(e))
+
+
+// importing commands
+const commands = readdirSync(join(__dirname, "commands")).filter((file) => file.endsWith(".js"))
+console.log("loading commands...")
+for (const file of commands) {
+	const command = require(join(__dirname, "commands", `${file}`))
+	client.commands.set(command.name, command)
+}
+console.log(`loaded ${commands.length} commands`)
+
+
+
+// message event
 client.on('message', async message => {
-	if (!message.content.startsWith(config.prefix) || message.author.bot) return
-	const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
+	if (message.author.bot) return
+	if (!message.content.startsWith(message.client.prefix)) return
+
+	const args = message.content.slice(message.client.prefix.length).trim().split(/ +/g)
 	const command = args.shift().toLowerCase()
+	if (dev && command !== "dev") return inDev(message.channel)
 
-	// activate/deactivate for dev
-	if (command === "dev" && message.author.id === "224230450099519488") {
-		if (dev) {
-			dev = false
-			sendThenDelete(message.channel, `retour en mode normal.`)
-		} else {
-			dev = true
-			sendThenDelete(message.channel, `Ok, passage en dev mode.`)
-		}
-		await message.delete()
+	const commandToExec = client.commands.get(command) || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(command))
+
+	if (!commandToExec) return console.log(`did not found ${command}`)
+
+	console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`)
+	if (args.length) console.log(`With args ${args}`)
+
+	try {
+		commandToExec.execute(message, args, command)
+	} catch (e) {
+		console.error(e)
+		return sendThenDelete(message.channel, `${e}`)
 	}
-	if (dev) return inDev(message.channel)
-
-	return manageMessage(message, command, args, client, gameManager)
 })
-
-// client.on('voiceStateUpdate', (oldStat, newState) => {
-// 	if (!client.voice.connections.some(aConnection => aConnection.channel.id === oldStat.channelID)) return
-// 	let connection = client.voice.connections.find(aConnection => aConnection.channel.id === oldStat.channelID)
-//
-// 	console.log(connection.channel.members.size)
-// 	if (connection == undefined) return
-// 	if (connection.channel.members.size < 2) client.setTimeout( disconnect(),60000 ,connection)
-// 	console.log("bot is the only member in the voice channel, disconnecting in 60 secondes...")
-// })
 
 client.on('messageReactionAdd', async (reaction, user) => {
 	if (dev) return inDev(reaction.message.channel)
@@ -113,6 +130,17 @@ client.on('guildMemberAdd', member => {
 	}
 })
 
+// client.on('voiceStateUpdate', (oldStat, newState) => {
+// 	if (!client.voice.connections.some(aConnection => aConnection.channel.id === oldStat.channelID)) return
+// 	let connection = client.voice.connections.find(aConnection => aConnection.channel.id === oldStat.channelID)
+//
+// 	console.log(connection.channel.members.size)
+// 	if (connection == undefined) return
+// 	if (connection.channel.members.size < 2) client.setTimeout( disconnect(),60000 ,connection)
+// 	console.log("bot is the only member in the voice channel, disconnecting in 60 secondes...")
+// })
+
+
 // dispatcher.on('start', () => {
 // 	console.log('crewmate bot is now playing audio!');
 // });
@@ -124,5 +152,3 @@ client.on('guildMemberAdd', member => {
 //
 // // Always remember to handle errors appropriately!
 // dispatcher.on('error', console.error);
-
-connect.login(client)
