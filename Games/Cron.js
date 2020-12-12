@@ -23,12 +23,12 @@ class Cron {
 	}
 
 	deleteRelatedGame() {
-		console.log("5 minutes before deleting game")
+		console.log("15 minutes before deleting game")
 		this.#task.destroy()
 		let timer = false;
-		this.#task = new cron.schedule(`*/5 * * * *`, () => {
+		this.#task = new cron.schedule(`*/15 * * * *`, () => {
 			if (timer) {
-				console.log("5 minutes passed! Deleting Game...")
+				console.log("15 minutes passed! Deleting Game...")
 				this.#task.stop()
 				this.#game.deleteSelf()
 			} else timer = true
