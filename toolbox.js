@@ -107,6 +107,30 @@ module.exports = {
 		}
 		message.delete()
 		return sendThenDelete(message.channel, "👌")
+	},
+
+	showDate : function (date, utc) {
+		if (utc) {
+			return `${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`
+		} else {
+			return `${date.getHours()}h${date.getMinutes()} on ${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
+		}
+	},
+
+	getReaction : function (reaction) {
+		if (reaction.partial) {
+			console.log('partial reaction. Fetching...')
+			reaction.fetch()
+				.then(fullReaction => {
+					return fullReaction
+				})
+				.catch(e => {
+					console.log('Something went wrong when fetching the reaction: ', e);
+				})
+		} else {
+			console.log('The reaction is not partial.')
+			return reaction
+		}
 	}
 
 	// disconnect : function (connection) {

@@ -97,7 +97,7 @@ class GameManager {
 
 	async manageAddReaction(reaction, user) {
 
-		//wrong reaction²
+		//wrong reaction
 		if (reaction.emoji.id !== this.#gameList[0].getEmoji()) return
 		console.log(`added reaction emoji by ${user.username}#${user.discriminator} in '${reaction.message.channel}' of '${reaction.message.guild}'`)
 
@@ -206,6 +206,9 @@ class GameManager {
 	}
 }
 
+const gameManager = new GameManager()
+
 module.exports = {
-	GameManager
+	gameManager
 }
+
