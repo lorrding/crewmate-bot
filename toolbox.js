@@ -13,21 +13,6 @@ module.exports = {
 		}
 	},
 
-	deleteMessage : async function (client, message, ms = 0) {
-		try {
-			message.delete({timeout: ms})
-		} catch (error) {
-			console.log(`Error deleting message...\n${error}`);
-		}
-		// let guild = client.guilds.fetch(message.guild.id)
-		// let member = (await guild).members.fetch(client.user.id)
-		// if ((await member).hasPermission('MANAGE_MESSAGES')) {
-		// 	return message.delete({timeout : ms})
-		// }else {
-		// 	return 0;
-		// }
-	},
-
 	// format text for game embed message
 	formatEmbedTime : function(hours, minutes) {
 		let str = ""
@@ -90,23 +75,30 @@ module.exports = {
 		return sendThenDelete(channel, "I'm currently in dev! try again later or mp lording#0400.")
 	},
 
-	play : function (connection, message, url) {
+	play : function (queue) {
 		const { sendThenDelete } = require('./toolbox')
 
-		let valide
+		const url = queue.songs[0]
 		try {
-			valide = ytdl.validateURL(url)
-			if (!valide) return sendThenDelete(message.channel, "format de vidéo invalide!")
+			const valide = ytdl.validateURL(url)
+			if (!valide) return sendThenDelete(queue.textChannel, "format de vidéo invalide!")
 		} catch (e) {
-			return sendThenDelete(message.channel, `${e}`)
+			return sendThenDelete(queue.textChannel, `${e}`)
 		}
+
 		try {
-			connection.play(ytdl(`${url}`, {quality: 'highestaudio'}), {volume: 0.5})
+			queue.connection.play(ytdl(`${url}`, {quality: 'highestaudio'}))
 		} catch (e) {
-			return sendThenDelete(message.channel, `${e}`)
+			return sendThenDelete(queue.textChannel, `${e}`)
 		}
-		message.delete()
-		return sendThenDelete(message.channel, "👌")
+		queue.playing = true
+
+		queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
+		return sendThenDelete(queue.textChannel, "👌")
+	},
+
+	canUpdateQueue : function (member) {
+		return member.voice.channelID === member.guild.voice.channelID
 	},
 
 	showDate : function (date, utc) {
@@ -131,7 +123,7 @@ module.exports = {
 			console.log('The reaction is not partial.')
 			return reaction
 		}
-	}
+	},
 
 	// disconnect : function (connection) {
 	// 	return connection.disconnect()

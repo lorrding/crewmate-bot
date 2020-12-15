@@ -36,7 +36,7 @@ console.log(`loaded ${messageReactions.length} reactions`)
 
 
 client.on('ready',async () => {
-	console.log(`\nlogged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
+	console.log(`\n logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
 	await client.user.setActivity("Among Us", {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
@@ -80,6 +80,14 @@ client.on('message', async message => {
 	} catch (e) {
 		console.error(e)
 		return sendThenDelete(message.channel, `${e}`)
+	}
+
+	if (message && message.guild.me.hasPermission("MANAGE_MESSAGES")) {
+		try {
+			await message.delete()
+		} catch (e) {
+			return sendThenDelete(console.error(e))
+		}
 	}
 })
 
