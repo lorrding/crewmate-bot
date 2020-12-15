@@ -1,217 +1,158 @@
-const Discord = require('discord.js')
-// const cron = require('node-cron')
+const {play} = require("./toolbox");
+const { readdirSync } = require("fs")
+const { join } = require("path")
 
-const connect = require("./connect")
+const {Client, Collection } = require("discord.js")
 
-const config = require("./config.json")
+const { prefix } = require("./config.json")
+const { sendThenDelete, inDev } = require('./toolbox')
+const { dev } = require('./commands/dev')
 
-const GameManager = require('./GameManager')
-const { sendThenDelete} = require('./toolbox')
 const database = require('./database')
 
-const client = new Discord.Client()
-const gameManager = new GameManager.GameManager()
+const client = new Client({ partials: ['REACTION']})
+client.login(process.env.BOT_TOKEN).then(() => {})
+client.commands = new Collection()
+client.queue = new Map()
+client.prefix = prefix
+
+const {GameManager} = require("./Games/GameManager")
+const gameManager = new GameManager()
+let database1 = new database.Database()
 
 let dev = false
 client.on('ready',async () => {
-	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
-
+	console.log(`\nlogged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
 	await client.user.setActivity("Among Us", {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
 	})
-	client.channels.fetch('767812168745484328')
-		.then(channel => {
-			let date = new Date()
-			channel.send(`Reboot done at ${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()}/${date.getUTCFullYear()}`)
-		})
-		.catch(console.error)
-
-	let database1 = new database.Database()
+	if (client.user.username === "Crewmate-bot") {
+		client.channels.fetch('767812168745484328')
+			.then(channel => {
+				let date = new Date()
+				channel.send(`Reboot done at ${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`)
+			})
+			.catch(console.error)
+	}
 })
 
+
+client.on("warn", (info) => console.log(info))
+
+client.on("error", (e) =>  console.error(e))
+
+
+// importing commands
+const commands = readdirSync(join(__dirname, "commands")).filter((file) => file.endsWith(".js"))
+console.log("loading commands...")
+for (const file of commands) {
+	const command = require(join(__dirname, "commands", `${file}`))
+	client.commands.set(command.name, command)
+}
+console.log(`loaded ${commands.length} commands`)
+
+
+
+// message event
 client.on('message', async message => {
-	
-	if (!message.content.startsWith(config.prefix) || message.author.bot) return
-	const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
+	if (message.author.bot) return
+	if (!message.content.startsWith(message.client.prefix)) return
+
+	const args = message.content.slice(message.client.prefix.length).trim().split(/ +/g)
 	const command = args.shift().toLowerCase()
-	console.log(`Command ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`)
+	if (dev && command !== "dev") return inDev(message.channel)
+
+	const commandToExec = client.commands.get(command) || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(command))
+
+	if (!commandToExec) return console.log(`did not found ${command}`)
+
+	console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`)
 	if (args.length) console.log(`With args ${args}`)
 
-// activate/deactivate for dev
-	if (command === "dev" && message.author.id === "224230450099519488") {
-		if (dev) {
-			dev = false
-			sendThenDelete(message.channel, `retour en mode normal.`)
-		} else {
-			dev = true
-			sendThenDelete(message.channel, `Ok, passage en dev mode.`)
-		}
-		await message.delete()
-	}
-	if (dev && message.channel.id === "767812168745484328") return console.log('MODE DEV, ignoring...')
-
-// game
-	if (command === "game" || command === "g") {
-		if (!args.length) {
-			sendThenDelete(message.channel, "Arguments manquant!\n-a ou --add suivi de l'heure pour ajouter une game\n-d | --delete -> suppression de la game en court```")
-			return message.delete()
-		}
-
-		let element = args[0]
-
-		// création d'une partie
-		if (element === "-add" || element === "-a") {
-			args.shift()
-			return gameManager.addGame(message, args)
-		}
-
-		//suppression d'un partie en court
-		if (element === "-delete" || element === "-d") {
-			return gameManager.deleteGame(message)
-		}
-
-		//help
-		if ( element === "-help" || element === "-h") {
-			sendThenDelete(message.channel, "soon..")
-			return message.delete()
-			// return help("game")
-		}
-
-		let channel = message.channel
-		try {
-			sendThenDelete(channel, `argument invalide ou non détecté!\n tapez '*/game -help*' pour plus d'info...`)
-			console.log('no arguments found for /game')
-			return message.delete()
-		} catch (error) {
-			sendThenDelete(channel, 'Error deleting message.')
-				.then(console.log(error))
-		}
-	}
-
-// ping
-	if (command === "ping") {
-		try {
-			let embed = new Discord.MessageEmbed()
-				.setColor('#FFFFFF')
-				const m = await message.channel.send("Ping?")
-				embed.setAuthor(`${message.author.username} -> ping`, `${message.author.avatarURL()}`)
-				embed.addField(`Pong! (${m.createdTimestamp - message.createdTimestamp}ms).`,`Latence API: ${Math.round(client.ws.ping)}ms.`)
-				m.delete()
-				return sendThenDelete(message.channel, embed, 10000).then(() => message.delete())
-		} catch (e) {
-			return sendThenDelete(message.channel, `${e}`)
-		}
-	}
-
-// uptime
-	if (command === "uptime") {
-		try {
-			let embed = new Discord.MessageEmbed()
-				.setColor('#00FFFF')
-				.setAuthor(`${message.author.username} -> uptime`, `${message.author.avatarURL()}`)
-				.addField(`Current uptime:`,`${client.uptime} ms (${Math.round(client.uptime/3600000)} hours).`)
-			return sendThenDelete(message.channel, embed, 30000).then(() => message.delete())
-		} catch (e) {
-			return sendThenDelete(message.channel, `${e}`)
-		}
-	}
-
-// help
-	if (command === "help") {
-		try {
-			return sendThenDelete(message.channel, "Soon..").then(() => message.delete())
-		} catch (e) {
-			return sendThenDelete(message.channel, `${e}`)
-		}
-	}
-
-// say 
-	if (command === "say") {
-		try {
-			message.delete().catch(()=>{})
-			if (message.mentions.users.size) {
-				message.mentions.users.map(user => {
-					return `${user.id}`
-				})
-				message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(()=>{message.channel.send("Rien à raconter...")})
-			} else {
-				message.channel.send(`${message.content.slice(config.prefix.length+4)}`).catch(()=>{message.channel.send("Rien à raconter...")})
-			}
-		} catch (e) {
-			return sendThenDelete(message.channel, `${e}`)
-		}
-	}
-
-// addMe
-	if (command === "addme") {
-		try {
-			message.author.createDM().then(DMChannel => DMChannel.send("https://discord.com/oauth2/authorize?client_id=767802286550155296&permissions=486464&scope=bot"))
-			await message.delete()
-		} catch (e) {
-			return console.log(`${e}`)
-		}
-	}
-
-// purge message
-	if (command === "purge") {
-		let channel = message.channel
-		try {
-			if (message.member.hasPermission('ADMINISTRATOR') || message.author.id === "224230450099519488" ) {
-				console.log('200, authorised..')
-				async function clear(channel) {
-					try {
-						const fetched = await channel.messages.fetch({limit: 99})
-						await channel.bulkDelete(fetched)
-					} catch (e) {
-						return sendThenDelete(channel, `${e}`)
-					}
-				}
-				await clear(channel)
-			} else sendThenDelete(channel, "Error 403, forbidden command.")
-			return message.delete()
-		} catch (e) {
-			return sendThenDelete(channel, `${e}`)
-		}
+	try {
+		commandToExec.execute(message, args, command, gameManager)
+	} catch (e) {
+		console.error(e)
+		return sendThenDelete(message.channel, `${e}`)
 	}
 })
 
 client.on('messageReactionAdd', async (reaction, user) => {
-	if (dev && reaction.message.channel.id === "767812168745484328") {
-		return console.log('MODE DEV, ignoring...')
-	}
-	if (reaction.partial) {
-		try {
-			reaction = await reaction.fetch()
-		} catch (error) {
-			return console.log(`Something went wrong when fetching the message: ${error}`)
-		}
-	}
-
+	if (dev) return inDev(reaction.message.channel)
 	//if bot, then don't
 	if (user.bot) return 0
 
-	//calling gameManager to check everything else...
-	await gameManager.manageAddReaction(reaction, user)
+	if (reaction.partial) {
+		console.log('partial reaction. Fetching...')
+		reaction.fetch()
+			.then(fullReaction => {
+				//calling gameManager to check everything else...
+				gameManager.manageAddReaction(fullReaction, user)
+			})
+			.catch(e => {
+				console.log('Something went wrong when fetching the reaction: ', e);
+			})
+	} else {
+		console.log('The reaction is not partial.')
+		//calling gameManager to check everything else...
+		await gameManager.manageAddReaction(reaction, user)
+	}
 })
 
 client.on('messageReactionRemove', async (reaction, user) => {
-	if (dev && reaction.message.channel.id === "767812168745484328") {
-		return console.log('MODE DEV, ignoring...')
-	}
-	if (reaction.partial) {
-		try {
-			reaction = await reaction.fetch()
-		} catch (error) {
-			console.error('Something went wrong when fetching the message: ', error)
-			return
-		}
-	}
+	if (dev) return inDev(reaction.message.channel)
 
 	if (user.bot) return 0
 
-	//calling gameManager to check everything else...
-	await gameManager.manageRemoveReaction(reaction, user)
+	if (reaction.partial) {
+		console.log('partial reaction. Fetching...')
+		reaction.fetch()
+			.then(fullReaction => {
+				//calling gameManager to check everything else...
+				return gameManager.manageRemoveReaction(fullReaction, user)
+			})
+			.catch(e => {
+				console.log('Something went wrong when fetching the reaction: ', e);
+			})
+	} else {
+		console.log('The reaction is not partial.')
+		//calling gameManager to check everything else...
+		await gameManager.manageRemoveReaction(reaction, user)
+	}
+	return 0
 })
 
-connect.login(client)
+client.on('guildMemberAdd', member => {
+	console.log("new user detected!")
+	try {
+		let channel = member.guild.channels.cache.find(ch => ch.name === 'les-nouveaux')
+		if (!channel) return console.log("cannot find channel")
+		channel.send(`Bienvenue sur le serveur ${member}\nPense à aller voir les <#764910769132929048>. Les codes pour rejoindre les parties sont postés dans <#764910769132929049>`)
+	} catch (e) {
+		return console.log(e)
+	}
+})
+
+// client.on('voiceStateUpdate', (oldStat, newState) => {
+// 	if (!client.voice.connections.some(aConnection => aConnection.channel.id === oldStat.channelID)) return
+// 	let connection = client.voice.connections.find(aConnection => aConnection.channel.id === oldStat.channelID)
+//
+// 	console.log(connection.channel.members.size)
+// 	if (connection == undefined) return
+// 	if (connection.channel.members.size < 2) client.setTimeout( disconnect(),60000 ,connection)
+// 	console.log("bot is the only member in the voice channel, disconnecting in 60 secondes...")
+// })
+
+
+// dispatcher.on('start', () => {
+// 	console.log('crewmate bot is now playing audio!');
+// });
+//
+// dispatcher.on('finish', () => {
+// 	console.log('song finished!');
+//
+// });
+//
+// // Always remember to handle errors appropriately!
+// dispatcher.on('error', console.error);

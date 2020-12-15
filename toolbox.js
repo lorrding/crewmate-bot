@@ -1,3 +1,5 @@
+const ytdl = require('ytdl-core')
+
 module.exports = {
 	//send a message, then delete it after x millisecondes
 	sendThenDelete : function (channel, message, ms = 5000) {
@@ -9,6 +11,21 @@ module.exports = {
 		} catch (error) {
 			console.log(`Error deleting message...\n${error}`);
 		}
+	},
+
+	deleteMessage : async function (client, message, ms = 0) {
+		try {
+			message.delete({timeout: ms})
+		} catch (error) {
+			console.log(`Error deleting message...\n${error}`);
+		}
+		// let guild = client.guilds.fetch(message.guild.id)
+		// let member = (await guild).members.fetch(client.user.id)
+		// if ((await member).hasPermission('MANAGE_MESSAGES')) {
+		// 	return message.delete({timeout : ms})
+		// }else {
+		// 	return 0;
+		// }
 	},
 
 	// format text for game embed message
@@ -66,6 +83,35 @@ module.exports = {
 	getHexa : function () {
 		return '#'+Math.floor(Math.random()*16777215).toString(16);
 	},
+
+	inDev : function (channel) {
+		const { sendThenDelete } = require('./toolbox')
+		console.log('MODE DEV, ignoring...')
+		return sendThenDelete(channel, "I'm currently in dev! try again later or mp lording#0400.")
+	},
+
+	play : function (connection, message, url) {
+		const { sendThenDelete } = require('./toolbox')
+
+		let valide
+		try {
+			valide = ytdl.validateURL(url)
+			if (!valide) return sendThenDelete(message.channel, "format de vidéo invalide!")
+		} catch (e) {
+			return sendThenDelete(message.channel, `${e}`)
+		}
+		try {
+			connection.play(ytdl(`${url}`, {quality: 'highestaudio'}), {volume: 0.5})
+		} catch (e) {
+			return sendThenDelete(message.channel, `${e}`)
+		}
+		message.delete()
+		return sendThenDelete(message.channel, "👌")
+	}
+
+	// disconnect : function (connection) {
+	// 	return connection.disconnect()
+	// }
 
 	// random number between to included integers
 	// getRandom : function (min, max) {

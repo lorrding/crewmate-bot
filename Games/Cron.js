@@ -1,5 +1,4 @@
 const cron = require('node-cron')
-const { sendThenDelete } = require('./toolbox')
 
 class Cron {
 
@@ -13,7 +12,7 @@ class Cron {
 		this.#hours = hours
 		this.#minutes = minutes
 		this.#game = game
-		this.#task= new cron.schedule(`${this.#minutes} ${this.#hours} * * *`, () => {
+		this.#task = new cron.schedule(`${this.#minutes} ${this.#hours} * * *`, () => {
 			console.log("It is time for me to ping..")
 			game.cronSchedule()
 		}, {
@@ -24,25 +23,31 @@ class Cron {
 	}
 
 	deleteRelatedGame() {
-		console.log("5 minutes before deleting game")
-		this.#task= new cron.schedule(`5 * * * *`, () => {
-			console.log("deleting Game...")
-			this.#game.deleteSelf()
+		console.log("15 minutes before deleting game")
+		this.#task.destroy()
+		let timer = false;
+		this.#task = new cron.schedule(`*/15 * * * *`, () => {
+			if (timer) {
+				console.log("15 minutes passed! Deleting Game...")
+				this.#task.stop()
+				this.#game.deleteSelf()
+			} else timer = true
 		}, {
 			timezone : "Europe/Paris"
 		})
+		console.log("starting cron")
+		this.#task.start()
 	}
 
 	destructor() {
-		let channel = this.#game.getChannel()
 		try {
 			this.#hours = undefined
 			this.#minutes = undefined
 			this.#task.destroy()
 			this.#game = undefined
 		} catch (e) {
-			sendThenDelete(channel, `${e}`)
-			return console.log('------ error deleting cron obj! ------')
+			console.log('------ error deleting cron obj! ------')
+			return console.log(e)
 		}
 	}
 }

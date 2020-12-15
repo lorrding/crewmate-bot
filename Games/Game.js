@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const { sendThenDelete, formatEmbedTime, formatListPlayers, getHexa } = require('./toolbox')
+const { sendThenDelete, formatEmbedTime, formatListPlayers, getHexa } = require('../toolbox')
 const Cron = require('./Cron')
 
 class Game {
@@ -43,30 +43,12 @@ class Game {
 			.then(console.log(error))
 		}
 
-		// try {
-		// 	//try adding role to player
-		// 	let player = this.#guild.members.cache.find(r => r.id === member.id)
-		// 	player.roles.add(this.#role)
-		// } catch (error) {
-		// 	return sendThenDelete(this.#channel, 'missing permission to add role.')
-		// 	.then(console.log(error))
-		// }
-
 		//everything's good
 		this.editEmbed()
 	}
 
 	removePlayer(user) { // removing role for a user
 		console.log(`removing: ${user.username}`)
-		// try {
-		// 	// getting user as guild member
-		// 	let member = this.#guild.members.cache.find(r => r.id === user.id)
-		// 	member.roles.remove(this.#role).then(() => {
-		// 		console.log("role removed fro members...")})
-		// } catch (error) {
-		// 	return sendThenDelete(this.#channel, 'missing permission to remove role.')
-		// 		.then(console.log(error))
-		// }
 		// updating playerList
 		try {
 			this.#listPlayers.splice(this.#listPlayers.indexOf(user), 1)
@@ -76,21 +58,6 @@ class Game {
 	}
 
 	removeAllPlayers() { // removing role to every players of the game:
-
-		// // removing role
-		// try {
-		// 	this.#listPlayers.forEach(player => {
-		// 		let member = this.#guild.members.cache.find(r => r.id === player.id)
-		// 		member.roles.remove(this.#role).then(() => {})
-		// 	});
-		// 	console.log("role removed for every player..")
-		// } catch (error) {
-		// 	return sendThenDelete(this.#channel, 'missing permission to remove role.')
-		// 		.then(console.log(error))
-		// }
-		// // removing role from author
-		// this.removePlayer(this.#author)
-		// console.log("role removed for author..")
 
 		// updating playerList
 		this.#listPlayers = []
@@ -210,8 +177,7 @@ class Game {
 			});
 			if (this.#listPlayers.length > 0) {
 				str += `venez dans le vocal!`
-			} else if (this.#listPlayers.length > 5) {
-				str += `venez dans le vocal! \n Mais il vous manquera surement quelques joueurs... <:AU_why:765273043962298410>`
+				if (this.#listPlayers.length <= 5) str += `\n Mais il vous manquera surement quelques joueurs... <:AU_why:765273043962298410>`
 			} else {
 				str += `\nIl te manque des amis par contre <:AU_why:765273043962298410>`
 			}
@@ -222,8 +188,9 @@ class Game {
 		}
 		try {
 			sendThenDelete(this.#channel, "<:AU_gun:765273098336337970>", 300000).then(() => {
+				//removing game from manager
+				this.#manager.removeGame(this, this.#message)
 				//deleting game after 5 minutes
-				// this.#manager.deleteGame(this, this.#message)
 				this.#cron.deleteRelatedGame()
 			})
 		} catch (e) {

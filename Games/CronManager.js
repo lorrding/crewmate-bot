@@ -1,4 +1,4 @@
-const { sendThenDelete } = require('./toolbox')
+const { sendThenDelete } = require('../toolbox')
 const cron = require('node-cron')
 
 //class used to manager every Cron objects
