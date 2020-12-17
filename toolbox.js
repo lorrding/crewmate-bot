@@ -17,11 +17,13 @@ module.exports = {
 	formatEmbedTime : function(hours, minutes) {
 		let str = ""
 		let date = new Date()
-		
+
+		hours = parseInt(hours)
+
 		//today or tomorrow ? utc+1 = summer /---/ utc+0 = winter
 		console.log("creating embed time..")
 		if (date.getUTCHours()+1 < hours) {str += "Ce "}
-		else if (date.getUTCHours()+1 == hours) {
+		else if (date.getUTCHours()+1 === hours) {
 			if (date.getUTCMinutes() < minutes) {str += "Ce "}
 			else {str += "Demain "}
 		} else {str += "Demain "}
@@ -105,7 +107,7 @@ module.exports = {
 		if (utc) {
 			return `${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`
 		} else {
-			return `${date.getHours()}h${date.getMinutes()} on ${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`
+			return `${date.getHours()}h${date.getMinutes()} on ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
 		}
 	},
 
