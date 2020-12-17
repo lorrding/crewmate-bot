@@ -16,8 +16,12 @@ module.exports = {
 
 		switch (url) {
 			case "lofi":
-			case "-lofi":
-				dispatcher = await play(connection, message, 'https://www.youtube.com/watch?v=5qap5aO4i9A')
+			case "l":
+				dispatcher = await play(connection, message, 'https://youtu.be/5qap5aO4i9A')
+				break;
+			case "doom":
+			case "d":
+				dispatcher = await play(connection, message, 'https://youtu.be/JEuAYnjtJP0')
 				break;
 			case "-help":
 			case "-h":
