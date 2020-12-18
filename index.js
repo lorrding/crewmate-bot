@@ -57,7 +57,7 @@ client.on('message', async message => {
 
 	const args = message.content.slice(message.client.prefix.length).trim().split(/ +/g)
 	const command = args.shift().toLowerCase()
-	if (message.client.dev && command !== "dev") return inDev(message.channel)
+	if (message.client.dev && command !== "dev") return inDev(message)
 
 	const commandToExec = client.commands.get(command) || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(command))
 
