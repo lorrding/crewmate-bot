@@ -1,4 +1,5 @@
 const {sendThenDelete , play, canUpdateQueue} = require("../toolbox")
+var guildQueue
 
 module.exports = {
 	name: "play",
@@ -57,22 +58,20 @@ module.exports = {
 				break
 		}
 
-		if (queue.playing) {
-			queue.connection.dispatcher.on('finish', () => {
-				let song = queue.songs.shift()
-				if (queue.loop) {
-					console.log("loop enabled, looping")
-					queue.songs.push(song)
-				}
-				console.log(`end of current song in ${queue.channel.name}..`)
-				if (queue.songs.length) {
-					play(queue)
-				} else {
-					console.log(`no more songs, leaving`)
-					message.member.voice.channel.leave()
-				}
-			})
-		}
+		queue.connection.dispatcher.on('finish', () => {
+			let song = queue.songs.shift()
+			if (queue.loop) {
+				console.log("loop enabled, looping")
+				queue.songs.push(song)
+			}
+			console.log(`end of current song in ${queue.channel.name}..`)
+			if (queue.songs.length) {
+				play(queue)
+			} else {
+				console.log(`no more songs, leaving`)
+				message.member.voice.channel.leave()
+			}
+		})
 	}
 }
 
