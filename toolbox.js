@@ -1,6 +1,6 @@
 const ytdl = require('ytdl-core')
 
-module.exports = {
+const self = module.exports = {
 	//send a message, then delete it after x millisecondes
 	sendThenDelete : function (channel, message, ms = 5000) {
 		try {
@@ -72,31 +72,58 @@ module.exports = {
 	},
 
 	inDev : function (channel) {
-		const { sendThenDelete } = require('./toolbox')
 		console.log('MODE DEV, ignoring...')
-		return sendThenDelete(channel, "I'm currently in dev! try again later or mp lording#0400.")
+		return self.sendThenDelete(channel, "I'm currently in dev! try again later or mp lording#0400.")
 	},
 
 	play : function (queue) {
-		const { sendThenDelete } = require('./toolbox')
-
 		const url = queue.songs[0]
 		try {
 			const valide = ytdl.validateURL(url)
-			if (!valide) return sendThenDelete(queue.textChannel, "format de vidéo invalide!")
+			if (!valide) return self.sendThenDelete(queue.textChannel, "format de vidéo invalide!")
 		} catch (e) {
-			return sendThenDelete(queue.textChannel, `${e}`)
+			return self.sendThenDelete(queue.textChannel, `${e}`)
 		}
 
 		try {
 			queue.connection.play(ytdl(`${url}`, {quality: 'highestaudio'}))
 		} catch (e) {
-			return sendThenDelete(queue.textChannel, `${e}`)
+			return self.sendThenDelete(queue.textChannel, `${e}`)
 		}
 		queue.playing = true
 
 		queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
-		return sendThenDelete(queue.textChannel, "👌")
+		try {
+			if (!queue.message) {
+				console.log("no message, creating..")
+				queue.message = queue.textChannel.send(`👌 currently playing : ${queue.songs[0]}`)
+			} else {
+				if (queue.message.editable) {
+					console.log("editing message...")
+					queue.message.edit(`👌 currently playing : ${queue.songs[0]}`)
+				}
+			}
+		} catch (e) {
+			self.sendThenDelete(queue.textChannel, `${e}`)
+		}
+
+		queue.connection.dispatcher.on('finish', () => {
+			queue.passed.push(queue.songs.shift())
+			console.log(`end of current song in ${queue.channel.name}..`)
+			if (!queue.songs.length) {
+				if (queue.loop) {
+					console.log("loop enabled, looping")
+					queue.songs = queue.passed
+					queue.passed = []
+					return self.play(queue)
+				} else {
+					console.log(`no more songs to play, leaving`)
+					queue.channel.leave()
+				}
+			} else {
+				return self.play(queue)
+			}
+		})
 	},
 
 	canUpdateQueue : function (member) {

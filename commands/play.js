@@ -20,8 +20,10 @@ module.exports = {
 			queue = {
 				textChannel: message.channel,
 				channel,
+				songMessage: null,
 				connection: null,
 				songs: [],
+				passed: [],
 				loop: false,
 				volume: 100,
 				playing: false
@@ -56,21 +58,6 @@ module.exports = {
 				queueAdd(url, queue)
 				break
 		}
-
-		queue.connection.dispatcher.on('finish', () => {
-			let song = queue.songs.shift()
-			if (queue.loop) {
-				console.log("loop enabled, looping")
-				queue.songs.push(song)
-			}
-			console.log(`end of current song in ${queue.channel.name}..`)
-			if (queue.songs.length) {
-				play(queue)
-			} else {
-				console.log(`no more songs, leaving`)
-				message.member.voice.channel.leave()
-			}
-		})
 	}
 }
 
