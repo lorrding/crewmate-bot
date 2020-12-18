@@ -1,4 +1,3 @@
-const {play} = require("./toolbox");
 const { readdirSync } = require("fs")
 const { join } = require("path")
 
@@ -58,6 +57,7 @@ client.on('message', async message => {
 	const args = message.content.slice(message.client.prefix.length).trim().split(/ +/g)
 	const command = args.shift().toLowerCase()
 	if (dev && command !== "dev") return inDev(message.channel)
+	if (dev) return sendThenDelete(message.channel, `Je suis actuellement en développement! mp lording#0400 si besoin`)
 
 	const commandToExec = client.commands.get(command) || client.commands.find((cmd) => cmd.aliases && cmd.aliases.includes(command))
 
