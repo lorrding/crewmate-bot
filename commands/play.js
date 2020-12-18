@@ -1,5 +1,4 @@
 const {sendThenDelete , play, canUpdateQueue} = require("../toolbox")
-var guildQueue
 
 module.exports = {
 	name: "play",
