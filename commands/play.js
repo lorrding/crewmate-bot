@@ -1,9 +1,9 @@
-const {sendThenDelete , play, canUpdateQueue} = require("../toolbox")
+const {sendThenDelete , queueAdd, canUpdateQueue} = require("../toolbox")
 
 module.exports = {
 	name: "play",
 	aliases: "p",
-	description: "Play a Youtube video/stream resolvable link in the voice channel of the message author",
+	description: "Play or unpause a Youtube video/stream resolvable link in the voice channel of the message author",
 	async execute(message, args) {
 		if (!message.guild) return
 
@@ -32,6 +32,12 @@ module.exports = {
 		} else {
 			console.log("queue found..")
 			queue = queueGetter
+			if (!queue.playing) {
+				console.log("queue was paused.. playing again...")
+				queue.connection.dispatcher.resume()
+				queue.playing = true
+				return sendThenDelete(message.channel, `▶ Reprise de la musique.`, 15000)
+			}
 		}
 
 		let url = args[0]
@@ -52,7 +58,12 @@ module.exports = {
 			case "lofi":
 			case "-lofi":
 				// playing lofi
-				queueAdd('https://www.youtube.com/watch?v=5qap5aO4i9A', queue)
+				queueAdd('https://youtu.be/5qap5aO4i9A', queue)
+				break
+			case "rr":
+			case "-rr":
+				// playing rickroll
+				queueAdd('https://youtu.be/dQw4w9WgXcQ', queue)
 				break
 			default:
 				queueAdd(url, queue)
@@ -61,11 +72,3 @@ module.exports = {
 	}
 }
 
-function queueAdd(url, queue) {
-	console.log(`queue size: ${queue.songs.length}`)
-	queue.songs.push(url)
-	if (queue.songs.length === 1) {
-		console.log(`only one song, playing..`)
-		play(queue)
-	}
-}

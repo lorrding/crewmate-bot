@@ -20,9 +20,9 @@ module.exports = {
 		message.client.queue.set(message.guild.id, queue)
 
 		if (queue.loop) {
-			sendThenDelete(message.channel, "Répétition activée")
+			sendThenDelete(message.channel, "👌 Répétition activée")
 		} else {
-			sendThenDelete(message.channel, "Répétition désactivée")
+			sendThenDelete(message.channel, "👌 Répétition désactivée")
 		}
 		return 0
 	}

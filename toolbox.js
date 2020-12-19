@@ -80,7 +80,10 @@ const self = module.exports = {
 		const url = queue.songs[0]
 		try {
 			const valide = ytdl.validateURL(url)
-			if (!valide) return self.sendThenDelete(queue.textChannel, "format de vidéo invalide!")
+			if (!valide) {
+				self.sendThenDelete(queue.textChannel, "format vidéo invalide!")
+				return queue.channel.client.queue.delete(queue.channel.guild.id)
+			}
 		} catch (e) {
 			return self.sendThenDelete(queue.textChannel, `${e}`)
 		}
@@ -92,38 +95,55 @@ const self = module.exports = {
 		}
 		queue.playing = true
 
-		queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
+
 		try {
-			if (!queue.message) {
+			if (!queue.songMessage) {
 				console.log("no message, creating..")
-				queue.message = queue.textChannel.send(`👌 currently playing : ${queue.songs[0]}`)
+				queue.textChannel.send(`👌 currently playing : ${queue.songs[0]}`).then(msg => {
+					queue.songMessage = msg
+				})
 			} else {
-				if (queue.message.editable) {
-					console.log("editing message...")
-					queue.message.edit(`👌 currently playing : ${queue.songs[0]}`)
+				if (queue.songMessage.editable) {
+					console.log("message found, editing...")
+					queue.songMessage.edit(`👌 en train de jouer: ${queue.songs[0]}`)
 				}
 			}
 		} catch (e) {
 			self.sendThenDelete(queue.textChannel, `${e}`)
 		}
+		queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
 
 		queue.connection.dispatcher.on('finish', () => {
 			queue.passed.push(queue.songs.shift())
+			queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
 			console.log(`end of current song in ${queue.channel.name}..`)
 			if (!queue.songs.length) {
 				if (queue.loop) {
 					console.log("loop enabled, looping")
 					queue.songs = queue.passed
 					queue.passed = []
+					queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
 					return self.play(queue)
 				} else {
 					console.log(`no more songs to play, leaving`)
 					queue.channel.leave()
+					queue.channel.client.queue.delete(queue.textChannel.guild.id)
 				}
 			} else {
 				return self.play(queue)
 			}
 		})
+	},
+
+	queueAdd: function(url, queue) {
+		console.log(`queue size: ${queue.songs.length}`)
+		queue.songs.push(url)
+		if (queue.songs.length === 1) {
+			console.log(`only one song, playing..`)
+			self.play(queue)
+		} else {
+			self.sendThenDelete(queue.textChannel, `👌 Musique ajouté à la liste d'attente.`)
+		}
 	},
 
 	canUpdateQueue : function (member) {
