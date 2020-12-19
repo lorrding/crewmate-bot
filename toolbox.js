@@ -130,6 +130,9 @@ const self = module.exports = {
 				} else {
 					console.log(`no more songs to play, leaving`)
 					queue.channel.leave()
+					if (queue.songMessage && queue.songMessage.deletable) {
+						queue.songMessage.delete()
+					}
 					queue.channel.client.queue.delete(queue.textChannel.guild.id)
 				}
 			} else {
