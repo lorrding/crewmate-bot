@@ -1,6 +1,5 @@
 const {help} = require("../help/help")
 const {sendThenDelete} = require("../toolbox")
-const { gameManager } = require("../Games/GameManager")
 
 module.exports = {
 	name: "game",
@@ -19,12 +18,12 @@ module.exports = {
 			case "a":
 				// création d'une partie
 				await args.shift()
-				return gameManager.addGame(message, args)
+				return message.client.gameManager.addGame(message, args)
 			case "-delete":
 			case "-d":
 			case "d":
 				//suppression d'un partie en court
-				return gameManager.deleteGame(message)
+				return message.client.gameManager.deleteGame(message)
 			case "-help":
 			case "-h":
 			case "h":
@@ -45,7 +44,7 @@ module.exports = {
 			case "-dump":
 				if (message.member.hasPermission('ADMINISTRATOR') || message.author.id === "224230450099519488") {
 					//dump var
-					sendThenDelete(message.channel, gameManager.dumpVars(), 30000)
+					sendThenDelete(message.channel, message.client.gameManager.dumpVars(), 30000)
 					return message.delete()
 				}
 				break

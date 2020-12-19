@@ -76,11 +76,6 @@ class GameManager {
 		} else {
 			sendThenDelete(message.channel, `Une partie existe déjà sur ce serveur Discord!`)
 		}
-		try {
-			message.delete()
-		} catch (e) {
-			return console.log("message unavailable")
-		}
 	}
 
 	removeGame(game, message) {

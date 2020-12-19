@@ -6,11 +6,13 @@ const {Client, Collection } = require("discord.js")
 const { prefix } = require("./config.json")
 const { sendThenDelete, inDev, showDate, getReaction } = require('./toolbox')
 const { dev } = require('./commands/dev')
+const { GameManager } = require('./Games/GameManager')
 
 const client = new Client({ partials: ['REACTION']})
 client.login(process.env.BOT_TOKEN).then(() => {})
 client.commands = new Collection()
 client.messageReactions = new Collection()
+client.gameManager = new GameManager()
 client.queue = new Map()
 client.prefix = prefix
 client.dev = false

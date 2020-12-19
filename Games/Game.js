@@ -28,7 +28,6 @@ class Game {
 		this.#manager = manager
 
 		this.sendEmbed(this.createEmbed())
-
 	}
 
 	addPlayer(reaction, member) {
@@ -155,15 +154,6 @@ class Game {
 			sendThenDelete(this.#channel, "missing permissions to react or send embed.")
 				.then(console.log(error))
 		}
-
-		// try {
-		// 	//try adding role to players
-		// 	let player = this.#guild.members.cache.find(r => r.id === this.#author.id)
-		// 	player.roles.add(this.#role)
-		// } catch (error) {
-		// 	sendThenDelete(this.#channel, 'missing permission to add role.')
-		// 	.then(console.log(error))
-		// }
 	}
 
 	cronSchedule() {
