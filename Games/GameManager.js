@@ -1,21 +1,21 @@
 const { sendThenDelete } = require('../toolbox')
 const { MessageEmbed } = require('discord.js')
-const Game = require('./Game')
-const CronManager = require('./CronManager')
+const { Game } = require('./Game')
+const { CronManager } = require('./CronManager')
 
 //class used to manager every game objects
 class GameManager {
 	#gameList = []
 	#guildList = []
 	#authorList = []
-	#CronManager = new CronManager.CronManager()
+	#CronManager = new CronManager()
 
 	constructor() {
 		console.log("game manager ready")
 	}
 
 	createGame(message, tempHeures, tempMinutes) {
-		this.#gameList.push(new Game.Game(message, tempHeures, tempMinutes, this))
+		this.#gameList.push(new Game(message, tempHeures, tempMinutes, this))
 		this.#guildList.push(message.guild)
 		return this.#authorList.push(message.author)
 	}
@@ -206,7 +206,7 @@ class GameManager {
 	}
 }
 
-const gameManager = new GameManager()
+
 
 module.exports = {
 	gameManager

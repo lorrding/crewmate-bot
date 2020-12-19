@@ -3,9 +3,6 @@ const cron = require('node-cron')
 
 //class used to manager every Cron objects
 class CronManager {
-	// #gameList = new Array()
-	// #guildList = new Array()
-	// #authorList = new Array()
 
 	constructor() {
 	}
