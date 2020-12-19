@@ -75,7 +75,7 @@ client.on('message', async message => {
 
 	if (!commandToExec) return console.log(`did not found ${command}`)
 
-	console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${showDate(message.createdAt)}`)
+	console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild.name}' at ${showDate(message.createdAt)}`)
 	if (args.length) console.log(`With args ${args}`)
 
 	try {
@@ -102,7 +102,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
 	if (user.bot) return
 
 	const emittedReaction = getReaction(reaction)
-	console.log(`\nReaction ${emittedReaction.emoji.name} added by ${user.username}#${user.discriminator} in '${emittedReaction.message.guild}' at ${showDate(emittedReaction.message.createdAt)}`)
+	console.log(`\nReaction ${emittedReaction.emoji.name} added by ${user.username}#${user.discriminator} in '${emittedReaction.message.guild.name}' at ${showDate(emittedReaction.message.createdAt)}`)
 
 
 	const reactionToExec = client.messageReactions.get(emittedReaction.emoji.id)
@@ -125,7 +125,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 	if (user.bot) return
 
 	const emittedReaction = getReaction(reaction)
-	console.log(`\nReaction ${emittedReaction.emoji.name} removed by ${user.username}#${user.discriminator} in '${emittedReaction.message.guild}' at ${showDate(emittedReaction.message.createdAt)}`)
+	console.log(`\nReaction ${emittedReaction.emoji.name} removed by ${user.username}#${user.discriminator} in '${emittedReaction.message.guild.name}' at ${showDate(emittedReaction.message.createdAt)}`)
 
 
 	const reactionToExec = client.messageReactions.get(emittedReaction.emoji.id)
@@ -153,19 +153,6 @@ client.on('guildMemberAdd', member => {
 	}
 })
 
-
-
-// client.on('voiceStateUpdate', (oldStat, newState) => {
-// 	if (!client.voice.connections.some(aConnection => aConnection.channel.id === oldStat.channelID)) return
-// 	let connection = client.voice.connections.find(aConnection => aConnection.channel.id === oldStat.channelID)
-//
-// 	console.log(connection.channel.members.size)
-// 	if (connection == undefined) return
-// 	if (connection.channel.members.size < 2) client.setTimeout( disconnect(),60000 ,connection)
-// 	console.log("bot is the only member in the voice channel, disconnecting in 60 secondes...")
-// })
-
-
 // dispatcher.on('start', () => {
 // 	console.log('crewmate bot is now playing audio!');
 // });
@@ -174,6 +161,3 @@ client.on('guildMemberAdd', member => {
 // 	console.log('song finished!');
 //
 // });
-//
-// // Always remember to handle errors appropriately!
-// dispatcher.on('error', console.error);

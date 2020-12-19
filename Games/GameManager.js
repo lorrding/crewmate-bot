@@ -91,6 +91,8 @@ class GameManager {
 	}
 
 	async manageAddReaction(reaction, user) {
+		// no game
+		if (!this.#gameList.length) return
 
 		//wrong reaction
 		if (reaction.emoji.id !== this.#gameList[0].getEmoji()) return
