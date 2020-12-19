@@ -102,7 +102,7 @@ const self = module.exports = {
 		try {
 			if (!queue.songMessage) {
 				console.log("no message, creating..")
-				queue.textChannel.send(`👌 currently playing : ${queue.songs[0]}`).then(msg => {
+				queue.textChannel.send(`👌 en train de jouer: ${queue.songs[0]}`).then(msg => {
 					queue.songMessage = msg
 				})
 			} else {
