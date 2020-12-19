@@ -209,6 +209,5 @@ class GameManager {
 
 
 module.exports = {
-	gameManager
+	GameManager
 }
-
