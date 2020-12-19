@@ -1,14 +1,12 @@
 const {help} = require("../help/help")
 const {sendThenDelete} = require("../toolbox")
-// const {GameManager} = require("../Games/GameManager")
-// const gameManager = new GameManager()
-// exports.gameManager = gameManager
+const { gameManager } = require("../Games/GameManager")
 
 module.exports = {
 	name: "game",
 	aliases: ["g"],
 	description: "Create and manage game of among us",
-	async execute(message, args, command, gameManager) {
+	async execute(message, args) {
 		if (!args.length) {
 			sendThenDelete(message.channel, "Arguments manquant!\n /game -help pour plus d'infos")
 			return message.delete()

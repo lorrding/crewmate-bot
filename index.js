@@ -4,39 +4,16 @@ const { join } = require("path")
 const {Client, Collection } = require("discord.js")
 
 const { prefix } = require("./config.json")
-const { sendThenDelete, inDev } = require('./toolbox')
+const { sendThenDelete, inDev, showDate, getReaction } = require('./toolbox')
 const { dev } = require('./commands/dev')
 
 const client = new Client({ partials: ['REACTION']})
 client.login(process.env.BOT_TOKEN).then(() => {})
 client.commands = new Collection()
+client.messageReactions = new Collection()
 client.queue = new Map()
 client.prefix = prefix
 client.dev = false
-
-const {GameManager} = require("./Games/GameManager")
-const gameManager = new GameManager()
-
-client.on('ready',async () => {
-	console.log(`\nlogged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
-	await client.user.setActivity("Among Us", {
-		type: "STREAMING",
-		url: "https://youtu.be/dQw4w9WgXcQ"
-	})
-	if (client.user.username === "Crewmate-bot") {
-		client.channels.fetch('767812168745484328')
-			.then(channel => {
-				let date = new Date()
-				channel.send(`Reboot done at ${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`)
-			})
-			.catch(console.error)
-	}
-})
-
-
-client.on("warn", (info) => console.log(info))
-
-client.on("error", (e) =>  console.error(e))
 
 
 // importing commands
@@ -46,11 +23,44 @@ for (const file of commands) {
 	const command = require(join(__dirname, "commands", `${file}`))
 	client.commands.set(command.name, command)
 }
-console.log(`loaded ${commands.length} commands`)
+console.log(`loaded ${commands.length} commands\n`)
+
+// importing messageReactions
+const messageReactions = readdirSync(join(__dirname, "messageReactions")).filter((file) => file.endsWith(".js"))
+console.log("loading messageReactions...")
+for (const file of messageReactions) {
+	const reaction = require(join(__dirname, "messageReactions", `${file}`))
+	client.messageReactions.set(reaction.id, reaction)
+}
+console.log(`loaded ${messageReactions.length} reactions`)
 
 
 
-// message event
+client.on('ready',async () => {
+	console.log(`\n logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
+	await client.user.setActivity("Among Us", {
+		type: "STREAMING",
+		url: "https://youtu.be/dQw4w9WgXcQ"
+	})
+	if (client.user.username === "Crewmate-bot") {
+		client.channels.fetch('767812168745484328')
+			.then(channel => {
+				let date = new Date()
+				channel.send(`Reboot done at ${showDate(date, true)}`)
+			})
+			.catch(console.error)
+	}
+})
+
+
+client.on("warn", (info) => console.log(info))
+
+
+
+client.on("error", (e) =>  console.error(e))
+
+
+
 client.on('message', async message => {
 	if (message.author.bot) return
 	if (!message.content.startsWith(message.client.prefix)) return
@@ -63,61 +73,72 @@ client.on('message', async message => {
 
 	if (!commandToExec) return console.log(`did not found ${command}`)
 
-	console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${message.createdAt}`)
+	console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild}' at ${showDate(message.createdAt)}`)
 	if (args.length) console.log(`With args ${args}`)
 
 	try {
-		commandToExec.execute(message, args, command, gameManager)
+		commandToExec.execute(message, args, command)
 	} catch (e) {
 		console.error(e)
 		return sendThenDelete(message.channel, `${e}`)
 	}
+
+	if (message && message.guild.me.hasPermission("MANAGE_MESSAGES")) {
+		try {
+			await message.delete()
+		} catch (e) {
+			return sendThenDelete(console.error(e))
+		}
+	}
 })
+
+
 
 client.on('messageReactionAdd', async (reaction, user) => {
 	if (dev) return inDev(reaction.message.channel)
 	//if bot, then don't
-	if (user.bot) return 0
+	if (user.bot) return
 
-	if (reaction.partial) {
-		console.log('partial reaction. Fetching...')
-		reaction.fetch()
-			.then(fullReaction => {
-				//calling gameManager to check everything else...
-				gameManager.manageAddReaction(fullReaction, user)
-			})
-			.catch(e => {
-				console.log('Something went wrong when fetching the reaction: ', e);
-			})
-	} else {
-		console.log('The reaction is not partial.')
-		//calling gameManager to check everything else...
-		await gameManager.manageAddReaction(reaction, user)
+	const emittedReaction = getReaction(reaction)
+	console.log(`\nReaction ${emittedReaction.emoji.name} added by ${user.username}#${user.discriminator} in '${emittedReaction.message.guild}' at ${showDate(emittedReaction.message.createdAt)}`)
+
+
+	const reactionToExec = client.messageReactions.get(emittedReaction.emoji.id)
+
+	if (!reactionToExec) return console.log(`did not found ${emittedReaction.emoji.name} (id:${emittedReaction.emoji.id})`)
+
+	try {
+		reactionToExec.execute(emittedReaction, user, "add")
+	} catch (e) {
+		console.error(e)
+		return sendThenDelete(emittedReaction.message.channel, `${e}`)
 	}
 })
+
+
 
 client.on('messageReactionRemove', async (reaction, user) => {
 	if (dev) return inDev(reaction.message.channel)
+	//if bot, then don't
+	if (user.bot) return
 
-	if (user.bot) return 0
+	const emittedReaction = getReaction(reaction)
+	console.log(`\nReaction ${emittedReaction.emoji.name} removed by ${user.username}#${user.discriminator} in '${emittedReaction.message.guild}' at ${showDate(emittedReaction.message.createdAt)}`)
 
-	if (reaction.partial) {
-		console.log('partial reaction. Fetching...')
-		reaction.fetch()
-			.then(fullReaction => {
-				//calling gameManager to check everything else...
-				return gameManager.manageRemoveReaction(fullReaction, user)
-			})
-			.catch(e => {
-				console.log('Something went wrong when fetching the reaction: ', e);
-			})
-	} else {
-		console.log('The reaction is not partial.')
-		//calling gameManager to check everything else...
-		await gameManager.manageRemoveReaction(reaction, user)
+
+	const reactionToExec = client.messageReactions.get(emittedReaction.emoji.id)
+
+	if (!reactionToExec) return console.log(`did not found ${emittedReaction.emoji.name} (id:${emittedReaction.emoji.id})`)
+
+	try {
+		reactionToExec.execute(emittedReaction, user, "remove")
+	} catch (e) {
+		console.error(e)
+		return sendThenDelete(emittedReaction.message.channel, `${e}`)
 	}
-	return 0
 })
+
+
 
 client.on('guildMemberAdd', member => {
 	console.log("new user detected!")
@@ -129,6 +150,8 @@ client.on('guildMemberAdd', member => {
 		return console.log(e)
 	}
 })
+
+
 
 // client.on('voiceStateUpdate', (oldStat, newState) => {
 // 	if (!client.voice.connections.some(aConnection => aConnection.channel.id === oldStat.channelID)) return

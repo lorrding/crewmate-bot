@@ -1,6 +1,6 @@
 const ytdl = require('ytdl-core')
 
-module.exports = {
+const self = module.exports = {
 	//send a message, then delete it after x millisecondes
 	sendThenDelete : function (channel, message, ms = 5000) {
 		try {
@@ -13,30 +13,17 @@ module.exports = {
 		}
 	},
 
-	deleteMessage : async function (client, message, ms = 0) {
-		try {
-			message.delete({timeout: ms})
-		} catch (error) {
-			console.log(`Error deleting message...\n${error}`);
-		}
-		// let guild = client.guilds.fetch(message.guild.id)
-		// let member = (await guild).members.fetch(client.user.id)
-		// if ((await member).hasPermission('MANAGE_MESSAGES')) {
-		// 	return message.delete({timeout : ms})
-		// }else {
-		// 	return 0;
-		// }
-	},
-
 	// format text for game embed message
 	formatEmbedTime : function(hours, minutes) {
 		let str = ""
 		let date = new Date()
-		
+
+		hours = parseInt(hours)
+
 		//today or tomorrow ? utc+1 = summer /---/ utc+0 = winter
 		console.log("creating embed time..")
 		if (date.getUTCHours()+1 < hours) {str += "Ce "}
-		else if (date.getUTCHours()+1 == hours) {
+		else if (date.getUTCHours()+1 === hours) {
 			if (date.getUTCMinutes() < minutes) {str += "Ce "}
 			else {str += "Demain "}
 		} else {str += "Demain "}
@@ -84,33 +71,111 @@ module.exports = {
 		return '#'+Math.floor(Math.random()*16777215).toString(16);
 	},
 
-	inDev : function (message) {
-		const { sendThenDelete } = require('./toolbox')
+	inDev : function (channel) {
 		console.log('MODE DEV, ignoring...')
-		sendThenDelete(message.channel, "I'm currently in dev! try again later or mp lording#0400.")
+		self.sendThenDelete(message.channel, "I'm currently in dev! try again later or mp lording#0400.")
 		if (message.guild.me.hasPermission("MANAGE_MESSAGES")) {
 			message.delete()
 		}
 	},
 
-	play : function (connection, message, url) {
-		const { sendThenDelete } = require('./toolbox')
+	play : function (queue) {
+		const url = queue.songs[0]
+		try {
+			const valide = ytdl.validateURL(url)
+			if (!valide) {
+				self.sendThenDelete(queue.textChannel, "format vidéo invalide!")
+				return queue.channel.client.queue.delete(queue.channel.guild.id)
+			}
+		} catch (e) {
+			return self.sendThenDelete(queue.textChannel, `${e}`)
+		}
 
-		let valide
 		try {
-			valide = ytdl.validateURL(url)
-			if (!valide) return sendThenDelete(message.channel, "format de vidéo invalide!")
+			queue.connection.play(ytdl(`${url}`, {quality: 'highestaudio'}))
 		} catch (e) {
-			return sendThenDelete(message.channel, `${e}`)
+			return self.sendThenDelete(queue.textChannel, `${e}`)
 		}
+		queue.playing = true
+
+
 		try {
-			connection.play(ytdl(`${url}`, {quality: 'highestaudio'}), {volume: 0.5})
+			if (!queue.songMessage) {
+				console.log("no message, creating..")
+				queue.textChannel.send(`👌 currently playing : ${queue.songs[0]}`).then(msg => {
+					queue.songMessage = msg
+				})
+			} else {
+				if (queue.songMessage.editable) {
+					console.log("message found, editing...")
+					queue.songMessage.edit(`👌 en train de jouer: ${queue.songs[0]}`)
+				}
+			}
 		} catch (e) {
-			return sendThenDelete(message.channel, `${e}`)
+			self.sendThenDelete(queue.textChannel, `${e}`)
 		}
-		message.delete()
-		return sendThenDelete(message.channel, "👌")
-	}
+		queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
+
+		queue.connection.dispatcher.on('finish', () => {
+			queue.passed.push(queue.songs.shift())
+			queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
+			console.log(`end of current song in ${queue.channel.name}..`)
+			if (!queue.songs.length) {
+				if (queue.loop) {
+					console.log("loop enabled, looping")
+					queue.songs = queue.passed
+					queue.passed = []
+					queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
+					return self.play(queue)
+				} else {
+					console.log(`no more songs to play, leaving`)
+					queue.channel.leave()
+					queue.channel.client.queue.delete(queue.textChannel.guild.id)
+				}
+			} else {
+				return self.play(queue)
+			}
+		})
+	},
+
+	queueAdd: function(url, queue) {
+		console.log(`queue size: ${queue.songs.length}`)
+		queue.songs.push(url)
+		if (queue.songs.length === 1) {
+			console.log(`only one song, playing..`)
+			self.play(queue)
+		} else {
+			self.sendThenDelete(queue.textChannel, `👌 Musique ajouté à la liste d'attente.`)
+		}
+	},
+
+	canUpdateQueue : function (member) {
+		return member.voice.channelID === member.guild.voice.channelID
+	},
+
+	showDate : function (date, utc) {
+		if (utc) {
+			return `${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`
+		} else {
+			return `${date.getHours()}h${date.getMinutes()} on ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+		}
+	},
+
+	getReaction : function (reaction) {
+		if (reaction.partial) {
+			console.log('partial reaction. Fetching...')
+			reaction.fetch()
+				.then(fullReaction => {
+					return fullReaction
+				})
+				.catch(e => {
+					console.log('Something went wrong when fetching the reaction: ', e);
+				})
+		} else {
+			console.log('The reaction is not partial.')
+			return reaction
+		}
+	},
 
 	// disconnect : function (connection) {
 	// 	return connection.disconnect()

@@ -1,47 +1,79 @@
-const {sendThenDelete, play} = require("../toolbox")
-const {help} = require("../help/help")
+const {sendThenDelete , queueAdd, canUpdateQueue} = require("../toolbox")
 
 module.exports = {
 	name: "play",
-	description: "Play a Youtube video/stream resolvable link in the voice channel of the message author",
+	aliases: "p",
+	description: "Play or unpause a Youtube video/stream resolvable link in the voice channel of the message author",
 	async execute(message, args) {
 		if (!message.guild) return
 
-		if (!message.member.voice.channel || !message.member.voice.channel.joinable) return sendThenDelete(message.channel, "Vous n'êtes dans aucun channel vocal que je peux rejoindre!")
+		const { channel } = message.member.voice
+		const queueGetter = message.client.queue.get(message.guild.id)
 
-		// playing lofi
-		console.log(args)
+		if (!channel || !channel.joinable) return sendThenDelete(message.channel, "Je ne peux pas rejoindre votre channel vocal!")
+
+		if (queueGetter && channel !== message.guild.me.voice.channel) return sendThenDelete(message.channel, `Vous devez être dans le même channel que ${message.client.user}!`)
+
+		let queue
+		if (!queueGetter) {
+			console.log("no queue, creating...")
+			queue = {
+				textChannel: message.channel,
+				channel,
+				songMessage: null,
+				connection: null,
+				songs: [],
+				passed: [],
+				loop: false,
+				volume: 100,
+				playing: false
+			}
+			message.client.queue.set(message.guild.id, queue)
+		} else {
+			console.log("queue found..")
+			queue = queueGetter
+			if (!queue.playing) {
+				console.log("queue was paused.. playing again...")
+				queue.connection.dispatcher.resume()
+				queue.playing = true
+				return sendThenDelete(message.channel, `▶ Reprise de la musique.`, 15000)
+			}
+		}
+
 		let url = args[0]
-		const connection = await message.member.voice.channel.join()
+
+		if (!queue.connection || message.member.hasPermission(('ADMINISTRATOR'))) {
+			try {
+				queue.connection = await message.member.voice.channel.join()
+			} catch (e) {
+				return sendThenDelete(message.channel, `${e}`)
+			}
+		} else {
+			if (!canUpdateQueue(message.member)) {
+				return sendThenDelete(message.channel, `Vous devez d'abord rejoindre le channel vocal!`)
+			}
+		}
 
 		switch (url) {
-			case "lofi":
 			case "l":
-				dispatcher = await play(connection, message, 'https://youtu.be/5qap5aO4i9A')
-				break;
+			case "lofi":
+				// playing lofi
+				queueAdd('https://youtu.be/5qap5aO4i9A', queue)
+				break
 			case "doom":
 			case "d":
-				dispatcher = await play(connection, message, 'https://youtu.be/JEuAYnjtJP0')
+				// playing lofi
+				queueAdd('https://youtu.be/JEuAYnjtJP0', queue)
 				break;
-			case "-help":
-			case "-h":
-				//help
-				try {
-					message.author.createDM().then(DMChannel => DMChannel.send(help("-p")))
-				} catch (e) {
-					return sendThenDelete(message.channel, `${e}`)
-				}
-				if (message.channel.type !== "dm") {
-					try {
-						await message.delete()
-					} catch (e) {
-						return sendThenDelete(message.channel, `${e}`)
-					}
-				}
-				break;
+			case "rr":
+			case "-rr":
+				// playing rickroll
+				queueAdd('https://youtu.be/dQw4w9WgXcQ', queue)
+				break
 			default:
-				dispatcher = await play(connection, message, url)
-				break;
+				queueAdd(url, queue)
+				break
 		}
 	}
 }
+
