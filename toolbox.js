@@ -71,7 +71,7 @@ const self = module.exports = {
 		return '#'+Math.floor(Math.random()*16777215).toString(16);
 	},
 
-	inDev : function (channel) {
+	inDev : function (message) {
 		console.log('MODE DEV, ignoring...')
 		self.sendThenDelete(message.channel, "I'm currently in dev! try again later or mp lording#0400.")
 		if (message.guild.me.hasPermission("MANAGE_MESSAGES")) {
