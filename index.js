@@ -145,7 +145,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 client.on('guildMemberAdd', member => {
 	console.log("new user detected!")
 	try {
-		let channel = member.guild.channels.cache.find(ch => ch.name === 'les-nouveaux')
+		let channel = member.guild.channels.cache.find(ch => ch.id === '764913089547337770')
 		if (!channel) return console.log("cannot find channel")
 		channel.send(`Bienvenue sur le serveur ${member}\nPense à aller voir les <#764910769132929048>. Les codes pour rejoindre les parties sont postés dans <#764910769132929049>`)
 	} catch (e) {
