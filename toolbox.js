@@ -161,7 +161,7 @@ const self = module.exports = {
 			return `${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`
 		} else {
 			let type = "on"
-			if (info) type = "off"
+			if (info) type = "le"
 			return `${date.getHours()}h${date.getMinutes()} ${type} ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
 		}
 	},
