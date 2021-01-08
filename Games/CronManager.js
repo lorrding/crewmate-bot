@@ -1,5 +1,5 @@
 const { sendThenDelete } = require('../toolbox')
-const cron = require('node-cron')
+const {validate} = require('node-cron')
 
 //class used to manager every Cron objects
 class CronManager {
@@ -36,7 +36,7 @@ class CronManager {
 				time = time.split(":")
 			}
 			// checking time for cron format
-			if (cron.validate(`${time[1]} ${time[0]} * * *`)) {
+			if (validate(`${time[1]} ${time[0]} * * *`)) {
 				console.log(`valide cron format..`)
 			} else {
 				console.log('invalid cron format!')

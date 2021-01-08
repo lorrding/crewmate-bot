@@ -4,9 +4,11 @@ const { join } = require("path")
 const {Client, Collection } = require("discord.js")
 
 const { prefix } = require("./config.json")
-const { sendThenDelete, inDev, showDate, getReaction } = require('./toolbox')
+const { sendThenDelete, inDev, showDate, getReaction, getPrefix } = require('./toolbox')
 const { dev } = require('./commands/dev')
 const { GameManager } = require('./Games/GameManager')
+const {fetchAll} = require('./database')
+
 
 const client = new Client({ partials: ['REACTION']})
 client.login(process.env.BOT_TOKEN).then(() => {})
@@ -16,7 +18,7 @@ client.gameManager = new GameManager()
 client.queue = new Map()
 client.prefix = prefix
 client.dev = false
-
+client.botGuilds = new Collection()
 
 // importing commands
 const commands = readdirSync(join(__dirname, "commands")).filter((file) => file.endsWith(".js"))
@@ -34,24 +36,34 @@ for (const file of messageReactions) {
 	const reaction = require(join(__dirname, "messageReactions", `${file}`))
 	client.messageReactions.set(reaction.id, reaction)
 }
-console.log(`loaded ${messageReactions.length} reactions`)
+console.log(`loaded ${messageReactions.length} reactions\n`)
+
+// importing every known guilds
+console.log('fetching data..')
+fetchAll(function (data) {
+	console.log('data fetched')
+	for (let guild of data) {
+		client.botGuilds.set(guild.guild_id, guild)
+	}
+	console.log('data loaded')
+})
 
 
 
 client.on('ready',async () => {
-	console.log(`\n logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
+	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
 	await client.user.setActivity("Among Us", {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
 	})
-	if (client.user.username === "Crewmate-bot") {
-		client.channels.fetch('767812168745484328')
-			.then(channel => {
-				let date = new Date()
-				channel.send(`Reboot done at ${showDate(date, true)}`)
-			})
-			.catch(console.error)
-	}
+	// if (client.user.username === "Crewmate-bot") {
+	// 	client.channels.fetch('767812168745484328')
+	// 		.then(channel => {
+	// 			let date = new Date()
+	// 			channel.send(`Reboot done at ${showDate(date, true)}`)
+	// 		})
+	// 		.catch(console.error)
+	// }
 })
 
 
@@ -65,9 +77,11 @@ client.on("error", (e) =>  console.error(e))
 
 client.on('message', async message => {
 	if (message.author.bot) return
-	if (!message.content.startsWith(message.client.prefix)) return
 
-	const args = message.content.slice(message.client.prefix.length).trim().split(/ +/g)
+	const prefix = getPrefix(message)
+	if (!message.content.startsWith(prefix)) return
+
+	const args = message.content.slice(prefix.length).trim().split(/ +/g)
 	const command = args.shift().toLowerCase()
 	if (message.client.dev && command !== "dev") return inDev(message)
 

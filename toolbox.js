@@ -156,11 +156,13 @@ const self = module.exports = {
 		return member.voice.channelID === member.guild.voice.channelID
 	},
 
-	showDate : function (date, utc) {
+	showDate : function (date, utc, info) {
 		if (utc) {
 			return `${date.getUTCHours()+1}h${date.getUTCMinutes()} ${date.getUTCDate()}/${date.getUTCMonth()+1}/${date.getUTCFullYear()}`
 		} else {
-			return `${date.getHours()}h${date.getMinutes()} on ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
+			let type = "on"
+			if (info) type = "off"
+			return `${date.getHours()}h${date.getMinutes()} ${type} ${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`
 		}
 	},
 
@@ -179,6 +181,13 @@ const self = module.exports = {
 			return reaction
 		}
 	},
+
+	getPrefix : function (message) {
+		if (message.channel.type !== 'text') return message.client.prefix
+		let guild = message.client.botGuilds.get(message.guild.id)
+		if (guild) return guild.prefix
+		return message.client.prefix
+	}
 
 	// disconnect : function (connection) {
 	// 	return connection.disconnect()
