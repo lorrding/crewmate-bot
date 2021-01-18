@@ -12,8 +12,9 @@
 		"node-cron": "^2.0.3",
 		"pg": "^8.5.1",
 		"request": "2.88.2",
-		"ytdl-core": "^4.2.1",
-		"ytdl-core-discord": "^1.2.4"
+		"ytdl-core": "^4.4.3",
+		"ytdl-core-discord": "^1.2.4",
+		"ytpl": "^2.0.4"
 	},
 	"scripts": {
 		"start": "node index.js"

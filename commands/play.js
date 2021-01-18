@@ -26,7 +26,9 @@ module.exports = {
 				passed: [],
 				loop: false,
 				volume: 100,
-				playing: false
+				playing: false,
+				isPlaylist : false,
+				playlist : []
 			}
 			message.client.queue.set(message.guild.id, queue)
 		} else {
@@ -54,25 +56,32 @@ module.exports = {
 			}
 		}
 
-		switch (url) {
-			case "l":
-			case "lofi":
-				// playing lofi
-				queueAdd('https://youtu.be/5qap5aO4i9A', queue)
-				break
-			case "doom":
-			case "d":
-				// playing lofi
-				queueAdd('https://youtu.be/JEuAYnjtJP0', queue)
-				break;
-			case "rr":
-			case "-rr":
-				// playing rickroll
-				queueAdd('https://youtu.be/dQw4w9WgXcQ', queue)
-				break
-			default:
-				queueAdd(url, queue)
-				break
+		if (url.search("playlist?list=")) {
+			console.log("playlist detected!")
+			queue.isPlaylist = true
+			queueAdd(url, queue)
+
+		} else {
+			switch (url) {
+				case "l":
+				case "lofi":
+					// playing lofi
+					queueAdd('https://youtu.be/5qap5aO4i9A', queue)
+					break
+				case "doom":
+				case "d":
+					// playing lofi
+					queueAdd('https://youtu.be/JEuAYnjtJP0', queue)
+					break;
+				case "rr":
+				case "-rr":
+					// playing rickroll
+					queueAdd('https://youtu.be/dQw4w9WgXcQ', queue)
+					break
+				default:
+					queueAdd(url, queue)
+					break
+			}
 		}
 	}
 }

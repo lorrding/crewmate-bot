@@ -1,4 +1,5 @@
 const ytdl = require('ytdl-core')
+const ytpl = require('ytpl')
 
 const self = module.exports = {
 	//send a message, then delete it after x millisecondes
@@ -141,14 +142,35 @@ const self = module.exports = {
 		})
 	},
 
-	queueAdd: function(url, queue) {
-		console.log(`queue size: ${queue.songs.length}`)
-		queue.songs.push(url)
-		if (queue.songs.length === 1) {
-			console.log(`only one song, playing..`)
-			self.play(queue)
+	queueAdd: async function (url, queue) {
+		if (queue.isPlaylist) {
+			console.log(`queue size: ${queue.songs.length}`)
+
+			queue.playlist = await ytpl(`${url}`, {pages: 1})
+			console.log(`Playlist size: ${queue.playlist.items.length}`)
+			if (queue.playlist.items.length) {
+				queue.playlist.items.forEach(music => {
+					queue.songs.push(music.shortUrl)
+					if (queue.songs.length === 1) {
+						console.log(`only one song, playing..`)
+						self.play(queue)
+					}
+				})
+			} else {
+				return self.sendThenDelete(queue.textChannel, `Erreur, aucune musique trouvé dans la playlist!`)
+			}
+			queue.isPlaylist = false
+			self.sendThenDelete(queue.textChannel, `👌 Playlist ajouté.`)
+			return queue.textChannel.guild.client.queue.set(queue.textChannel.guild.id, queue)
 		} else {
-			self.sendThenDelete(queue.textChannel, `👌 Musique ajouté à la liste d'attente.`)
+			console.log(`queue size: ${queue.songs.length}`)
+			queue.songs.push(url)
+			if (queue.songs.length === 1) {
+				console.log(`only one song, playing..`)
+				self.play(queue)
+			} else {
+				self.sendThenDelete(queue.textChannel, `👌 Musique ajouté à la liste d'attente.`)
+			}
 		}
 	},
 

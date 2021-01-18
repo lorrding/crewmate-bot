@@ -10,7 +10,7 @@ module.exports = {
 		if (!canUpdateQueue(message.member)) return
 
 		queue.playing = true
-		queue.connection.dispatcher.end()
+		if (queue.connection.dispatcher) queue.connection.dispatcher.end()
 		return sendThenDelete(message.channel, `${message.author} ⏭ a skip la musique`, 15000)
 	}
 }
