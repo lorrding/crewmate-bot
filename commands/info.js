@@ -4,8 +4,8 @@ const {sendThenDelete, getHexa, showDate} = require("../toolbox")
 module.exports = {
 	name: "info",
 	description: "gives infos about the bot and the settings of this server",
-	execute(message) {
-		if (message.channel.type !== 'text') return sendThenDelete(message.channel, `Commande non disponible en dehors d'un serveur`)
+	async execute(message, mp) {
+		if (!mp && message.channel.type !== 'text') return sendThenDelete(message.channel, `Commande non disponible en dehors d'un serveur`)
 		const guild = message.client.botGuilds.get(message.guild.id)
 
 		if (!guild) {
@@ -17,6 +17,8 @@ module.exports = {
 		embed.setTitle(`Info du ${message.client.user.username}`)
 		let date = new Date()
 		embed.addField('Heure du serveur (du bot)', showDate(date, false, true))
+
+		if (mp && message.channel.type === 'text') embed.addField('Serveur concerné', message.guild.name)
 		embed.addField('Prefix sur ce serveur', guild.prefix)
 		let game = "Aucune <:Melon:796872457888858132>"
 		if (guild.game !== 'null') {
@@ -29,6 +31,11 @@ module.exports = {
 		}
 		embed.addField('Liste de musique', queue)
 
-		sendThenDelete(message.channel, embed, 60000)
+		if (mp && message.channel.type === 'text') {
+			await message.author.createDM().then(DMChannel => DMChannel.send(embed))
+			await message.author.deleteDM()
+		} else {
+			sendThenDelete(message.channel, embed, 60000)
+		}
 	}
 }
