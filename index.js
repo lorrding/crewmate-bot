@@ -56,14 +56,6 @@ client.on('ready',async () => {
 		type: "STREAMING",
 		url: "https://youtu.be/dQw4w9WgXcQ"
 	})
-	// if (client.user.username === "Crewmate-bot") {
-	// 	client.channels.fetch('767812168745484328')
-	// 		.then(channel => {
-	// 			let date = new Date()
-	// 			channel.send(`Reboot done at ${showDate(date, true)}`)
-	// 		})
-	// 		.catch(console.error)
-	// }
 })
 
 
@@ -89,7 +81,12 @@ client.on('message', async message => {
 
 	if (!commandToExec) return console.log(`did not found ${command}`)
 
-	console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild.name}' at ${showDate(message.createdAt)}`)
+	if (message.channel.type === 'text') {
+		console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in '${message.guild.name}' at ${showDate(message.createdAt)}`)
+	} else {
+		console.log(`\nCommand ${command} by ${message.author.username}#${message.author.discriminator} in Private Message at ${showDate(message.createdAt)}`)
+	}
+
 	if (args.length) console.log(`With args ${args}`)
 
 	try {
@@ -99,11 +96,13 @@ client.on('message', async message => {
 		return sendThenDelete(message.channel, `${e}`)
 	}
 
-	if (message && message.guild.me.hasPermission("MANAGE_MESSAGES")) {
-		try {
-			await message.delete()
-		} catch (e) {
-			return sendThenDelete(console.error(e))
+	if (message.channel.type === 'text') {
+		if (message && message.guild.me.hasPermission("MANAGE_MESSAGES")) {
+			try {
+				await message.delete()
+			} catch (e) {
+				return sendThenDelete(console.error(e))
+			}
 		}
 	}
 })

@@ -23,7 +23,6 @@ module.exports = {
 		embed.setTimestamp()
 
 		await message.author.createDM().then(DMChannel => DMChannel.send(embed))
-		message.delete().catch(() => {})
 		await message.author.deleteDM()
 	}
 }

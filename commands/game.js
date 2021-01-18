@@ -8,13 +8,13 @@ module.exports = {
 	async execute(message, args) {
 		if (!args.length) {
 			sendThenDelete(message.channel, "Arguments manquant!\n /game -help pour plus d'infos")
-			return message.delete()
 		}
 		let arg = args[0]
 
 		switch (arg) {
 			case "-add":
 			case "-a":
+			case "add":
 			case "a":
 				// création d'une partie
 				await args.shift()
@@ -33,19 +33,11 @@ module.exports = {
 				} catch (e) {
 					return sendThenDelete(message.channel, `${e}`)
 				}
-				if (message.channel.type !== "dm") {
-					try {
-						await message.delete()
-					} catch (e) {
-						return sendThenDelete(message.channel, `${e}`)
-					}
-				}
 				break
 			case "-dump":
 				if (message.member.hasPermission('ADMINISTRATOR') || message.author.id === "224230450099519488") {
 					//dump var
 					sendThenDelete(message.channel, message.client.gameManager.dumpVars(), 30000)
-					return message.delete()
 				}
 				break
 			default:
@@ -53,7 +45,6 @@ module.exports = {
 				try {
 					sendThenDelete(channel, `argument invalide ou non détecté!\n tapez '*/game -help*' pour plus d'info...`)
 					console.log('no arguments found for /game')
-					return message.delete()
 				} catch (error) {
 					sendThenDelete(channel, 'Error deleting message.')
 						.then(console.log(error))
