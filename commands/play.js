@@ -56,11 +56,12 @@ module.exports = {
 			}
 		}
 
-		if (url.search("playlist?list=")) {
+		const regexPlaylist = /([p][l][a][y][l][i][s][t][?][l][i][s][t][=])\w/g
+		const regexList = /([&][l][i][s][t][=])\w/g
+		if (url.search(regexPlaylist) !== -1 || url.search(regexList) !== -1) {
 			console.log("playlist detected!")
 			queue.isPlaylist = true
 			queueAdd(url, queue)
-
 		} else {
 			switch (url) {
 				case "l":
