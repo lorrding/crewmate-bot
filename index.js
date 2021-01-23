@@ -50,7 +50,7 @@ fetchAll(function (data) {
 
 
 client.on('ready',async () => {
-	let CDJChannel = client.channels.cache.find(channel => channel.id === '785230236044099636')
+	let CDJChannel = client.channels.cache.find(channel => channel.id === '764910769132929049')
 	client.gameManager = new GameManager(CDJChannel, client.commands.get("purge"))
 
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
