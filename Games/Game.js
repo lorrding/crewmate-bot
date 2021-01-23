@@ -1,14 +1,13 @@
-const Discord = require('discord.js')
+const {Message, MessageEmbed} = require('discord.js')
 const { sendThenDelete, formatEmbedTime, formatListPlayers, getHexa } = require('../toolbox')
-const Cron = require('./Cron')
+const {Cron} = require('./Cron')
 
 class Game {
 
 	#guild //guild the game is scheduled
 	#channel //channel the game is scheduled
-	// #role //role to manage players
-	#message = new Discord.Message(undefined, undefined, undefined) // embed that represent the game
-	#author //= new Discord.User(new Discord.Client(), undefined) // author of the game as a user
+	#message = new Message(undefined, undefined, undefined) // embed that represent the game
+	#author // author of the game as a user
 	#listPlayers = [] // list of all players, excluding author as user
 	#hours // hours of the game
 	#minutes // minutes of the game
@@ -19,12 +18,11 @@ class Game {
 
 	constructor(message, hours, minutes, manager) {
 		this.#guild = message.guild
-		// this.#role = message.guild.roles.cache.find(r => r.name === "joueurDuSoir");
 		this.#channel = message.channel
 		this.#author = message.author
 		this.#hours = hours
 		this.#minutes = minutes
-		this.#cron = new Cron.Cron(this.#hours, this.#minutes, this)
+		this.#cron = new Cron(this.#hours, this.#minutes, true, this)
 		this.#manager = manager
 
 		this.sendEmbed(this.createEmbed())
@@ -89,7 +87,7 @@ class Game {
 	createEmbed() {
 		//creating embed
 		try {
-			let embed = new Discord.MessageEmbed()
+			let embed = new MessageEmbed()
 			embed.setColor(getHexa())
 			embed.setAuthor(`${this.#author.username} propose de jouer à Among Us`, this.#author.avatarURL())
 			embed.addField(`${formatEmbedTime(this.#hours, this.#minutes)} à:`,`${this.#hours}h${this.#minutes}`, true)
@@ -109,7 +107,7 @@ class Game {
 
 		//try copying embed
 		try {
-			embed = new Discord.MessageEmbed(this.#message.embeds[0])
+			embed = new MessageEmbed(this.#message.embeds[0])
 			embed.fields = []
 		} catch (error) {
 			return sendThenDelete(this.#channel, "Error copying embed.")

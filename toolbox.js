@@ -156,6 +156,7 @@ const self = module.exports = {
 						self.play(queue)
 					}
 				})
+				queue.isPlaylist = false
 			} else {
 				return self.sendThenDelete(queue.textChannel, `Erreur, aucune musique trouvé dans la playlist!`)
 			}
@@ -209,14 +210,10 @@ const self = module.exports = {
 		let guild = message.client.botGuilds.get(message.guild.id)
 		if (guild) return guild.prefix
 		return message.client.prefix
+	},
+
+	clearCDJ : function (CDJChannel, cmd) {
+		console.log("\npurging from cron")
+		cmd.execute(undefined, null, true, CDJChannel).catch(() => {})
 	}
-
-	// disconnect : function (connection) {
-	// 	return connection.disconnect()
-	// }
-
-	// random number between to included integers
-	// getRandom : function (min, max) {
-	// 	return Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) +1)) + Math.ceil(min);
-	// }
 }

@@ -8,9 +8,10 @@ class GameManager {
 	#gameList = []
 	#guildList = []
 	#authorList = []
-	#CronManager = new CronManager()
+	#CronManager
 
-	constructor() {
+	constructor(CDJChannel, cmd) {
+		this.#CronManager = new CronManager(CDJChannel, cmd)
 		console.log("game manager ready")
 	}
 

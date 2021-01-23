@@ -1,3 +1,4 @@
+const {clearCDJ} = require("../toolbox")
 const cron = require('node-cron')
 
 class Cron {
@@ -7,14 +8,18 @@ class Cron {
 	#game // game related to this object
 	#task // cron schedule
 
-	constructor(hours, minutes, game) {
+	constructor(hours, minutes, isGame, game, CDJChannel, cmd) {
 		console.log("creating cron obj..")
 		this.#hours = hours
 		this.#minutes = minutes
 		this.#game = game
 		this.#task = new cron.schedule(`${this.#minutes} ${this.#hours} * * *`, () => {
-			console.log("It is time for me to ping..")
-			game.cronSchedule()
+			if (isGame) {
+				console.log("It is time for me to ping..")
+				game.cronSchedule()
+			} else {
+				clearCDJ(CDJChannel, cmd)
+			}
 		}, {
 			timezone : "Europe/Paris"
 			}

@@ -1,10 +1,14 @@
 const { sendThenDelete } = require('../toolbox')
 const {validate} = require('node-cron')
+const {Cron} = require("./Cron")
 
 //class used to manager every Cron objects
 class CronManager {
 
-	constructor() {
+	#clearChan
+
+	constructor(CDJChannel, cmd) {
+		this.#clearChan = new Cron(4,0, false, null, CDJChannel, cmd)
 	}
 
 	// checking if arguments of a message are matching 24h format (0-23[h|:]0-59)

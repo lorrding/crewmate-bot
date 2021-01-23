@@ -14,7 +14,6 @@ const client = new Client({ partials: ['REACTION']})
 client.login(process.env.BOT_TOKEN).then(() => {})
 client.commands = new Collection()
 client.messageReactions = new Collection()
-client.gameManager = new GameManager()
 client.queue = new Map()
 client.prefix = prefix
 client.dev = false
@@ -45,12 +44,15 @@ fetchAll(function (data) {
 	for (let guild of data) {
 		client.botGuilds.set(guild.guild_id, guild)
 	}
-	console.log('data loaded')
+	console.log('data loaded\n')
 })
 
 
 
 client.on('ready',async () => {
+	let CDJChannel = client.channels.cache.find(channel => channel.id === '785230236044099636')
+	client.gameManager = new GameManager(CDJChannel, client.commands.get("purge"))
+
 	console.log(`logged in as ${client.user.tag}, in ${client.channels.cache.size} channels of ${client.guilds.cache.size} server.`)
 	await client.user.setActivity("Among Us", {
 		type: "STREAMING",
