@@ -30,10 +30,11 @@ module.exports = {
 		} else {
 			embed.addField('Prefix sur ce serveur', guild.prefix)
 			embed.addField('Message de bienvenue',`${guild.greetings ? `${guild.greetings_msg}` : "Aucun"}`)
-			if (guild.queue !== 'null') {
+			if (guild.queue !== null) {
 				queue = "Soon.. <:Melon:796872457888858132>"
 			}
-			if (guild.game !== 'null') {
+
+			if (guild.game !== null) {
 				game = `Une partie est prévue à ${guild.game.hours}h${guild.game.minutes} ici:`
 				message.client.channels.fetch(guild.game.channelID).then(channel => {
 					channel.messages.fetch(guild.game.messageID).then(message => {
@@ -42,6 +43,8 @@ module.exports = {
 						sendEmbed(message, embed, game, queue, mp)
 					})
 				})
+			} else {
+				sendEmbed(message, embed, game, queue, mp)
 			}
 		}
 		// embed.addField('Game prévue', game)
@@ -63,7 +66,6 @@ function sendEmbed(message, embed, game, queue, mp) {
 	embed.addField('Game prévue', game)
 	embed.addField('Liste de musique', queue)
 
-	console.log("yay")
 	if (typeof  mp === "boolean" && mp && message.channel.type === 'text') {
 		console.log("mp")
 		message.author.send(embed).catch(e => console.error(e))
