@@ -5,7 +5,7 @@ module.exports = {
 	aliases: ["delete", "del"],
 	description: "Useful function to delete specific message",
 	async execute(message, args, clearCDT, CDJChannel) {
-		if (message !== undefined && !clearCDT) {
+		if (message !== undefined && clearCDT !== true) {
 			if (message.member.hasPermission('ADMINISTRATOR') || message.author.id === "224230450099519488") {
 				console.log('200, authorised..')
 				switch (args[0]) {

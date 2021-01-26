@@ -1,5 +1,5 @@
 const {sendThenDelete} = require("../toolbox")
-const {addGuild, updateGuild, fetchGuild} = require("../database")
+const {addGuildPrefix, updateGuildPrefix, fetchGuild} = require("../database")
 
 module.exports = {
 	name: "prefix",
@@ -13,7 +13,7 @@ module.exports = {
 		let guild = message.client.botGuilds.get(message.guild.id)
 
 		if (!guild) {
-			addGuild(message.guild.id, arg, function (callback) {
+			addGuildPrefix(message.guild.id, arg, function (callback) {
 				if (callback) {
 					console.error(callback)
 					return sendThenDelete(message.channel, `Erreur lors de l'update du prefix`)
@@ -28,7 +28,7 @@ module.exports = {
 				})
 			})
 		} else {
-			updateGuild(message.guild.id, arg, function (callback) {
+			updateGuildPrefix(message.guild.id, arg, function (callback) {
 				if (callback) {
 					console.error(callback)
 					return sendThenDelete(message.channel, `Erreur lors de l'update du prefix`)
