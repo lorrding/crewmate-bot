@@ -14,13 +14,14 @@ module.exports = {
 		embed.setTitle(`Info du ${message.client.user.username}`)
 
 		let date = new Date()
-		embed.addField('Heure du serveur (du bot)', showDate(date, false, true))
+		embed.addField('Heure (du serveur du bot)', showDate(date, false, true))
 
 		if (mp && message.channel.type === 'text') embed.addField('Serveur concerné', message.guild.name)
 
 		let game = "Aucune <:Melon:796872457888858132>"
 		let queue = "Aucune <:Melon:796872457888858132>"
-		if (typeof guild === undefined) {
+
+		if (!guild) {
 			console.log("guild not found")
 			embed.addField('Prefix sur ce serveur', '/')
 			embed.addField('Message de bienvenue', 'Aucun')
