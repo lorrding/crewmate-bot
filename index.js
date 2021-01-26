@@ -164,21 +164,21 @@ client.on('messageReactionRemove', async (reaction, user) => {
 
 client.on('guildMemberAdd', member => {
 	console.log("new user detected!")
-	try {
-		if (member.guild.systemChannel) {
-			const channel = member.guild.systemChannel
-			return channel.send(`Bienvenue sur le serveur ${member}\nPense à aller voir les <#764910769132929048>. Les codes pour rejoindre les parties sont postés dans <#764910769132929049>`)
-		} else return console.log("cannot find channel")
-	} catch (e) {
-		return console.log(e)
+	const guild = member.client.botGuilds.get(member.guild.id)
+	if (typeof guild !== undefined && guild.greetings !== false) {
+		// const channel = member.guild.systemChannel
+		if (guild.greetings_msg !== 'null') {
+			console.log("greeting message found...")
+				let greeting = guild.greetings_msg
+			console.log(greeting)
+					let splicedGreeting = greeting.split('${member}')
+					console.log(splicedGreeting)
+				return member.guild.systemChannel ? member.guild.systemChannel.send(`${splicedGreeting[0]}${member}${splicedGreeting[1]}`) : ""
+		} else {
+			console.log("no greeting message, using default..")
+			return member.guild.systemChannel ? member.guild.systemChannel.send(`Bienvenue ${member}`) : ""
+		}
+	} else {
+		console.log("Guild doesn't greet new user :sad:")
 	}
 })
-
-// dispatcher.on('start', () => {
-// 	console.log('crewmate bot is now playing audio!');
-// });
-//
-// dispatcher.on('finish', () => {
-// 	console.log('song finished!');
-//
-// });
