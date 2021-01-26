@@ -15,10 +15,10 @@ class GameManager {
 		console.log("game manager ready")
 	}
 
-	createGame(message, tempHeures, tempMinutes) {
-		this.#gameList.push(new Game(message, tempHeures, tempMinutes, this))
-		this.#guildList.push(message.guild)
-		return this.#authorList.push(message.author)
+	createGame(guild, channel, author, tempHeures, tempMinutes, newGame = true) {
+		this.#gameList.push(new Game(guild, channel, author, tempHeures, tempMinutes, this, newGame))
+		this.#guildList.push(guild)
+		return this.#authorList.push(author)
 	}
 
 	deleteGame(message) {
@@ -54,12 +54,7 @@ class GameManager {
 		this.removeGame(game, message)
 		//deleting game
 		game.deleteSelf()
-		try {
-			message.delete()
-		} catch (e) {
-			return console.log("message unavailable")
-		}
-		return 0;
+		return 0
 	}
 
 	addGame(message, args) {
@@ -69,7 +64,7 @@ class GameManager {
 					let formattedArgs = this.#CronManager.formatArgs(message, args)
 					let hours = formattedArgs.shift()
 					let minutes = formattedArgs.shift()
-					this.createGame(message, hours, minutes)
+					this.createGame(message.guild, message.channel, message.author, hours, minutes)
 				}
 			} else {
 				sendThenDelete(message.channel, `Vous êtes déjà l'auteur d'une partie prévue!`)
@@ -140,7 +135,7 @@ class GameManager {
 		// check if user isn't already in players list
 		if (game.getListPlayers().length > 0 && game.getListPlayers().some(player => player.username === user.username)) {
 			console.log('user already un list, ignoring...')
-			return sendThenDelete(reaction.message.channel, "Vous êtes déjà dans la liste des joueurs! (mais nous n'êtes même pas censé voir cette erreur)")
+			return sendThenDelete(reaction.message.channel, "Vous êtes déjà dans la liste des joueurs! (Si vous voyez ce message, c'est soit une erreur soit que vous avez réagis à une partie restaurée)")
 		}
 		console.log("game list : check")
 
@@ -201,6 +196,56 @@ class GameManager {
 		} catch (e) {
 			return e
 		}
+	}
+
+	restoreDB(client) {
+		client.botGuilds.forEach(guild => {
+			if (guild.game !== null) {
+				console.log(`\ngame found for ${guild.guild_id}. Fetching game data...`)
+				try {
+					let gameChannel
+					let gameGuild
+					let gameMessage
+					let gameAuthor
+					let listPlayers
+					let hours
+					let minutes
+
+					client.channels.fetch(guild.game.channelID).then(channel => {
+						gameChannel = channel
+
+						gameGuild = gameChannel.guild
+						listPlayers = guild.game.listPlayers
+						hours = guild.game.hours
+						minutes = guild.game.minutes
+
+						gameGuild.members.fetch(guild.game.authorID).then(member => {
+							gameAuthor = member.user
+
+							console.log("game data fetched.. recreating game..")
+							this.createGame(gameGuild, gameChannel, gameAuthor, hours, minutes, false)
+
+							let game = this.#gameList.find(game => game.getAuthor().id === gameAuthor.id)
+
+							gameChannel.messages.fetch(guild.game.messageID).then(message => {
+								gameMessage = message
+
+								if (game) {
+									game.restoreGame(listPlayers, gameMessage)
+								}
+							}).catch(e => {
+								console.log("Message not found")
+								if (game) {
+									game.restoreGame(listPlayers, undefined)
+								}
+							})
+						}).catch(console.error)
+					}).catch(console.error)
+				} catch (e) {
+					return console.error(e)
+				}
+			}
+		})
 	}
 }
 

@@ -200,7 +200,6 @@ const self = module.exports = {
 					console.log('Something went wrong when fetching the reaction: ', e);
 				})
 		} else {
-			console.log('The reaction is not partial.')
 			return reaction
 		}
 	},
@@ -215,5 +214,70 @@ const self = module.exports = {
 	clearCDJ : function (CDJChannel, cmd) {
 		console.log("\npurging from cron")
 		cmd.execute(undefined, null, true, CDJChannel).catch(() => {})
+	},
+
+	saveGame(game) {
+		const {fetchGuild, addGuildGame, updateGuildGame} = require('./database')
+
+		let listPlayers = ''
+
+		game.getListPlayers().forEach(player => {
+			listPlayers += player.id+','
+		})
+		if (listPlayers.length > 1) {
+			listPlayers = listPlayers.slice(0, -1)
+		}
+		let json = JSON.stringify({guildID: `${game.getGuild().id}`, channelID: `${game.getChannel().id}`, messageID: `${game.getMessage().id}`, authorID: `${game.getAuthor().id}`, listPlayers: listPlayers ,hours: `${game.getHours().toString()}`, minutes: `${game.getMinutes().toString()}`})
+
+		json = JSON.parse(json)
+
+		let guild = game.getGuild().client.botGuilds.get(game.getGuild().id)
+		if (!guild) {
+			addGuildGame(game.getGuild().id, json, function (callback) {
+				if (callback) {
+					console.error(callback)
+					return self.sendThenDelete(game.getChannel(), `Erreur lors de l'update de la game`)
+				}
+				fetchGuild(game.getGuild().id, function (data) {
+					console.log('guild fetched')
+					for (let guild of data) {
+						game.getGuild().client.botGuilds.set(guild.guild_id, guild)
+					}
+					console.log(`Updated game for ${game.getGuild().name}`)
+					return true
+				})
+			})
+		} else {
+			updateGuildGame(game.getGuild().id, json, function (callback) {
+				if (callback) {
+					console.error(callback)
+					return self.sendThenDelete(game.getChannel(), `Erreur lors de l'update de la game`)
+				}
+				guild.game = json
+				game.getGuild().client.botGuilds.set(guild.guild_id, guild)
+				console.log(`Updated game for ${game.getGuild().name}`)
+				return true
+			})
+		}
+	},
+
+	deleteGame(game) {
+		const {updateGuildGame} = require('./database')
+		let guild = game.getGuild().client.botGuilds.get(game.getGuild().id)
+		if (guild) {
+			updateGuildGame(game.getGuild().id, null, function (callback) {
+				if (callback) {
+					console.error(callback)
+					return self.sendThenDelete(game.getChannel(), `Erreur lors de l'update de la game`)
+				}
+				guild.game = null
+				game.getGuild().client.botGuilds.set(guild.guild_id, guild)
+				console.log(`Removed game for ${game.getGuild().name}`)
+				return true
+			})
+		}else {
+			console.log("error, no guild on cache")
+			return -1
+		}
 	}
 }

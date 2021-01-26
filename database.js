@@ -31,7 +31,7 @@ const self = module.exports = {
 		})
 	},
 
-	addGuild : function (guildId, prefix, callback) {
+	addGuildPrefix : function (guildId, prefix, callback) {
 		const sql = 'insert into guilds (guild_id, prefix, queue, game) VALUES ($1, $2, Null, Null);'
 		const values = [guildId, prefix]
 
@@ -44,7 +44,7 @@ const self = module.exports = {
 		})
 	},
 
-	updateGuild : function (guildId, prefix, callback) {
+	updateGuildPrefix : function (guildId, prefix, callback) {
 		const sql = 'update guilds set prefix = $2 where guild_id = $1;'
 		const values = [guildId, prefix]
 
@@ -56,4 +56,30 @@ const self = module.exports = {
 			}
 		})
 	},
+
+	updateGuildGame : function (guildId, game, callback) {
+		const sql = 'update guilds set game = $2 where guild_id = $1;'
+		const values = [guildId, game]
+
+		dbClient.query(sql, values, (err) => {
+			if (err) {
+				callback(err)
+			} else {
+				callback(0)
+			}
+		})
+	},
+
+	addGuildGame : function (guildId, game, callback) {
+		const sql = 'insert into guilds (guild_id, prefix, queue, game) VALUES ($1, $2, Null, $3);'
+		const values = [guildId, '/', game]
+
+		dbClient.query(sql, values, (err) => {
+			if (err) {
+				callback(err)
+			} else {
+				callback(0)
+			}
+		})
+	}
 }

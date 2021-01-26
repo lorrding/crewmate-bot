@@ -1,6 +1,6 @@
-const {Message, MessageEmbed} = require('discord.js')
-const { sendThenDelete, formatEmbedTime, formatListPlayers, getHexa } = require('../toolbox')
-const {Cron} = require('./Cron')
+const { Message, MessageEmbed } = require('discord.js')
+const { sendThenDelete, formatEmbedTime, formatListPlayers, getHexa, saveGame, deleteGame } = require('../toolbox')
+const { Cron } = require('./Cron')
 
 class Game {
 
@@ -16,16 +16,18 @@ class Game {
 
 	static #EMOJI = "764917952600342539" // static emoji for adding players
 
-	constructor(message, hours, minutes, manager) {
-		this.#guild = message.guild
-		this.#channel = message.channel
-		this.#author = message.author
+	constructor(guild, channel, author, hours, minutes, manager, newGame) {
+		this.#guild = guild
+		this.#channel = channel
+		this.#author = author
 		this.#hours = hours
 		this.#minutes = minutes
 		this.#cron = new Cron(this.#hours, this.#minutes, true, this)
 		this.#manager = manager
 
-		this.sendEmbed(this.createEmbed())
+		if (newGame) {
+			this.sendEmbed(this.createEmbed(), true)
+		}
 	}
 
 	addPlayer(reaction, member) {
@@ -61,6 +63,28 @@ class Game {
 		this.#author = undefined
 	}
 
+	restoreGame(listPlayers, message) {
+		let arrayPlayers = listPlayers.split(",")
+		if (listPlayers.length > 0) {
+			console.log("restoring players..")
+			arrayPlayers.forEach(userID => {
+				let member = this.#guild.members.cache.get(userID)
+				this.#listPlayers.push(member.user)
+			})
+			console.log(`restored ${this.#listPlayers.length} players`)
+		} else {
+			console.log("no players to restore")
+		}
+
+		if (message === undefined) {
+			console.log("re creating message..")
+			this.sendEmbed(this.createEmbed(true), false)
+
+		} else {
+			this.#message = message
+		}
+	}
+
 	deleteSelf() {
 		// removing players
 		this.removeAllPlayers()
@@ -71,7 +95,6 @@ class Game {
 				// removing everything else
 				this.#message = undefined
 				this.#guild = undefined
-				// this.#role = undefined
 				this.#hours = undefined
 				this.#minutes = undefined
 				this.#manager = undefined
@@ -81,19 +104,31 @@ class Game {
 				this.#channel = undefined
 			})
 		})
+
+		// deleting game on db
+		deleteGame(this)
 		return true
 	}
 
-	createEmbed() {
+	createEmbed(restored = false) {
 		//creating embed
 		try {
 			let embed = new MessageEmbed()
 			embed.setColor(getHexa())
 			embed.setAuthor(`${this.#author.username} propose de jouer à Among Us`, this.#author.avatarURL())
 			embed.addField(`${formatEmbedTime(this.#hours, this.#minutes)} à:`,`${this.#hours}h${this.#minutes}`, true)
-			embed.addField(`Places restantes:`,`9`, true)
+			if (this.#listPlayers.length) {
+				embed.addField(`Places restantes:`,`${9 - this.#listPlayers.length}`, true)
+				embed.addField(`avec:`, `${formatListPlayers(this.#listPlayers)}`)
+			} else {
+				embed.addField(`Places restantes:`,`9`, true)
+			}
 			embed.setImage(`https://i.imgur.com/8sd2fgo.png`)
-			embed.setFooter(`Réagissez en dessous pour participer`)
+			if (restored) {
+				embed.setFooter(`Réagissez en dessous pour participer\n\nCe message à été renvoyé après une suppression. Inutile de réagir de nouveau si vous êtes listé dans la liste des joueurs`)
+			} else {
+				embed.setFooter(`Réagissez en dessous pour participer`)
+			}
 			console.log("sending embed...")
 			return embed
 		} catch (error) {
@@ -133,13 +168,16 @@ class Game {
 		try {
 			this.#message.fetch().then(message => message.edit(embed))
 			console.log("game message edited")
+			//everything fine, adding to db.
+			console.log("everything good, saving to db..")
+			saveGame(this)
 		} catch (error) {
 			return sendThenDelete(this.#channel, "missing permissions to send embed or react.")
 				.then(console.log(error))
 		}
 	}
 
-	sendEmbed(embed) {
+	sendEmbed(embed, db = true) {
 		try {
 			//try sending embed
 			this.#channel.send(embed)
@@ -147,6 +185,13 @@ class Game {
 				.then(embedMessage => {
 					embedMessage.react(Game.#EMOJI).then(() => {})
 					this.#message = embedMessage
+
+					if (db) {
+						console.log("everything's good, saving to db..")
+						saveGame(this)
+					} else {
+						console.log("no db save needed")
+					}
 				})
 		} catch (error) {
 			sendThenDelete(this.#channel, "missing permissions to react or send embed.")
@@ -186,13 +231,11 @@ class Game {
 		}
 	}
 
+	// getters //
+
 	getGuild() {
 		return this.#guild
 	}
-
-	// getRole() {
-	// 	return this.#role
-	// }
 
 	getChannel() {
 		return this.#channel
