@@ -9,7 +9,7 @@ module.exports = {
 	async execute(message) {
 		let commands = message.client.commands.array()
 		let info = message.client.commands.get("info")
-		info.execute(message, true).catch(() => {})
+		info.execute(message, true).catch(e => console.error(e))
 
 		let embed = new MessageEmbed()
 			.setTitle(`${message.client.user.username} Help`)
@@ -25,7 +25,6 @@ module.exports = {
 
 		embed.setTimestamp()
 
-		await message.author.createDM().then(DMChannel => DMChannel.send(embed))
-		await message.author.deleteDM()
+		message.author.send(embed).catch(e => console.error(e))
 	}
 }

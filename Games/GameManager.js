@@ -238,7 +238,7 @@ class GameManager {
 								if (game) {
 									game.restoreGame(listPlayers, undefined)
 								}
-							})
+							}).catch(console.error)
 						}).catch(console.error)
 					}).catch(console.error)
 				} catch (e) {

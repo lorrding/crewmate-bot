@@ -7,6 +7,7 @@ module.exports = {
 	async execute(message, mp) {
 		if (typeof  mp === "boolean" && !mp && message.channel.type !== 'text') return sendThenDelete(message.channel, `Commande non disponible en dehors d'un serveur`)
 		const guild = message.client.botGuilds.get(message.guild.id)
+		let fetched = false
 
 
 		let embed = new MessageEmbed()
@@ -25,25 +26,48 @@ module.exports = {
 			console.log("guild not found")
 			embed.addField('Prefix sur ce serveur', '/')
 			embed.addField('Message de bienvenue', 'Aucun')
-
+			sendEmbed(message, embed, game, queue, mp)
 		} else {
 			embed.addField('Prefix sur ce serveur', guild.prefix)
 			embed.addField('Message de bienvenue',`${guild.greetings ? `${guild.greetings_msg}` : "Aucun"}`)
-			if (guild.game !== 'null') {
-				game = "Soon.. <:Melon:796872457888858132>"
-			}
 			if (guild.queue !== 'null') {
 				queue = "Soon.. <:Melon:796872457888858132>"
 			}
-		}
-		embed.addField('Game prévue', game)
-		embed.addField('Liste de musique', queue)
+			if (guild.game !== 'null') {
+				game = `Une partie est prévue à ${guild.game.hours}h${guild.game.minutes} ici:`
+				message.client.channels.fetch(guild.game.channelID).then(channel => {
+					channel.messages.fetch(guild.game.messageID).then(message => {
+						game += `\n${message.url}`
 
-		if (typeof  mp === "boolean" && mp && message.channel.type === 'text') {
-			await message.author.createDM().then(DMChannel => DMChannel.send(embed))
-			await message.author.deleteDM()
-		} else {
-			sendThenDelete(message.channel, embed, 60000)
+						sendEmbed(message, embed, game, queue, mp)
+					})
+				})
+			}
 		}
+		// embed.addField('Game prévue', game)
+		// embed.addField('Liste de musique', queue)
+		//
+		// if (typeof  mp === "boolean" && mp && message.channel.type === 'text') {
+		// 	message.author.createDM().then(DMChannel => {
+		// 		DMChannel.send(embed).then(
+		// 			message.author.deleteDM()
+		// 		)
+		// 	})
+		// } else {
+		// 	sendThenDelete(message.channel, embed, 60000)
+		// }
+	}
+}
+
+function sendEmbed(message, embed, game, queue, mp) {
+	embed.addField('Game prévue', game)
+	embed.addField('Liste de musique', queue)
+
+	console.log("yay")
+	if (typeof  mp === "boolean" && mp && message.channel.type === 'text') {
+		console.log("mp")
+		message.author.send(embed).catch(e => console.error(e))
+	} else {
+		sendThenDelete(message.channel, embed, 60000)
 	}
 }
