@@ -177,6 +177,40 @@ module.exports = {
 		}
 	},
 
+	CrewLink : function(channel) {
+		let embed = new MessageEmbed()
+			.setColor("#FFFFFE")
+			.setTitle('CrewLink mod (vocal de proximité)')
+			.setThumbnail(`https://cdn.pling.com/img/4/6/f/3/07a0ef0a591a4b0f136e46d156988c656179533a16828b09081d8171f3ccc54a96ef.png`)
+			.setDescription("Un mod pour **les version Steam** d'Among Us ou vous entendez les autres joueurs proches de vous.")
+			.addField(`Lien de  téléchargement`,`https://github.com/ottomated/CrewLink/releases`)
+			.addField(`Installation`,` - Prenez la dernière version dispo (le .exe) et vous installez.\n - Ensuite il a juste à lancer l'application CrawLink`)
+			.addField(`Paramétrage`,`Une fois CrewLink ouvert, allez dans les paramètres (en haut à gauche) et tout en bas changez le serveur par http://crewmate-link.herokuapp.com/`)
+			.setFooter(`Pour plus d'info (en anglais): https://youtu.be/_8F4f5iQEIc`)
+		try {
+			channel.send(embed)
+		} catch (error) {
+			console.log(error)
+		}
+	},
+
+	Sheriff : function(channel) {
+		let embed = new MessageEmbed()
+			.setColor("#FFFFFE")
+			.setTitle('Sheriff mod')
+			.setThumbnail(`https://i.imgur.com/MRCKCLH.png`)
+			.setDescription("Un mod pour **les version Steam** d'Among Us ou un des crewmate possède un rôle spécial lui permettant de tuer un personne qu'il considère impostor.")
+			.addField(`Lien de  téléchargement`,`https://github.com/Woodi-dev/Among-Us-Sheriff-Mod/releases`)
+			.addField(`Installation`,` - Prenez la dernière version dispo (le .zip) et vous dézipez dans un dossier.\n - Allez ensuite chercher les fichiers de jeux Among us \n(sur steam: Bibliotèque -> clique droit sur Among Us -> Propriétés -> Fichiers locaux -> Parcourir)\n - Copier les fichiers de jeux dans le dossier dézipé du mod`)
+			.addField(`Lancement`,`Lancez le .exe... (bien vérifier que le mod est chargé en haut à gauche dans le menu Among Us)`)
+			.setFooter(`Pour plus d'info (en anglais): Allez voir le git`)
+		try {
+			channel.send(embed)
+		} catch (error) {
+			console.log(error)
+		}
+	},
+
 	Protips : function(channel) {
 		let embed = new MessageEmbed()
 			.setColor("#38FEDB")
@@ -192,37 +226,3 @@ module.exports = {
 		}
 	}
 }
-
-
-// test : function(channel) {
-//	 let embed = new MessageEmbed()
-//		 .setColor("#FFFF00")
-//		 .setTitle(`I'm a test!`)
-//		 .setThumbnail(`https://gamewave.fr/static/images/medias/upload/Florian/Among%20Us/amongusyellow.png`)
-//		 .setDescription("*Les Crewmates doivent tout faire pour réaliser l'entièreté de leurs tâches tout en restant cacher et à distance de l'Imposteur.*")
-//		 .addFields(
-//				 { name: `Règles:`, value: `- Il n'est pas nécessaire que l'Imposteur se révèle et se dévoile.\n- Il est interdit de signaler les corps.\n- Il est interdit d'expulser l'Imposteur.\n- Il est interdit de ne pas effectuer les tâches.\n- Il est interdit de saboter une pièce tant qu'il ne s'agit pas d'un local électrique.`, inline: false},
-//				 { name: '\u200B', value: '\u200B' },
-//				 { name: `Maps `, value: `The Skeld ou Polus`, inline: true},
-//				 { name: `Impostors`, value: `1`, inline: true},
-//				 { name: `Confirm Ejects`, value: `Off`, inline: true},
-//				 { name: `Emergency Meetings`, value: `1`, inline: true},
-//				 { name: `Emergency Cooldown`, value: `0 seconde`, inline: true},
-//				 { name: `Discussion Time`, value: `0 seconde`, inline: true},
-//				 { name: `Voting Time`, value: `0 seconde`, inline: true},
-//				 { name: `Player Speed`, value: `1,0x`, inline: true},
-//				 { name: `Crewmate Vision`, value: ` 0,5x`, inline: true},
-//				 { name: `Impostor Vision`, value: ` 0,25x`, inline: true},
-//				 { name: `Kill Cooldown`, value: `10 secondes`, inline: true},
-//				 { name: `Kill Distance`, value: `Short`, inline: true},
-//				 { name: `Visual Tasks`, value: `Off`, inline: true},
-//				 { name: `Common Tasks`, value: `0`, inline: true},
-//				 { name: `Long Tasks`, value: `0`, inline: true},
-//				 { name: `Short Tasks`, value: `5`, inline: true}
-//			 )
-//	 try {
-//		 channel.send(embed)  
-//	 } catch (error) {
-//		 console.log(error)
-//	 }
-// },
