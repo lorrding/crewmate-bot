@@ -21,7 +21,7 @@ module.exports = {
 				fetchGuild(message.guild.id, function (data) {
 					console.log('guild fetched')
 					for (let guild of data) {
-						message.client.botGuilds.set(guild.guild_id, guild)
+						message.client.botGuilds.set(guild.id, guild)
 					}
 					console.log(`Updated prefix for ${message.guild.name}`)
 					return sendThenDelete(message.channel, `prefix mit à jour`)
@@ -34,7 +34,7 @@ module.exports = {
 					return sendThenDelete(message.channel, `Erreur lors de l'update du prefix`)
 				}
 				guild.prefix = arg
-				message.client.botGuilds.set(guild.guild_id, guild)
+				message.client.botGuilds.set(guild.id, guild)
 				console.log(`Updated prefix for ${message.guild.name}`)
 				return sendThenDelete(message.channel, `prefix mit à jour`)
 			})

@@ -241,7 +241,7 @@ const self = module.exports = {
 				fetchGuild(game.getGuild().id, function (data) {
 					console.log('guild fetched')
 					for (let guild of data) {
-						game.getGuild().client.botGuilds.set(guild.guild_id, guild)
+						game.getGuild().client.botGuilds.set(guild.id, guild)
 					}
 					console.log(`Updated game for ${game.getGuild().name}`)
 					return true
@@ -254,7 +254,7 @@ const self = module.exports = {
 					return self.sendThenDelete(game.getChannel(), `Erreur lors de l'update de la game`)
 				}
 				guild.game = json
-				game.getGuild().client.botGuilds.set(guild.guild_id, guild)
+				game.getGuild().client.botGuilds.set(guild.id, guild)
 				console.log(`Updated game for ${game.getGuild().name}`)
 				return true
 			})
@@ -271,7 +271,7 @@ const self = module.exports = {
 					return self.sendThenDelete(game.getChannel(), `Erreur lors de l'update de la game`)
 				}
 				guild.game = null
-				game.getGuild().client.botGuilds.set(guild.guild_id, guild)
+				game.getGuild().client.botGuilds.set(guild.id, guild)
 				console.log(`Removed game for ${game.getGuild().name}`)
 				return true
 			})

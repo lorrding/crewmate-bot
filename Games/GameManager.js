@@ -201,7 +201,7 @@ class GameManager {
 	restoreDB(client) {
 		client.botGuilds.forEach(guild => {
 			if (guild.game !== null) {
-				console.log(`\ngame found for ${guild.guild_id}. Fetching game data...`)
+				console.log(`\ngame found for ${guild.id}. Fetching game data...`)
 				try {
 					let gameChannel
 					let gameGuild

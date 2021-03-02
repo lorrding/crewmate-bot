@@ -42,7 +42,7 @@ console.log('fetching data..')
 fetchAll(function (data) {
 	console.log('data fetched')
 	for (let guild of data) {
-		client.botGuilds.set(guild.guild_id, guild)
+		client.botGuilds.set(guild.id, guild)
 	}
 	console.log('data loaded\n')
 })
