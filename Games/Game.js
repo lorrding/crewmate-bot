@@ -159,6 +159,11 @@ class Game {
 			} else {
 				embed.addField(`Places restantes:`,`14`, true)
 			}
+			if (this.#listPlayers.length > 9) {
+				embed.setImage(`https://androidgadget.org/wp-content/uploads/2020/12/La-nouvelle-carte-parmi-nous-est-installee-sur-un-dirigeable-1200x900.jpg`)
+			} else {
+				embed.setImage(`https://i.imgur.com/8sd2fgo.png`)
+			}
 		} catch (error) {
 			return sendThenDelete(this.#channel, "Error updating fields.")
 				.then(console.log(error))
