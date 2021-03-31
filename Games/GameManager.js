@@ -120,7 +120,7 @@ class GameManager {
 		}
 
 		//check if game list isn't full
-		if (game.getListPlayers().length >= 9) {
+		if (game.getListPlayers().length >= 14) {
 			console.log('Max player reached, removing reaction.')
 			sendThenDelete(reaction.message.channel, "Nombre de joueurs max atteint!")
 			sendThenDelete(reaction.message.channel, "<:AU_why:765273043962298410>")

@@ -154,10 +154,10 @@ class Game {
 			embed.addField(`${formatEmbedTime(this.#hours, this.#minutes)} à:`,`${this.#hours}h${this.#minutes}`, true)
 
 			if (this.#listPlayers.length) {
-				embed.addField(`Places restantes:`,`${9 - this.#listPlayers.length}`, true)
+				embed.addField(`Places restantes:`,`${14 - this.#listPlayers.length}`, true)
 				embed.addField(`avec:`, `${formatListPlayers(this.#listPlayers)}`)
 			} else {
-				embed.addField(`Places restantes:`,`9`, true)
+				embed.addField(`Places restantes:`,`14`, true)
 			}
 		} catch (error) {
 			return sendThenDelete(this.#channel, "Error updating fields.")
