@@ -47,7 +47,9 @@ fetchAll(function (data) {
 	console.log('data loaded\n')
 })
 
-
+process.on('unhandledRejection', (reason, p) => {
+	console.error('Unhandled Rejection at:', p, 'reason:', reason)
+})
 
 client.on('ready',async () => {
 	let CDJChannel = client.channels.cache.find(channel => channel.id === '764910769132929049')
