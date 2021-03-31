@@ -69,6 +69,11 @@ class Game {
 			console.log("restoring players..")
 			arrayPlayers.forEach(userID => {
 				let member = this.#guild.members.cache.get(userID)
+				if (typeof member === undefined) {
+					this.#guild.members.fetch(userID).then(user => {
+						member = user
+					})
+				}
 				this.#listPlayers.push(member.user)
 			})
 			console.log(`restored ${this.#listPlayers.length} players`)
