@@ -21,7 +21,8 @@ class Cron {
 				clearCDJ(CDJChannel, cmd)
 			}
 		}, {
-			timezone : "Europe/Paris"
+			// timezone : "Europe/Paris"
+			timezone : "Europe/Riga"
 			}
 		)
 		console.log("cron obj is running..")
@@ -38,7 +39,8 @@ class Cron {
 				this.#game.deleteSelf()
 			} else timer = true
 		}, {
-			timezone : "Europe/Paris"
+			// timezone : "Europe/Paris"
+			timezone : "Europe/Riga"
 		})
 		console.log("starting cron")
 		this.#task.start()
