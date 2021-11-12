@@ -22,7 +22,7 @@ class Cron {
 			}
 		}, {
 			// timezone : "Europe/Paris"
-			timezone : "Europe/Riga"
+			timezone : "Europe/Paris"
 			}
 		)
 		console.log("cron obj is running..")
@@ -40,7 +40,7 @@ class Cron {
 			} else timer = true
 		}, {
 			// timezone : "Europe/Paris"
-			timezone : "Europe/Riga"
+			timezone : "Europe/Paris"
 		})
 		console.log("starting cron")
 		this.#task.start()
