@@ -15,7 +15,7 @@ module.exports = {
 				.addChoice('World of Warcraft', '952590369416171591')
 		),
 	async execute(interaction) {
-		if (!interaction.guild.me.permissions.has('MODERATE_MEMBERS')) return interaction.reply({content: 'Erreur! Le bot n\'a pas les droit suffisant pour vous ajouter le rôle. Contactez un admin.', ephemeral: true})
+		if (!interaction.guild.me.permissions.has('MANAGE_ROLES')) return interaction.reply({content: 'Erreur! Le bot n\'a pas les droit suffisant pour vous ajouter le rôle. Contactez un admin.', ephemeral: true})
 
 		const roleStr = interaction.options.getString('jeu')
 
