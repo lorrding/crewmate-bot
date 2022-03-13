@@ -9,10 +9,10 @@ module.exports = {
 			option.setName('jeu')
 				.setDescription('Le nom du jeu')
 				.setRequired(true)
-				.addChoice('Lost Ark', '288784766822514700')
-				.addChoice('Afk Arena', '1')
-				.addChoice('Valorant', '2')
-				.addChoice('World of Warcraft', '3')
+				.addChoice('Lost Ark', '941720151521394729')
+				.addChoice('Afk Arena', '952315372063821866')
+				.addChoice('Valorant', '952590313594167326')
+				.addChoice('World of Warcraft', '952590369416171591')
 		),
 	async execute(interaction) {
 		if (!interaction.guild.me.permissions.has('MODERATE_MEMBERS')) return interaction.reply({content: 'Erreur! Le bot n\'a pas les droit suffisant pour vous retirer le rôle. Contactez un admin.', ephemeral: true})
