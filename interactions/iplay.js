@@ -13,7 +13,7 @@ module.exports = {
 				.addChoice('Afk Arena', '952315372063821866')
 				.addChoice('Valorant', '952590313594167326')
 				.addChoice('World of Warcraft', '952590369416171591')
-				.addChoice('Rocket League', '957072205060124682')
+				.addChoice('Rocket League', '957071909550424074')
 		),
 	async execute(interaction) {
 		if (!interaction.guild.me.permissions.has('MANAGE_ROLES')) return interaction.reply({content: 'Erreur! Le bot n\'a pas les droit suffisant pour vous ajouter le rôle. Contactez un admin.', ephemeral: true})
