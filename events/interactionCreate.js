@@ -9,9 +9,11 @@ module.exports = {
 
 		if (!command) return
 
+		if (!interaction.guild) return
+		if (!interaction.memberPermissions.has(command.permission)) return
+
 		try {
 			console.log(`\nInteraction ${interaction.commandName} by ${interaction.user.tag} in '${interaction.guild.name}' at ${showDate(interaction.createdAt)}`)
-
 			await command.execute(interaction)
 		} catch (e) {
 			console.error(e)
