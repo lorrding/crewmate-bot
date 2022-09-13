@@ -1,5 +1,5 @@
-const ytdl = require('ytdl-core')
-const ytpl = require('ytpl')
+// const ytdl = require('ytdl-core')
+// const ytpl = require('ytpl')
 
 const self = module.exports = {
 	//send a message, then delete it after x millisecondes
