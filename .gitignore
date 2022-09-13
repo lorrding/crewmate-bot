@@ -2,3 +2,4 @@ node_modules/
 .idea
 help/
 deploy-commands.js
+bun.lockb
